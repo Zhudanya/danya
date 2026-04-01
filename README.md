@@ -25,6 +25,12 @@ npm install -g .
 danya --version
 ```
 
+## 更新
+
+```bash
+npm install -g @danya-ai/cli@latest
+```
+
 ## 快速使用
 
 ```bash
