@@ -5,6 +5,7 @@
 import { mkdirSync, writeFileSync, copyFileSync, existsSync, readFileSync } from 'fs'
 import { join, resolve } from 'path'
 import { detectProject } from '../engine/detect'
+import { getModelManager } from '../utils/model'
 
 export type GuardRule = {
   pattern: string
@@ -64,10 +65,16 @@ export async function initDanyaProject(cwd: string, force: boolean = false): Pro
   }
   writeFileSync(join(danyaDir, 'settings.json'), JSON.stringify(settings, null, 2), 'utf-8')
 
-  // 5. Generate AGENTS.md template if not exists
-  const agentsPath = join(cwd, 'AGENTS.md')
-  if (!existsSync(agentsPath)) {
-    writeFileSync(agentsPath, generateAgentsMdTemplate(detection.engine, detection.serverLanguage), 'utf-8')
+  // 5. Generate project instructions template
+  // Claude models → CLAUDE.md, other models → AGENTS.md
+  const instructionsFile = isClaudeModel() ? 'CLAUDE.md' : 'AGENTS.md'
+  const instructionsPath = join(cwd, instructionsFile)
+  // Also check the other file to avoid duplicates
+  const altFile = instructionsFile === 'CLAUDE.md' ? 'AGENTS.md' : 'CLAUDE.md'
+  const altPath = join(cwd, altFile)
+  const alreadyExists = existsSync(instructionsPath) || existsSync(altPath)
+  if (!alreadyExists) {
+    writeFileSync(instructionsPath, generateAgentsMdTemplate(detection.engine, detection.serverLanguage), 'utf-8')
   }
 
   return [
@@ -81,13 +88,13 @@ export async function initDanyaProject(cwd: string, force: boolean = false): Pro
     '  .danya/guard-rules.json  — Forbidden zone patterns',
     '  .danya/settings.json     — Hook registration',
     '  .danya/hooks/            — 5 hook scripts',
-    existsSync(agentsPath) ? '' : '  AGENTS.md               — Project instructions template',
+    alreadyExists ? '' : `  ${instructionsFile}               — Project instructions template`,
     '',
     'Gate chain: Edit → Guard → Syntax → Verify → Commit → Review → Push',
     '',
     'Next steps:',
     '  1. Configure API key: run danya and follow setup',
-    '  2. Customize AGENTS.md with your project-specific rules',
+    `  2. Customize ${instructionsFile} with your project-specific rules`,
     '  3. Run: danya',
   ].filter(Boolean).join('\n')
 }
@@ -232,3 +239,13 @@ MARKER=".danya/push-approved"
 rm -f "$MARKER"
 exit 0
 `
+
+function isClaudeModel(): boolean {
+  try {
+    const modelManager = getModelManager()
+    const modelName = modelManager.getCurrentModel()
+    return Boolean(modelName && modelName.startsWith('claude'))
+  } catch {
+    return false
+  }
+}
