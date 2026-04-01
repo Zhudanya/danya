@@ -32,7 +32,7 @@ danya --version
 cd <你的游戏项目>
 danya init
 
-# 启动交互模式
+# 启动交互模式（首次启动会引导配置 AI 模型）
 danya
 
 # 常用命令
@@ -41,6 +41,30 @@ danya
 /auto-bugfix "角色状态切换动画异常"     # Bug 自动修复
 /parallel-execute prepare "大功能"     # 波次并行执行
 ```
+
+### 配置 / 切换 AI 模型
+
+在 danya 对话中输入 `/model`：
+
+1. 选 **Manage Model List** → 添加新模型
+2. 选择 Provider：
+   - **Custom Messages API** — Claude 系列（Anthropic 官方接口）
+   - **Custom OpenAI-Compatible API** — GPT / DeepSeek / 千问 / GLM 等
+   - **Ollama** — 本地模型
+3. 粘贴 API Key → 后续步骤一路回车（使用默认值即可）
+4. 回到 `/model` 页面，选择要用的模型
+
+常用模型配置参考：
+
+| 模型 | Provider | Base URL | Model ID | Max Tokens | Context |
+|------|----------|----------|----------|------------|---------|
+| Claude Opus 4.6 | Messages API | `https://api.anthropic.com` | `claude-opus-4-6` | 16K | 200K |
+| Claude Sonnet 4.6 | Messages API | `https://api.anthropic.com` | `claude-sonnet-4-6` | 16K | 200K |
+| DeepSeek V3 | Messages API | `https://api.deepseek.com/anthropic` | `deepseek-chat` | 8K | 128K |
+| GPT-4o | OpenAI-Compatible | `https://api.openai.com/v1` | `gpt-4o` | 16K | 128K |
+| 千问 Max | OpenAI-Compatible | `https://dashscope.aliyuncs.com/compatible-mode/v1` | `qwen-max` | 8K | 128K |
+
+模型配置保存在 `~/.danya/config.json`，无需手动编辑。
 
 快捷键：
 - `Ctrl+G` — 打开外部编辑器（优先 `$EDITOR`，回退 code/nano/vim），关闭后内容自动回填
