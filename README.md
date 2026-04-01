@@ -331,6 +331,6 @@ Danya 是一个**学习项目**，用于研究 AI Agent 在游戏开发中的工
 
 **领域专用 > 通用万能。**
 
-## License
+## 许可证
 
-Apache-2.0
+Apache 2.0 许可证 - 详见 [LICENSE](LICENSE)。
