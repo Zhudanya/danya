@@ -1,0 +1,20 @@
+version: 1
+
+# Minimum viable config — one model does everything.
+# Replace "gpt-4o" and OPENAI_API_KEY with your model and key.
+
+profiles:
+  - name: "My Model"
+    provider: openai
+    modelName: gpt-4o
+    maxTokens: 16384
+    contextLength: 128000
+    isActive: true
+    apiKey:
+      fromEnv: OPENAI_API_KEY
+
+pointers:
+  main: "My Model"
+  task: "My Model"
+  compact: "My Model"
+  quick: "My Model"

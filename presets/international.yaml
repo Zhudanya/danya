@@ -1,0 +1,26 @@
+version: 1
+
+profiles:
+  - name: "Claude Sonnet"
+    provider: anthropic
+    modelName: claude-sonnet-4-6
+    maxTokens: 16384
+    contextLength: 200000
+    isActive: true
+    apiKey:
+      fromEnv: ANTHROPIC_API_KEY
+
+  - name: "GPT-4o"
+    provider: openai
+    modelName: gpt-4o
+    maxTokens: 16384
+    contextLength: 128000
+    isActive: true
+    apiKey:
+      fromEnv: OPENAI_API_KEY
+
+pointers:
+  main: "Claude Sonnet"
+  task: "GPT-4o"
+  compact: "GPT-4o"
+  quick: "GPT-4o"

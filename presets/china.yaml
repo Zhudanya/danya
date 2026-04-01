@@ -1,0 +1,38 @@
+version: 1
+
+profiles:
+  - name: "DeepSeek V3"
+    provider: deepseek
+    modelName: deepseek-chat
+    baseURL: https://api.deepseek.com/v1
+    maxTokens: 8192
+    contextLength: 128000
+    isActive: true
+    apiKey:
+      fromEnv: DEEPSEEK_API_KEY
+
+  - name: "Qwen Max"
+    provider: qwen
+    modelName: qwen-max
+    baseURL: https://dashscope.aliyuncs.com/compatible-mode/v1
+    maxTokens: 8192
+    contextLength: 128000
+    isActive: true
+    apiKey:
+      fromEnv: QWEN_API_KEY
+
+  - name: "GLM-4"
+    provider: glm
+    modelName: glm-4
+    baseURL: https://open.bigmodel.cn/api/paas/v4
+    maxTokens: 4096
+    contextLength: 128000
+    isActive: true
+    apiKey:
+      fromEnv: GLM_API_KEY
+
+pointers:
+  main: "DeepSeek V3"
+  task: "Qwen Max"
+  compact: "GLM-4"
+  quick: "GLM-4"

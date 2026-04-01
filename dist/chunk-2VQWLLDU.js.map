@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../src/utils/session/sessionPlugins.ts"],
+  "sourcesContent": ["export type SessionPlugin = {\r\n  name: string\r\n  rootDir: string\r\n  manifestPath: string\r\n  manifest: unknown\r\n  commandsDirs: string[]\r\n  skillsDirs: string[]\r\n  agentsDirs: string[]\r\n  hooksFiles: string[]\r\n  outputStylesDirs: string[]\r\n  mcpConfigFiles: string[]\r\n}\r\n\r\nlet sessionPlugins: SessionPlugin[] = []\r\n\r\nexport function setSessionPlugins(next: SessionPlugin[]): void {\r\n  sessionPlugins = next\r\n}\r\n\r\nexport function getSessionPlugins(): SessionPlugin[] {\r\n  return sessionPlugins\r\n}\r\n\r\nexport function clearSessionPlugins(): void {\r\n  sessionPlugins = []\r\n}\r\n\r\nexport function __resetSessionPluginsForTests(): void {\r\n  sessionPlugins = []\r\n}\r\n"],
+  "mappings": ";;;;AAaA,IAAI,iBAAkC,CAAC;AAEhC,SAAS,kBAAkB,MAA6B;AAC7D,mBAAiB;AACnB;AAEO,SAAS,oBAAqC;AACnD,SAAO;AACT;",
+  "names": []
+}
