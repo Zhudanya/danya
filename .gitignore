@@ -3,3 +3,6 @@ node_modules/
 *.log
 .env
 .env.local
+
+# 开发计划文档（内部使用，不公开）
+Docs/Design/
