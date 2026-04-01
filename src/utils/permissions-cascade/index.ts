@@ -1,6 +1,5 @@
 /**
  * Permission Rule Cascade Engine
- * Ported from Codex (Claude Code), adapted for Danya.
  *
  * Loads permission rules from multiple sources in priority order:
  *   1. Policy settings (org-level, managed)       ← highest priority
@@ -23,7 +22,7 @@ import type {
   PermissionDecisionReason,
   ToolPermissionContext,
   ToolPermissionRulesBySource,
-} from '../../types/permissions-codex'
+} from '../../types/permissions'
 
 export type { PermissionRule, PermissionRuleValue, PermissionResult, PermissionDecision }
 

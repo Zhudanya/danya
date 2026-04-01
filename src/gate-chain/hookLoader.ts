@@ -5,7 +5,7 @@
 
 import { existsSync, readFileSync } from 'fs'
 import { join } from 'path'
-import type { HooksConfig } from '../types/hooks-codex'
+import type { HooksConfig } from '../types/hooks'
 
 let cachedHooksConfig: HooksConfig | null = null
 

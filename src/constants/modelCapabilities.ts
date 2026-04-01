@@ -60,7 +60,7 @@ export const MODEL_CAPABILITIES_REGISTRY: Record<string, ModelCapabilities> = {
   'gpt-5-mini': GPT5_CAPABILITIES,
   'gpt-5-nano': GPT5_CAPABILITIES,
   'gpt-5-chat-latest': GPT5_CAPABILITIES,
-  'gpt-5-codex': GPT5_CAPABILITIES,
+  'gpt-5-reasoning': GPT5_CAPABILITIES,
 
   'gpt-4o': CHAT_COMPLETIONS_CAPABILITIES,
   'gpt-4o-mini': CHAT_COMPLETIONS_CAPABILITIES,

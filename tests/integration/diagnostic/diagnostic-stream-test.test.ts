@@ -5,10 +5,10 @@ import { callGPT5ResponsesAPI } from '@services/openai'
 
 const MOCK_SERVER_TEST_MODE = process.env.MOCK_SERVER_TEST_MODE === 'true'
 
-const GPT5_CODEX_PROFILE = {
-  name: 'gpt-5-codex',
+const GPT5_REASONING_PROFILE = {
+  name: 'gpt-5-reasoning',
   provider: 'openai',
-  modelName: 'gpt-5-codex',
+  modelName: 'gpt-5-reasoning',
   baseURL: process.env.TEST_GPT5_BASE_URL || 'http://127.0.0.1:3000/openai',
   apiKey: process.env.TEST_GPT5_API_KEY || '',
   maxTokens: 8192,
@@ -30,7 +30,7 @@ describe('🔍 Diagnostic: Stream State Tracking', () => {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
 
     console.log('\nStep 1: Creating adapter...')
-    const adapter = ModelAdapterFactory.createAdapter(GPT5_CODEX_PROFILE)
+    const adapter = ModelAdapterFactory.createAdapter(GPT5_REASONING_PROFILE)
     console.log(`  ✅ Adapter: ${adapter.constructor.name}`)
 
     console.log('\nStep 2: Building request with streaming...')
@@ -52,7 +52,7 @@ describe('🔍 Diagnostic: Stream State Tracking', () => {
     console.log(`  📝 Stream in request: ${request.stream}`)
 
     console.log('\nStep 4: Making API call (STREAMING)...')
-    const response = await callGPT5ResponsesAPI(GPT5_CODEX_PROFILE, request)
+    const response = await callGPT5ResponsesAPI(GPT5_REASONING_PROFILE, request)
 
     console.log('\nStep 5: Checking stream state BEFORE adapter...')
     console.log(`  📊 Response status: ${response.status}`)
@@ -168,7 +168,7 @@ describe('🔍 Diagnostic: Stream State Tracking', () => {
     console.log('\n🔍 COMPARISON TEST: Stream vs Non-Stream')
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
 
-    const adapter = ModelAdapterFactory.createAdapter(GPT5_CODEX_PROFILE)
+    const adapter = ModelAdapterFactory.createAdapter(GPT5_REASONING_PROFILE)
 
     console.log('\n📡 Testing with stream: true...')
     const streamingParams = {
@@ -184,7 +184,7 @@ describe('🔍 Diagnostic: Stream State Tracking', () => {
 
     const streamingRequest = adapter.createRequest(streamingParams)
     const streamingResponse = await callGPT5ResponsesAPI(
-      GPT5_CODEX_PROFILE,
+      GPT5_REASONING_PROFILE,
       streamingRequest,
     )
     const streamingResult = await adapter.parseResponse(streamingResponse)
@@ -208,7 +208,7 @@ describe('🔍 Diagnostic: Stream State Tracking', () => {
 
     const nonStreamingRequest = adapter.createRequest(nonStreamingParams)
     const nonStreamingResponse = await callGPT5ResponsesAPI(
-      GPT5_CODEX_PROFILE,
+      GPT5_REASONING_PROFILE,
       nonStreamingRequest,
     )
     const nonStreamingResult = await adapter.parseResponse(nonStreamingResponse)

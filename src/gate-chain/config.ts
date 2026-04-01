@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'fs'
 import { join } from 'path'
-import type { HooksConfig, HookMatcher } from '../types/hooks-codex'
+import type { HooksConfig, HookMatcher } from '../types/hooks'
 
 export type GateChainConfig = {
   gates: {

@@ -1,9 +1,8 @@
 /**
- * Rich permission type definitions ported from Codex (Claude Code).
+ * Rich permission type definitions.
  * Provides rule-based permission cascade, decision types, and risk assessment.
  *
  * This file contains only type definitions with no runtime dependencies.
- * Coexists with Kode's permissionMode.ts — will gradually replace it.
  */
 
 // ============================================================================

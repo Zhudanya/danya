@@ -81,13 +81,13 @@ function expectUnifiedUsage(usage: any) {
   expect(usage.totalTokens).toBe(usage.promptTokens + usage.completionTokens)
 }
 
-describe('🔌 Integration: Full Claude.ts Flow (Model-Agnostic)', () => {
+describe('🔌 Integration: Full LLM Flow (Model-Agnostic)', () => {
   if (ACTIVE_PRODUCTION_MODELS.length === 0) {
-    test.skip('✅ End-to-end flow through claude.ts path (requires API keys)', () => {})
+    test.skip('✅ End-to-end flow through LLM path (requires API keys)', () => {})
     return
   }
 
-  test('✅ End-to-end flow through claude.ts path', async () => {
+  test('✅ End-to-end flow through LLM path', async () => {
     const ACTIVE_PROFILE = getActiveProfile()
 
     console.log('\n🔧 TEST CONFIGURATION:')

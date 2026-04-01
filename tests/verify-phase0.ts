@@ -28,8 +28,8 @@ import { systemPromptSection, DANGEROUS_uncachedSystemPromptSection, resolveSyst
 import { matchToolRule, matchRuleContent, resolvePermission } from '../src/utils/permissions-cascade/index'
 import { groupMessages, shouldTriggerCompaction } from '../src/services/compact/compact'
 import { partitionToolCalls } from '../src/core/tools/tool'
-import { HOOK_EVENTS, isHookEvent } from '../src/types/hooks-codex'
-import { PERMISSION_MODES } from '../src/types/permissions-codex'
+import { HOOK_EVENTS, isHookEvent } from '../src/types/hooks'
+import { PERMISSION_MODES } from '../src/types/permissions'
 
 let passed = 0
 let failed = 0
@@ -124,7 +124,7 @@ assert(isHookEvent('Stop'), 'Stop is valid hook event')
 assert(!isHookEvent('InvalidEvent'), 'InvalidEvent is not a hook event')
 
 // ── 7. Tool Interface Extensions ────────────────
-console.log('\n7. Tool Interface (Codex extensions)')
+console.log('\n7. Tool Interface (extensions)')
 // Test partitionToolCalls
 const mockReadTool = { name: 'Read', isReadOnly: () => true, isConcurrencySafe: () => true } as any
 const mockWriteTool = { name: 'Write', isReadOnly: () => false, isConcurrencySafe: () => false } as any

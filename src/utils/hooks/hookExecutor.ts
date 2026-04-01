@@ -1,6 +1,5 @@
 /**
  * Hook Execution Engine
- * Ported from Codex's utils/hooks.ts, adapted for Danya.
  *
  * Executes shell command hooks at 18 lifecycle points.
  * Hooks are configured in .danya/settings.json and can:
@@ -21,7 +20,7 @@ import type {
   SyncHookOutput,
   HookDefinition,
   HooksConfig,
-} from '../../types/hooks-codex'
+} from '../../types/hooks'
 
 // ============================================================================
 // Hook Matching

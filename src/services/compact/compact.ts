@@ -1,6 +1,5 @@
 /**
  * Conversation Compaction Service
- * Ported from Codex's services/compact/, adapted for Danya.
  *
  * Automatically compresses conversation history when approaching context limits.
  * Uses the 'compact' model pointer for summarization.

@@ -4,10 +4,10 @@ import { callGPT5ResponsesAPI } from '@services/openai'
 
 const MOCK_SERVER_TEST_MODE = process.env.MOCK_SERVER_TEST_MODE === 'true'
 
-const GPT5_CODEX_PROFILE = {
-  name: 'gpt-5-codex',
+const GPT5_REASONING_PROFILE = {
+  name: 'gpt-5-reasoning',
   provider: 'openai',
-  modelName: 'gpt-5-codex',
+  modelName: 'gpt-5-reasoning',
   baseURL: process.env.TEST_GPT5_BASE_URL || 'http://127.0.0.1:3000/openai',
   apiKey: process.env.TEST_GPT5_API_KEY || '',
   maxTokens: 8192,
@@ -34,7 +34,7 @@ describe('Regression Tests: Responses API Bug Fixes', () => {
       'Bug: responseId was lost when mixing AssistantMessage and ChatCompletion types',
     )
 
-    const adapter = ModelAdapterFactory.createAdapter(GPT5_CODEX_PROFILE)
+    const adapter = ModelAdapterFactory.createAdapter(GPT5_REASONING_PROFILE)
 
     const request = adapter.createRequest({
       messages: [{ role: 'user', content: 'Test message' }],
@@ -46,7 +46,7 @@ describe('Regression Tests: Responses API Bug Fixes', () => {
       verbosity: 'medium' as const,
     })
 
-    const response = await callGPT5ResponsesAPI(GPT5_CODEX_PROFILE, request)
+    const response = await callGPT5ResponsesAPI(GPT5_REASONING_PROFILE, request)
     const unifiedResponse = await adapter.parseResponse(response)
 
     console.log(`  📦 Unified response ID: ${unifiedResponse.responseId}`)
@@ -84,7 +84,7 @@ describe('Regression Tests: Responses API Bug Fixes', () => {
     console.log('This test would FAIL before the content format fix!')
     console.log('Bug: parseStreamingResponse returned string instead of array')
 
-    const adapter = ModelAdapterFactory.createAdapter(GPT5_CODEX_PROFILE)
+    const adapter = ModelAdapterFactory.createAdapter(GPT5_REASONING_PROFILE)
 
     const request = adapter.createRequest({
       messages: [{ role: 'user', content: 'Say "hello"' }],
@@ -96,7 +96,7 @@ describe('Regression Tests: Responses API Bug Fixes', () => {
       verbosity: 'medium' as const,
     })
 
-    const response = await callGPT5ResponsesAPI(GPT5_CODEX_PROFILE, request)
+    const response = await callGPT5ResponsesAPI(GPT5_REASONING_PROFILE, request)
     const unifiedResponse = await adapter.parseResponse(response)
 
     console.log(`  📦 Content type: ${typeof unifiedResponse.content}`)
@@ -129,7 +129,7 @@ describe('Regression Tests: Responses API Bug Fixes', () => {
       'Bug: Outer function created new AssistantMessage, overwriting the original',
     )
 
-    const adapter = ModelAdapterFactory.createAdapter(GPT5_CODEX_PROFILE)
+    const adapter = ModelAdapterFactory.createAdapter(GPT5_REASONING_PROFILE)
 
     const request = adapter.createRequest({
       messages: [{ role: 'user', content: 'Test' }],
@@ -141,7 +141,7 @@ describe('Regression Tests: Responses API Bug Fixes', () => {
       verbosity: 'medium' as const,
     })
 
-    const response = await callGPT5ResponsesAPI(GPT5_CODEX_PROFILE, request)
+    const response = await callGPT5ResponsesAPI(GPT5_REASONING_PROFILE, request)
     const unifiedResponse = await adapter.parseResponse(response)
 
     const originalMsg = {
@@ -209,7 +209,7 @@ describe('Regression Tests: Responses API Bug Fixes', () => {
     console.log('Simulates actual user interaction: tell name, then ask for it')
     console.log('⚠️  Note: Test API may not support previous_response_id')
 
-    const adapter = ModelAdapterFactory.createAdapter(GPT5_CODEX_PROFILE)
+    const adapter = ModelAdapterFactory.createAdapter(GPT5_REASONING_PROFILE)
 
     console.log('\n  Turn 1: "My name is Sarah"')
     const turn1Request = adapter.createRequest({
@@ -223,7 +223,7 @@ describe('Regression Tests: Responses API Bug Fixes', () => {
     })
 
     const turn1Response = await callGPT5ResponsesAPI(
-      GPT5_CODEX_PROFILE,
+      GPT5_REASONING_PROFILE,
       turn1Request,
     )
     const turn1Unified = await adapter.parseResponse(turn1Response)
@@ -244,7 +244,7 @@ describe('Regression Tests: Responses API Bug Fixes', () => {
 
     try {
       const turn2Response = await callGPT5ResponsesAPI(
-        GPT5_CODEX_PROFILE,
+        GPT5_REASONING_PROFILE,
         turn2Request,
       )
       const turn2Unified = await adapter.parseResponse(turn2Response)

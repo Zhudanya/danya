@@ -122,7 +122,7 @@ describe('🧪 Response API Tool Processing - Real Mock Server Test', () => {
           '   Same Read tool appears in both content and toolCalls array',
         )
         console.log(
-          '   This will cause duplication when claude.ts processes it',
+          '   This will cause duplication when the LLM service processes it',
         )
         console.log(
           '   Content tool_use:',
@@ -144,7 +144,7 @@ describe('🧪 Response API Tool Processing - Real Mock Server Test', () => {
         '   The "use the Read tool" scenario triggers the triple tool call bug',
       )
       console.log(
-        '   Fix needed in claude.ts buildAssistantMessageFromUnifiedResponse()',
+        '   Fix needed in buildAssistantMessageFromUnifiedResponse()',
       )
     } else if (totalToolRepresentations === 1) {
       console.log('\n✅ NO BUG DETECTED!')

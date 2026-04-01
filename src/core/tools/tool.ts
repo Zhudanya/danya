@@ -5,7 +5,7 @@ import type { ToolPermissionContext } from '@kode-types/toolPermissionContext'
 import type {
   PermissionResult,
   PermissionDecision,
-} from '../../types/permissions-codex'
+} from '../../types/permissions'
 
 export type SetToolJSXFn = (
   jsx: {
@@ -61,7 +61,7 @@ export interface ValidationResult {
 }
 
 // ============================================================================
-// Tool Progress (ported from Codex)
+// Tool Progress
 // ============================================================================
 
 export type ToolProgressData = Record<string, unknown>
@@ -76,7 +76,7 @@ export type ToolCallProgress<P extends ToolProgressData = ToolProgressData> = (
 ) => void
 
 // ============================================================================
-// Tool Result (ported from Codex)
+// Tool Result
 // ============================================================================
 
 export type ToolResult<T = unknown> = {
@@ -104,7 +104,7 @@ export interface Tool<
   userFacingName?: (input?: z.infer<TInput>) => string
   cachedDescription?: string
 
-  /** 3-10 word hint for tool discovery (Codex: ToolSearchTool) */
+  /** 3-10 word hint for tool discovery */
   searchHint?: string
 
   // ── State Queries ─────────────────────────────────
@@ -117,21 +117,18 @@ export interface Tool<
   /**
    * Whether the tool performs an irreversible action (delete, send, overwrite).
    * Used for risk assessment in gate chain and destructive command detection.
-   * Ported from Codex.
    */
   isDestructive?: (input?: z.infer<TInput>) => boolean
 
   /**
    * Extract the primary file path from tool input (for file-based tools).
    * Used by permission system for path-based rule matching.
-   * Ported from Codex.
    */
   getPath?: (input: z.infer<TInput>) => string
 
   /**
    * Maximum result size in characters before persisting to disk.
    * Large results are saved to file and the model gets a preview + path.
-   * Ported from Codex.
    */
   maxResultSizeChars?: number
 
@@ -143,7 +140,7 @@ export interface Tool<
 
   /**
    * Rich permission checking that returns allow/ask/deny with reasons.
-   * Ported from Codex — provides richer feedback than needsPermissions().
+   * Provides richer feedback than needsPermissions().
    * If both checkPermissions and needsPermissions exist, checkPermissions takes precedence.
    */
   checkPermissions?: (
@@ -154,7 +151,6 @@ export interface Tool<
   /**
    * Prepare a matcher function for checking this tool's input against permission rules.
    * Returns a function that takes a rule pattern and returns whether it matches.
-   * Ported from Codex.
    */
   preparePermissionMatcher?: (
     input: z.infer<TInput>,
@@ -175,7 +171,6 @@ export interface Tool<
   /**
    * Description for the status spinner during tool execution.
    * Returns something like "Reading src/foo.ts" or "Searching codebase".
-   * Ported from Codex.
    */
   getActivityDescription?: (input: z.infer<TInput>) => string | null
 
@@ -226,7 +221,6 @@ export function getToolDescription(tool: Tool): string {
 
 /**
  * Find a tool by name from a tool array.
- * Ported from Codex.
  */
 export function findToolByName(tools: Tool[], name: string): Tool | undefined {
   return tools.find((t) => t.name === name)
@@ -243,7 +237,6 @@ export function isToolParallelSafe(tool: Tool, input?: unknown): boolean {
 
 /**
  * Partition tool calls into parallel-safe and serial batches.
- * Ported from Codex's toolOrchestration pattern.
  */
 export function partitionToolCalls<T extends { tool: Tool; input: unknown }>(
   calls: T[],

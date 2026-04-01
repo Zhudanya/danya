@@ -7,7 +7,7 @@ import {
 } from "./chunk-PDSAJX7G.js";
 import {
   getAllTools
-} from "./chunk-5XPLGRCI.js";
+} from "./chunk-M7NDX5QA.js";
 import {
   DanyaAgentStructuredStdio
 } from "./chunk-P5VWDMRD.js";
@@ -16,7 +16,7 @@ import {
 } from "./chunk-TLCZFEI3.js";
 import {
   getToolDescription
-} from "./chunk-HJCCXED7.js";
+} from "./chunk-DKOCP6VD.js";
 import {
   lastX
 } from "./chunk-BNBV2FXC.js";
@@ -32,7 +32,7 @@ import {
   review_default,
   useExitOnCtrlCD,
   useTerminalSize
-} from "./chunk-QUV2YCUP.js";
+} from "./chunk-S6XA4IEN.js";
 import "./chunk-DYHI3HU4.js";
 import {
   addMcpServer,
@@ -55,13 +55,13 @@ import "./chunk-UOERQDSJ.js";
 import "./chunk-2ON4OVWS.js";
 import "./chunk-Y5LQPJWK.js";
 import "./chunk-JVGG2YQR.js";
-import "./chunk-DQ3YBGNC.js";
+import "./chunk-SL3KSG7I.js";
 import "./chunk-U7Z4MXY4.js";
 import {
   clearOutputStyleCache
 } from "./chunk-CDS5HL6U.js";
 import "./chunk-DVRQKRHN.js";
-import "./chunk-JKRPU66R.js";
+import "./chunk-MXXF7WIX.js";
 import "./chunk-5552MSXN.js";
 import "./chunk-LO3O7WT2.js";
 import "./chunk-L4IPQYSY.js";
@@ -77,7 +77,7 @@ import {
   setEnabledSettingSourcesFromCli
 } from "./chunk-WAY3DKFO.js";
 import "./chunk-2VQWLLDU.js";
-import "./chunk-7NTVKI6U.js";
+import "./chunk-GI65KTYW.js";
 import {
   getModelManager,
   isDefaultSlowAndCapableModel
@@ -303,7 +303,7 @@ function createPrintModeControlRequestHandler(args) {
 
 // src/entrypoints/cli/stdio/streamJsonSession.ts
 async function runPrintModeStreamJsonSession(args) {
-  const { runDanyaAgentStreamJsonSession } = await import("./kodeAgentStreamJsonSession-QQV52SDB.js");
+  const { runDanyaAgentStreamJsonSession } = await import("./kodeAgentStreamJsonSession-PQ4WDN52.js");
   await runDanyaAgentStreamJsonSession(args);
 }
 
@@ -457,11 +457,11 @@ async function runPrintMode({
 `);
     process.exit(0);
   }
-  const { createUserMessage } = await import("./messages-KZTRKY2I.js");
-  const { getSystemPrompt } = await import("./prompts-IVLP5KLQ.js");
+  const { createUserMessage } = await import("./messages-WK7XNPUA.js");
+  const { getSystemPrompt } = await import("./prompts-TYIDZI4H.js");
   const { getContext: getContext2 } = await import("./context-SUQRQHNG.js");
   const { getTotalCost } = await import("./costTracker-5WKZXN5S.js");
-  const { query } = await import("./query-JIRCNAY5.js");
+  const { query } = await import("./query-CTUPXRAI.js");
   const { getDanyaAgentSessionId } = await import("./kodeAgentSessionId-WUT74FSH.js");
   const { danyaMessageToSdkMessage, makeSdkInitMessage, makeSdkResultMessage } = await import("./kodeAgentStreamJson-EDHHWNNX.js");
   const { DanyaAgentStructuredStdio: DanyaAgentStructuredStdio2 } = await import("./kodeAgentStructuredStdio-UA5P5UNU.js");
@@ -2050,7 +2050,7 @@ async function parseArgs(stdinContent, renderContext) {
         const all = [...installed, ...requested].filter(Boolean);
         const deduped = Array.from(new Set(all));
         if (deduped.length > 0) {
-          const { configureSessionPlugins } = await import("./pluginRuntime-TCH3K4F6.js");
+          const { configureSessionPlugins } = await import("./pluginRuntime-WEEI7Y5Y.js");
           const { errors } = await configureSessionPlugins({
             pluginDirs: deduped
           });
@@ -2060,9 +2060,9 @@ async function parseArgs(stdinContent, renderContext) {
         }
       }
       const [{ ask }, { getTools }, { getCommands }] = await Promise.all([
-        import("./ask-F53PCNWW.js"),
-        import("./tools-G2P3XRE7.js"),
-        import("./commands-2ZN5PXG5.js")
+        import("./ask-GCAEBV7O.js"),
+        import("./tools-MG726YLK.js"),
+        import("./commands-5RPFVXR7.js")
       ]);
       const commands = await getCommands();
       const mcpClientsPromise = Array.isArray(mcpConfig) && mcpConfig.length > 0 || strictMcpConfig === true ? getClientsForCliMcpConfig({
@@ -2268,7 +2268,7 @@ async function parseArgs(stdinContent, renderContext) {
         const isDefaultModel = await isDefaultSlowAndCapableModel();
         {
           const { render: render3 } = await import("ink");
-          const { REPL } = await import("./REPL-JPCWUTDB.js");
+          const { REPL } = await import("./REPL-QS4B4WJM.js");
           render3(
             /* @__PURE__ */ React10.createElement(
               REPL,
@@ -2447,7 +2447,7 @@ Model profiles (${active.length}/${profiles.length} active):
       try {
         const workingDir = typeof options?.cwd === "string" ? options.cwd : cwd();
         await setup(workingDir, false);
-        const { validateAgentTemplates } = await import("./agentsValidate-YP7GA4ER.js");
+        const { validateAgentTemplates } = await import("./agentsValidate-APGKHXRX.js");
         const report = await validateAgentTemplates({
           cwd: workingDir,
           paths: Array.isArray(paths) ? paths : [],
@@ -3658,8 +3658,8 @@ ${skillList}`);
       await setup(cwd2, safe);
       assertMinVersion();
       const [{ getTools }, { getCommands }] = await Promise.all([
-        import("./tools-G2P3XRE7.js"),
-        import("./commands-2ZN5PXG5.js")
+        import("./tools-MG726YLK.js"),
+        import("./commands-5RPFVXR7.js")
       ]);
       const [allTools, commands, mcpClients] = await Promise.all([
         getTools(
@@ -3741,7 +3741,7 @@ ${skillList}`);
           const isDefaultModel = await isDefaultSlowAndCapableModel();
           {
             const { render: render3 } = await import("ink");
-            const { REPL } = await import("./REPL-JPCWUTDB.js");
+            const { REPL } = await import("./REPL-QS4B4WJM.js");
             render3(
               /* @__PURE__ */ React10.createElement(
                 REPL,
@@ -3873,7 +3873,7 @@ async function gracefulExit(code = 0) {
   }
   isGracefulExitInProgress = true;
   try {
-    const { runSessionEndHooks } = await import("./kodeHooks-LXHKYCVC.js");
+    const { runSessionEndHooks } = await import("./kodeHooks-IELEO72G.js");
     const { getDanyaAgentSessionId } = await import("./kodeAgentSessionId-WUT74FSH.js");
     const { tmpdir } = await import("os");
     const { join: join2 } = await import("path");

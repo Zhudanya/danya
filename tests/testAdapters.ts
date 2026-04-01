@@ -55,8 +55,8 @@ export const testModels: ModelProfile[] = [
     createdAt: Date.now(),
   },
   {
-    name: 'MiniMax Codex Test',
-    modelName: 'codex-MiniMax-M2',
+    name: 'MiniMax Test',
+    modelName: 'MiniMax-M2',
     provider: 'minimax',
     apiKey: 'test-key',
     maxTokens: 8192,
@@ -103,8 +103,8 @@ export const productionTestModels: ModelProfile[] = [
     createdAt: Date.now(),
   },
   {
-    name: 'MiniMax Codex Production',
-    modelName: process.env.TEST_MINIMAX_MODEL_NAME || 'codex-MiniMax-M2',
+    name: 'MiniMax Production',
+    modelName: process.env.TEST_MINIMAX_MODEL_NAME || 'MiniMax-M2',
     provider: 'minimax',
     apiKey: process.env.TEST_MINIMAX_API_KEY || '',
     baseURL: process.env.TEST_MINIMAX_BASE_URL || 'https://api.minimaxi.com/v1',

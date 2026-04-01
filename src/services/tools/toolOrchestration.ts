@@ -1,6 +1,5 @@
 /**
  * Tool Orchestration Engine
- * Ported from Codex's services/tools/toolOrchestration.ts, adapted for Danya.
  *
  * Manages concurrent execution of multiple tool calls in a single turn:
  * - Partitions tools into read-only (parallel) and write (serial) batches

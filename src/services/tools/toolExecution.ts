@@ -1,6 +1,5 @@
 /**
  * Tool Execution Engine
- * Ported from Codex's services/tools/toolExecution.ts, adapted for Danya.
  *
  * Handles the full lifecycle of a single tool invocation:
  *   validateInput → checkPermissions → executePreHooks → call → executePostHooks
@@ -13,8 +12,8 @@
  */
 
 import type { Tool, ToolUseContext, ValidationResult } from '@tool'
-import type { PermissionResult } from '../../types/permissions-codex'
-import type { AggregatedHookResult, HooksConfig } from '../../types/hooks-codex'
+import type { PermissionResult } from '../../types/permissions'
+import type { AggregatedHookResult, HooksConfig } from '../../types/hooks'
 import { executePreToolHooks, executePostToolHooks } from '../../utils/hooks/hookExecutor'
 
 export type ToolExecutionResult<T = unknown> = {

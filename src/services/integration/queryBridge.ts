@@ -1,12 +1,12 @@
 /**
  * Query Bridge — Integration Adapter
  *
- * Bridges the ported Codex tool orchestration with Kode's multi-model system.
- * This is the key integration point that lets Codex's mature tool execution
+ * Bridges tool orchestration with the multi-model system.
+ * This is the key integration point that lets the tool execution engine
  * work with any model provider (Anthropic, OpenAI, Qwen, DeepSeek, etc.).
  *
  * Architecture:
- *   Codex toolOrchestration → queryBridge → Kode ModelManager → Provider Adapters → Any API
+ *   toolOrchestration → queryBridge → ModelManager → Provider Adapters → Any API
  */
 
 import type { Tool, ToolUseContext } from '@tool'
@@ -14,7 +14,7 @@ import type { SystemPromptSection } from '../../constants/systemPromptSections'
 import { resolveSystemPromptSections } from '../../constants/systemPromptSections'
 import { runToolCalls, type ToolCall, type OrchestrationResult } from '../tools/toolOrchestration'
 import type { ToolExecutionOptions } from '../tools/toolExecution'
-import type { HooksConfig } from '../../types/hooks-codex'
+import type { HooksConfig } from '../../types/hooks'
 import {
   shouldTriggerCompaction,
   calculateCompactionTarget,

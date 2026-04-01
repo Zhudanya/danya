@@ -1,5 +1,5 @@
 /**
- * System prompt section caching framework ported from Codex (Claude Code).
+ * System prompt section caching framework.
  *
  * System prompt is split into cacheable (static) and volatile (dynamic) sections.
  * Static sections are computed once and cached until /clear or /compact.
@@ -11,7 +11,7 @@
  *   DYNAMIC SUFFIX (per-turn)           ← Sections 12-14 + engine variant
  */
 
-// Simple in-memory cache (replaces Codex's bootstrap/state.js dependency)
+// Simple in-memory cache for computed sections
 const sectionCache = new Map<string, string | null>()
 
 type ComputeFn = () => string | null | Promise<string | null>

@@ -455,7 +455,7 @@ function getLastAssistantMessageId(messages) {
 
 // src/utils/messages/index.ts
 async function processUserInput(input, mode, setToolJSX, context, pastedImages) {
-  const impl = await import("./userInput-QU3SH2SR.js");
+  const impl = await import("./userInput-GN3E44SK.js");
   return impl.processUserInput(input, mode, setToolJSX, context, pastedImages);
 }
 

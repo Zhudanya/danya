@@ -1,5 +1,5 @@
 /**
- * Hook system type definitions ported from Codex (Claude Code).
+ * Hook system type definitions.
  * Supports 18 hook event types for the gate chain and quality workflow.
  *
  * Type-only file — no runtime dependencies.

@@ -2,7 +2,7 @@ import { createRequire as __kodeCreateRequire } from "node:module";
 const require = __kodeCreateRequire(import.meta.url);
 import {
   getToolDescription
-} from "./chunk-HJCCXED7.js";
+} from "./chunk-DKOCP6VD.js";
 import {
   processResponsesStream
 } from "./chunk-6EPQRP3S.js";
@@ -13,7 +13,7 @@ import {
   getReasoningEffort,
   models_default,
   refreshDanyaContext
-} from "./chunk-QUV2YCUP.js";
+} from "./chunk-S6XA4IEN.js";
 import "./chunk-DYHI3HU4.js";
 import "./chunk-QOWU527O.js";
 import "./chunk-WTLJM7O2.js";
@@ -24,14 +24,14 @@ import "./chunk-Y5LQPJWK.js";
 import {
   setRequestStatus
 } from "./chunk-JVGG2YQR.js";
-import "./chunk-DQ3YBGNC.js";
+import "./chunk-SL3KSG7I.js";
 import "./chunk-U7Z4MXY4.js";
 import "./chunk-CDS5HL6U.js";
 import {
   getCompletionWithProfile,
   getGPT5CompletionWithProfile
 } from "./chunk-DVRQKRHN.js";
-import "./chunk-JKRPU66R.js";
+import "./chunk-MXXF7WIX.js";
 import "./chunk-5552MSXN.js";
 import "./chunk-LO3O7WT2.js";
 import "./chunk-L4IPQYSY.js";
@@ -51,7 +51,7 @@ import {
   PROMPT_TOO_LONG_ERROR_MESSAGE,
   createAssistantAPIErrorMessage,
   normalizeContentFromAPI
-} from "./chunk-7NTVKI6U.js";
+} from "./chunk-GI65KTYW.js";
 import {
   USE_BEDROCK,
   USE_VERTEX,
@@ -1233,7 +1233,7 @@ var MODEL_CAPABILITIES_REGISTRY = {
   "gpt-5-mini": GPT5_CAPABILITIES,
   "gpt-5-nano": GPT5_CAPABILITIES,
   "gpt-5-chat-latest": GPT5_CAPABILITIES,
-  "gpt-5-codex": GPT5_CAPABILITIES,
+  "gpt-5-reasoning": GPT5_CAPABILITIES,
   "gpt-4o": CHAT_COMPLETIONS_CAPABILITIES,
   "gpt-4o-mini": CHAT_COMPLETIONS_CAPABILITIES,
   "gpt-4-turbo": CHAT_COMPLETIONS_CAPABILITIES,

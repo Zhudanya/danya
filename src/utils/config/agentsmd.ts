@@ -1,7 +1,5 @@
 /**
  * AGENTS.md Hierarchical Loading System
- * Ported from Codex's claudemd.ts, adapted for Danya.
- *
  * Loads project instructions from multiple sources:
  *   1. User-level: ~/.danya/AGENTS.md
  *   2. Project-level: .danya/AGENTS.md, .danya/rules/*.md (all files)
