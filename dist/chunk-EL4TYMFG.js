@@ -70,7 +70,7 @@ import {
   runStopHooks,
   runUserPromptSubmitHooks,
   updateHookTranscriptForMessages
-} from "./chunk-JYSGT3XH.js";
+} from "./chunk-CXHK5KMD.js";
 import {
   getDanyaAgentSessionId,
   init_kodeAgentSessionId,
@@ -96,7 +96,7 @@ import {
   queryLLM,
   queryQuick,
   verifyApiKey
-} from "./chunk-KWYKOM5M.js";
+} from "./chunk-J6G7BF7P.js";
 import {
   init_ripgrep,
   listAllContentFiles,
@@ -184,7 +184,7 @@ import {
   processUserInput,
   reorderMessages,
   stripSystemMessages
-} from "./chunk-OGXRFCIW.js";
+} from "./chunk-XFWAZMZJ.js";
 import {
   ModelManager,
   getModelManager,
@@ -494,7 +494,7 @@ var init_commands = __esm({
     getCommandPrefix = memoize(
       async (command4, abortSignal) => {
         const { systemPrompt, userPrompt } = buildBashCommandPrefixDetectionPrompt(command4);
-        const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-7QDSM6RK.js");
+        const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-XJ4RSJAR.js");
         const response = await queryQuick2({
           systemPrompt,
           userPrompt,
@@ -4573,7 +4573,7 @@ function formatParseError(error) {
   return error instanceof Error ? error.message : String(error);
 }
 async function defaultGateQuery(args) {
-  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-7QDSM6RK.js");
+  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-XJ4RSJAR.js");
   const messages = [
     {
       type: "user",
@@ -13822,7 +13822,7 @@ async function createAndStoreApiKey(accessToken) {
       }
       saveGlobalConfig(config2);
       try {
-        const { resetAnthropicClient } = await import("./llm-7QDSM6RK.js");
+        const { resetAnthropicClient } = await import("./llm-XJ4RSJAR.js");
         resetAnthropicClient();
       } catch {
       }
@@ -18510,7 +18510,7 @@ async function refreshPluginRuntimeFromInstalls() {
   const existingRoots = getSessionPlugins().map((p) => p.rootDir);
   const dirs = Array.from(/* @__PURE__ */ new Set([...existingRoots, ...installedRoots]));
   if (dirs.length === 0) return [];
-  const { configureSessionPlugins } = await import("./pluginRuntime-2RZPKXP6.js");
+  const { configureSessionPlugins } = await import("./pluginRuntime-Q5UT2JKE.js");
   const { errors } = await configureSessionPlugins({ pluginDirs: dirs });
   return errors;
 }
@@ -27841,7 +27841,7 @@ import * as React93 from "react";
 import { memo, useCallback as useCallback13, useEffect as useEffect22, useMemo as useMemo23, useState as useState24 } from "react";
 async function interpretHashCommand(input) {
   try {
-    const { queryQuick: queryQuick2 } = await import("./llm-7QDSM6RK.js");
+    const { queryQuick: queryQuick2 } = await import("./llm-XJ4RSJAR.js");
     const systemPrompt = [
       "You're helping the user structure notes that will be added to their KODING.md file.",
       "Format the user's input into a well-structured note that will be useful for later reference.",
@@ -28392,7 +28392,7 @@ Acknowledge briefly and continue your current task.`
         onSpecialKey: handleSpecialKey
       }
     ))
-  ), isLoading && messageQueue && messageQueue.length > 0 && /* @__PURE__ */ React93.createElement(Box71, { paddingX: 2, flexDirection: "column" }, /* @__PURE__ */ React93.createElement(Text76, { dimColor: true }, messageQueue.length, " queued message", messageQueue.length > 1 ? "s" : "", " \u2014 will send when current task completes"), messageQueue.map((msg, i) => /* @__PURE__ */ React93.createElement(Box71, { key: i, paddingLeft: 2 }, /* @__PURE__ */ React93.createElement(Text76, { dimColor: true, color: "yellow" }, i + 1, ". ", msg.length > 60 ? msg.slice(0, 60) + "..." : msg)))), !completionActive && suggestions.length === 0 && /* @__PURE__ */ React93.createElement(Box71, { flexDirection: "column", paddingX: 2, paddingY: 0 }, /* @__PURE__ */ React93.createElement(Box71, { flexDirection: "row", justifyContent: "space-between" }, /* @__PURE__ */ React93.createElement(Box71, { justifyContent: "flex-start", gap: 1 }, exitMessage.show ? /* @__PURE__ */ React93.createElement(Text76, { dimColor: true }, "Press ", exitMessage.key, " again to exit") : message.show ? /* @__PURE__ */ React93.createElement(Text76, { dimColor: true }, message.text) : rewindMessagePending ? /* @__PURE__ */ React93.createElement(Text76, { dimColor: true }, "Press Escape again to undo") : modelSwitchMessage.show ? /* @__PURE__ */ React93.createElement(Text76, { color: theme.success }, modelSwitchMessage.text) : mode === "prompt" && currentMode !== "default" ? /* @__PURE__ */ React93.createElement(CompactModeIndicator, null) : /* @__PURE__ */ React93.createElement(React93.Fragment, null, /* @__PURE__ */ React93.createElement(
+  ), isLoading && messageQueue && messageQueue.length > 0 && /* @__PURE__ */ React93.createElement(Box71, { paddingX: 2, flexDirection: "column" }, /* @__PURE__ */ React93.createElement(Text76, { dimColor: true }, messageQueue.length, " queued message", messageQueue.length > 1 ? "s" : "", " \u2014 will send when current task completes"), messageQueue.map((msg, i) => /* @__PURE__ */ React93.createElement(Box71, { key: i, paddingLeft: 2 }, /* @__PURE__ */ React93.createElement(Text76, { color: "yellow" }, i + 1, ". ", msg.length > 60 ? msg.slice(0, 60) + "..." : msg)))), !completionActive && suggestions.length === 0 && /* @__PURE__ */ React93.createElement(Box71, { flexDirection: "column", paddingX: 2, paddingY: 0 }, /* @__PURE__ */ React93.createElement(Box71, { flexDirection: "row", justifyContent: "space-between" }, /* @__PURE__ */ React93.createElement(Box71, { justifyContent: "flex-start", gap: 1 }, exitMessage.show ? /* @__PURE__ */ React93.createElement(Text76, { dimColor: true }, "Press ", exitMessage.key, " again to exit") : message.show ? /* @__PURE__ */ React93.createElement(Text76, { dimColor: true }, message.text) : rewindMessagePending ? /* @__PURE__ */ React93.createElement(Text76, { dimColor: true }, "Press Escape again to undo") : modelSwitchMessage.show ? /* @__PURE__ */ React93.createElement(Text76, { color: theme.success }, modelSwitchMessage.text) : mode === "prompt" && currentMode !== "default" ? /* @__PURE__ */ React93.createElement(CompactModeIndicator, null) : /* @__PURE__ */ React93.createElement(React93.Fragment, null, /* @__PURE__ */ React93.createElement(
     Text76,
     {
       color: mode === "bash" ? theme.bashBorder : void 0,
@@ -30789,7 +30789,7 @@ function REPL({
       setMessageQueue((q) => q.slice(1));
       (async () => {
         try {
-          const { createUserMessage: createUserMessage2 } = await import("./messages-D4UYQ4HZ.js");
+          const { createUserMessage: createUserMessage2 } = await import("./messages-YN7HHT3K.js");
           const userMsg = createUserMessage2(nextMessage);
           setIsLoading(true);
           await onQuery([userMsg]);
@@ -31343,7 +31343,7 @@ var init_tooling = __esm({
 // src/commands/agents/generation.ts
 import { randomUUID as randomUUID5 } from "crypto";
 async function generateAgentWithClaude(prompt) {
-  const { queryModel } = await import("./llm-7QDSM6RK.js");
+  const { queryModel } = await import("./llm-XJ4RSJAR.js");
   const systemPrompt = `You are an expert at creating AI agent configurations. Based on the user's description, generate a specialized agent configuration.
 
 Return your response as a JSON object with exactly these fields:

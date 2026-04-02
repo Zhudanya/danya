@@ -500,7 +500,7 @@ __export(messages_exports, {
   stripSystemMessages: () => stripSystemMessages
 });
 async function processUserInput(input, mode, setToolJSX, context, pastedImages) {
-  const impl = await import("./userInput-CY54W4QR.js");
+  const impl = await import("./userInput-643WQ7R3.js");
   return impl.processUserInput(input, mode, setToolJSX, context, pastedImages);
 }
 var init_messages = __esm({

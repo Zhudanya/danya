@@ -771,7 +771,7 @@ function PromptInput({
           </Text>
           {messageQueue.map((msg, i) => (
             <Box key={i} paddingLeft={2}>
-              <Text dimColor color="yellow">
+              <Text color="yellow">
                 {i + 1}. {msg.length > 60 ? msg.slice(0, 60) + '...' : msg}
               </Text>
             </Box>

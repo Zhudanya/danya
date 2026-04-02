@@ -346,7 +346,7 @@ async function validateAgentTemplates(args) {
   let knownToolNames;
   if (args.checkTools) {
     try {
-      const { getTools } = await import("./tools-GEOONXJX.js");
+      const { getTools } = await import("./tools-6VOPCMGC.js");
       const { getCurrentProjectConfig } = await import("./config-CPZJU4KA.js");
       const allTools = await getTools(getCurrentProjectConfig().enableArchitectTool);
       knownToolNames = new Set(allTools.map((t) => t.name));
