@@ -159,6 +159,10 @@ function PromptInput({
     show: false,
   })
   const [placeholder, setPlaceholder] = useState('')
+  const knownCommandNames = useMemo(
+    () => new Set(commands.filter(c => !c.isHidden).map(c => c.userFacingName())),
+    [commands],
+  )
   const [cursorOffset, setCursorOffset] = useState<number>(input.length)
   const [pastedTexts, setPastedTexts] = useState<PastedTextSegment[]>([])
   const [pastedImages, setPastedImages] = useState<PastedImageAttachment[]>([])
@@ -761,6 +765,7 @@ function PromptInput({
             onChangeCursorOffset={setCursorOffset}
             onPaste={onTextPaste}
             onSpecialKey={handleSpecialKey}
+            knownCommands={knownCommandNames}
           />
         </Box>
       </Box>

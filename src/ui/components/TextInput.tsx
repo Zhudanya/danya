@@ -86,6 +86,9 @@ export type Props = {
   readonly cursorOffset: number
 
   onChangeCursorOffset: (offset: number) => void
+
+  /** Known command names for input highlighting */
+  readonly knownCommands?: Set<string>
 }
 
 export default function TextInput({
@@ -112,6 +115,7 @@ export default function TextInput({
   onSpecialKey,
   cursorOffset,
   onChangeCursorOffset,
+  knownCommands,
 }: Props) {
   const { onInput, renderedValue } = useTextInput({
     value: originalValue,
@@ -361,10 +365,24 @@ export default function TextInput({
         : chalk.inverse(' ')
   }
 
+  // Highlight slash commands in the input
+  let displayValue = renderedValue
+  if (knownCommands && originalValue.startsWith('/')) {
+    const spaceIdx = originalValue.indexOf(' ')
+    const cmdPart = spaceIdx === -1 ? originalValue.slice(1) : originalValue.slice(1, spaceIdx)
+    if (knownCommands.has(cmdPart)) {
+      const slashCmd = `/${cmdPart}`
+      // Replace the plain command text with colored version in the rendered output
+      // renderedValue contains ANSI codes for cursor, so we colorize the command portion
+      const cmdColor = chalk.hex(getTheme().suggestion || '#a78bfa')
+      displayValue = renderedValue.replace(slashCmd, cmdColor(slashCmd))
+    }
+  }
+
   const showPlaceholder = originalValue.length == 0 && placeholder
   return (
     <Text wrap="truncate-end" dimColor={isDimmed}>
-      {showPlaceholder ? renderedPlaceholder : renderedValue}
+      {showPlaceholder ? renderedPlaceholder : displayValue}
     </Text>
   )
 }
