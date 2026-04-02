@@ -5,7 +5,7 @@
   Engine-Aware · Gate Chain Quality Control · Full-Auto Pipelines · Multi-Model Support
 </p>
 
-[中文](README.md) | English
+[中文](README.md) | English | [Full Guide](https://zhudanya.github.io/posts/danya-complete-guide/)
 
 ---
 

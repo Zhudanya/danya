@@ -5,7 +5,7 @@
   理解游戏引擎 · 门禁链质量管控 · 全自动开发流水线 · 多模型支持
 </p>
 
-[English](README_EN.md) | 中文
+[English](README_EN.md) | 中文 | [完全使用指南](https://zhudanya.github.io/posts/danya-complete-guide/)
 
 ---
 
