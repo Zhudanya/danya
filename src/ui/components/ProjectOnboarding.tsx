@@ -61,21 +61,22 @@ export default function ProjectOnboarding({
     }
   }, [hasReleaseNotes, showOnboarding])
 
-  if (!showOnboarding && !hasReleaseNotes) {
-    return null
-  }
-
-  const workspaceHasProjectGuide = existsSync(join(workspaceDir, PROJECT_FILE))
+  // Auto-init harness — must run BEFORE early return so it triggers
+  // even when onboarding is already completed
   const isWorkspaceDirEmpty = isDirEmpty(workspaceDir)
-  const shouldRecommendProjectGuide =
-    !workspaceHasProjectGuide && !isWorkspaceDirEmpty
-
-  // Auto-init harness if .danya/ doesn't exist
   React.useEffect(() => {
     if (!isWorkspaceDirEmpty) {
       autoInitHarness(workspaceDir)
     }
   }, [workspaceDir, isWorkspaceDirEmpty])
+
+  if (!showOnboarding && !hasReleaseNotes) {
+    return null
+  }
+
+  const workspaceHasProjectGuide = existsSync(join(workspaceDir, PROJECT_FILE))
+  const shouldRecommendProjectGuide =
+    !workspaceHasProjectGuide && !isWorkspaceDirEmpty
 
   const theme = getTheme()
 
