@@ -30,6 +30,7 @@ import fixHarness from './fix-harness'
 import orchestrate from './orchestrate'
 import redBlue from './red-blue'
 import monitor from './monitor'
+import btw from './btw'
 import rename from './rename'
 import statusline from './statusline'
 import tag from './tag'
@@ -127,6 +128,7 @@ const COMMANDS = memoize((): Command[] => [
   orchestrate,
   redBlue,
   monitor,
+  btw,
   todos,
   ...(isAnthropicAuthEnabled() ? [logout, login()] : []),
   ...INTERNAL_ONLY_COMMANDS,

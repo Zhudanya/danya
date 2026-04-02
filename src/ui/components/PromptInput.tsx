@@ -99,6 +99,8 @@ type Props = {
   abortController: AbortController | null
   onModelChange?: () => void
   uiRefreshCounter?: number
+  messageQueue?: string[]
+  setMessageQueue?: (updater: (prev: string[]) => string[]) => void
 }
 
 type PastedTextSegment = { placeholder: string; text: string }
@@ -133,6 +135,8 @@ function PromptInput({
   setForkConvoWithMessagesOnTheNextRender,
   readFileTimestamps,
   onModelChange,
+  messageQueue,
+  setMessageQueue,
 }: Props): React.ReactNode {
   useEffect(() => {
     if (!isDisabled && !isLoading) {
@@ -411,6 +415,11 @@ function PromptInput({
       return
     }
     if (isLoading) {
+      // Queue the message instead of rejecting
+      if (input.trim() && setMessageQueue) {
+        setMessageQueue(q => [...q, input.trim()])
+        onInputChange('')
+      }
       return
     }
 
@@ -729,7 +738,7 @@ function PromptInput({
             onMessage={(show, text) => setMessage({ show, text })}
             onImagePaste={onImagePaste}
             columns={textInputColumns}
-            isDimmed={isDisabled || isLoading || isEditingExternally}
+            isDimmed={isDisabled || isEditingExternally}
             disableCursorMovementForUpDownKeys={completionActive}
             cursorOffset={cursorOffset}
             onChangeCursorOffset={setCursorOffset}
@@ -738,6 +747,13 @@ function PromptInput({
           />
         </Box>
       </Box>
+      {isLoading && messageQueue && messageQueue.length > 0 && (
+        <Box paddingX={2}>
+          <Text dimColor>
+            {messageQueue.length} queued message{messageQueue.length > 1 ? 's' : ''} — will send when current task completes
+          </Text>
+        </Box>
+      )}
       {!completionActive && suggestions.length === 0 && (
         <Box flexDirection="column" paddingX={2} paddingY={0}>
           <Box flexDirection="row" justifyContent="space-between">

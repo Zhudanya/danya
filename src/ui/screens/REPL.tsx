@@ -131,6 +131,7 @@ export function REPL({
   const [abortController, setAbortController] =
     useState<AbortController | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [messageQueue, setMessageQueue] = useState<string[]>([])
   const [toolJSX, setToolJSX] = useState<{
     jsx: React.ReactNode | null
     shouldHidePromptInput: boolean
@@ -423,6 +424,21 @@ export function REPL({
 
     setIsLoading(false)
   }
+
+  // Process queued messages when loading finishes
+  const processQueueRef = React.useRef(false)
+  useEffect(() => {
+    if (!isLoading && messageQueue.length > 0 && !processQueueRef.current) {
+      processQueueRef.current = true
+      const nextMessage = messageQueue[0]!
+      setMessageQueue(q => q.slice(1))
+      // Simulate submitting the queued message
+      setTimeout(() => {
+        setInputValue(nextMessage)
+        processQueueRef.current = false
+      }, 100)
+    }
+  }, [isLoading, messageQueue])
 
   useCostSummary()
 
@@ -734,6 +750,8 @@ export function REPL({
                   }
                   readFileTimestamps={readFileTimestamps.current}
                   abortController={abortController}
+                  messageQueue={messageQueue}
+                  setMessageQueue={setMessageQueue}
                 />
               </>
             )}
