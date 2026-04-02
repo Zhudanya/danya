@@ -14,7 +14,10 @@ function writeJson(path: string, value: unknown) {
   writeFileSync(path, JSON.stringify(value, null, 2) + '\n', 'utf8')
 }
 
-describe('Hooks: PreToolUse command hooks', () => {
+// Hook tests spawn shell scripts — Windows cmd.exe handles quoting differently
+const isWindows = process.platform === 'win32'
+
+describe.skipIf(isWindows)('Hooks: PreToolUse command hooks', () => {
   const runnerCwd = process.cwd()
 
   let projectDir: string

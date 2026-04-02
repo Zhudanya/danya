@@ -16,7 +16,9 @@ function writeJson(path: string, value: unknown) {
   writeFileSync(path, JSON.stringify(value, null, 2) + '\n', 'utf8')
 }
 
-describe('Plugin hooks: PreToolUse command hooks (hooks/hooks.json)', () => {
+const isWindows = process.platform === 'win32'
+
+describe.skipIf(isWindows)('Plugin hooks: PreToolUse command hooks (hooks/hooks.json)', () => {
   const runnerCwd = process.cwd()
 
   let projectDir: string
@@ -246,7 +248,7 @@ process.exit(0);
   })
 })
 
-describe('Plugin hooks: PreToolUse inline command hooks (plugin.json hooks field)', () => {
+describe.skipIf(isWindows)('Plugin hooks: PreToolUse inline command hooks (plugin.json hooks field)', () => {
   const runnerCwd = process.cwd()
 
   let projectDir: string

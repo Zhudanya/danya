@@ -119,7 +119,7 @@ describe('projectInstructions (AGENTS.md discovery)', () => {
     expect(truncated).toBe(false)
     expect(content).toContain('# AGENTS.md')
     expect(content).toContain('_Path: AGENTS.md_')
-    expect(content).toContain('_Path: a/AGENTS.md_')
+    expect(content).toContain(`_Path: a${require('path').sep}AGENTS.md_`)
     expect(content).toContain('root-instructions')
     expect(content).toContain('a-instructions')
   })

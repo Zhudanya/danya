@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test'
+import { describe, expect, test, beforeAll } from 'bun:test'
 import {
   existsSync,
   mkdirSync,
@@ -12,7 +12,9 @@ import { tmpdir } from 'os'
 import { join } from 'path'
 import { BunShell, buildLinuxBwrapCommand } from '@utils/bun/shell'
 
-describe('BunShell Linux bwrap sandbox (Reference CLI parity)', () => {
+const isLinux = process.platform === 'linux'
+
+describe.skipIf(!isLinux)('BunShell Linux bwrap sandbox (Reference CLI parity)', () => {
   test('buildLinuxBwrapCommand generates expected bwrap args (read deny + write allow + denyWithinAllow + unshare-net)', () => {
     const root = mkdtempSync(join(tmpdir(), 'kode-bwrap-'))
     try {

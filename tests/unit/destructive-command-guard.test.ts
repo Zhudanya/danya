@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
 import { getBashDestructiveCommandBlock } from '@utils/sandbox/destructiveCommandGuard'
 
+// These tests use Unix paths and darwin platform — skip on Windows where path.resolve behaves differently
+const isWindows = process.platform === 'win32'
+
 describe('destructiveCommandGuard (BashTool)', () => {
   const ENV_ALLOW = 'KODE_ALLOW_DESTRUCTIVE_RM'
   const originalEnv = process.env[ENV_ALLOW]
@@ -26,7 +29,7 @@ describe('destructiveCommandGuard (BashTool)', () => {
     expect(block).toBeNull()
   })
 
-  test('blocks rm targeting filesystem root', () => {
+  test.skipIf(isWindows)('blocks rm targeting filesystem root', () => {
     const block = getBashDestructiveCommandBlock({
       command: 'rm -rf /',
       cwd: '/Users/alice/project',
@@ -39,7 +42,7 @@ describe('destructiveCommandGuard (BashTool)', () => {
     expect(block?.resolvedTarget).toBe('/')
   })
 
-  test('blocks rm targeting home directory via ~', () => {
+  test.skipIf(isWindows)('blocks rm targeting home directory via ~', () => {
     const block = getBashDestructiveCommandBlock({
       command: 'rm -rf ~',
       cwd: '/Users/alice/project',
@@ -52,7 +55,7 @@ describe('destructiveCommandGuard (BashTool)', () => {
     expect(block?.resolvedTarget).toBe('/Users/alice')
   })
 
-  test('blocks rm targeting original working directory via .', () => {
+  test.skipIf(isWindows)('blocks rm targeting original working directory via .', () => {
     const block = getBashDestructiveCommandBlock({
       command: 'rm -rf .',
       cwd: '/Users/alice/project',
@@ -64,7 +67,7 @@ describe('destructiveCommandGuard (BashTool)', () => {
     expect(block?.resolvedTarget).toBe('/Users/alice/project')
   })
 
-  test('blocks rm targeting top-level system directories', () => {
+  test.skipIf(isWindows)('blocks rm targeting top-level system directories', () => {
     const block = getBashDestructiveCommandBlock({
       command: 'sudo rm -rf /usr',
       cwd: '/Users/alice/project',

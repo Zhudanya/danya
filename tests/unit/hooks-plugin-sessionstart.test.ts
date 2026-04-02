@@ -14,7 +14,9 @@ function writeJson(path: string, value: unknown) {
   writeFileSync(path, JSON.stringify(value, null, 2) + '\n', 'utf8')
 }
 
-describe('Plugin hooks: SessionStart injects additionalContext into system prompt', () => {
+const isWindows = process.platform === 'win32'
+
+describe.skipIf(isWindows)('Plugin hooks: SessionStart injects additionalContext into system prompt', () => {
   const runnerCwd = process.cwd()
   const originalEnvValue = process.env.KODE_TEST_ENV
 

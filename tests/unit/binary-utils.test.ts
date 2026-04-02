@@ -31,23 +31,25 @@ test('binary-utils: platform/arch and filenames', () => {
 })
 
 test('binary-utils: cached binary path', () => {
+  const path = require('path')
+  const baseDir = path.join(require('os').tmpdir(), 'kode-bin')
   expect(
     utils.getCachedBinaryPath({
       version: '2.0.0',
       platform: 'darwin',
       arch: 'arm64',
-      baseDir: '/tmp/kode-bin',
+      baseDir,
     }),
-  ).toBe('/tmp/kode-bin/2.0.0/darwin-arm64/kode')
+  ).toBe(path.join(baseDir, '2.0.0', 'darwin-arm64', 'kode'))
 
   expect(
     utils.getCachedBinaryPath({
       version: '2.0.0',
       platform: 'win32',
       arch: 'x64',
-      baseDir: '/tmp/kode-bin',
+      baseDir,
     }),
-  ).toBe('/tmp/kode-bin/2.0.0/win32-x64/kode.exe')
+  ).toBe(path.join(baseDir, '2.0.0', 'win32-x64', 'kode.exe'))
 })
 
 test('binary-utils: GitHub release URL', () => {

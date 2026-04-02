@@ -16,7 +16,9 @@ function writeJson(path: string, value: unknown) {
   writeFileSync(path, JSON.stringify(value, null, 2) + '\n', 'utf8')
 }
 
-describe('Plugin hooks: hookify-style JSON outputs can block/allow', () => {
+const isWindows = process.platform === 'win32'
+
+describe.skipIf(isWindows)('Plugin hooks: hookify-style JSON outputs can block/allow', () => {
   const runnerCwd = process.cwd()
 
   let projectDir: string

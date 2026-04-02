@@ -16,7 +16,7 @@ import { gt } from 'semver'
 import { isDirEmpty } from '@utils/fs/file'
 import { MACRO } from '@constants/macros'
 import { PROJECT_FILE, PRODUCT_NAME } from '@constants/product'
-import { autoInitHarness } from '../screens/autoInitHarness'
+import { autoInitHarness } from '../screens/AutoInitHarness'
 
 export function markProjectOnboardingComplete(): void {
   const projectConfig = getCurrentProjectConfig()

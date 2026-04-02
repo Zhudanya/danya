@@ -10,7 +10,9 @@ function writeJson(filePath: string, value: unknown) {
   writeFileSync(filePath, JSON.stringify(value, null, 2), 'utf-8')
 }
 
-describe('BashTool sandbox indicator (Reference CLI parity)', () => {
+const isWindows = process.platform === 'win32'
+
+describe.skipIf(isWindows)('BashTool sandbox indicator (Reference CLI parity)', () => {
   const originalCwd = process.cwd()
   const originalHome = process.env.HOME
   const originalIndicator = process.env.KODE_BASH_SANDBOX_SHOW_INDICATOR
