@@ -164,31 +164,12 @@ async function executeAutoCompact(
     },
   )
 
-  const summary = extractSummaryText(summaryResponse)
-  if (!summary) {
-    throw new Error('Failed to generate conversation summary')
-  }
+  // Finalize: validate summary, recover files, build result, clear caches
+  const noticeText = notice
+    ? `Context selectively compressed (${toCompact.length} groups summarized, ${toKeep.length} preserved). ${notice}`
+    : `Context selectively compressed (${toCompact.length} groups summarized, ${toKeep.length} preserved).`
 
-  // Zero out input tokens to avoid misleading accounting
-  summaryResponse.message.usage = {
-    input_tokens: 0,
-    output_tokens: summaryResponse.message.usage.output_tokens,
-    cache_creation_input_tokens: 0,
-    cache_read_input_tokens: 0,
-  }
-
-  // Step 8: Recover important files
-  const recoveredFiles = await selectAndReadFiles()
-
-  // Step 9: Build result — summary + preserved messages + recovered files
-  const result: Message[] = [
-    createUserMessage(
-      notice
-        ? `Context selectively compressed (${toCompact.length} groups summarized, ${toKeep.length} preserved). ${notice}`
-        : `Context selectively compressed (${toCompact.length} groups summarized, ${toKeep.length} preserved).`,
-    ),
-    summaryResponse,
-  ]
+  const result = await finalizeSummary(summaryResponse, noticeText)
 
   // Add preserved (recent) messages back as-is
   for (const group of toKeep) {
@@ -198,23 +179,6 @@ async function executeAutoCompact(
       }
     }
   }
-
-  // Add recovered files
-  for (const file of recoveredFiles) {
-    const contentWithLines = addLineNumbers({ content: file.content, startLine: 1 })
-    result.push(
-      createUserMessage(
-        `**Recovered File: ${file.path}**\n\n\`\`\`\n${contentWithLines}\n\`\`\`\n\n` +
-          `*Automatically recovered (${file.tokens} tokens)${file.truncated ? ' [truncated]' : ''}*`,
-      ),
-    )
-  }
-
-  // Step 10: Clear caches
-  getMessagesSetter()([])
-  getContext.cache.clear?.()
-  getCodeStyle.cache.clear?.()
-  resetFileFreshnessSession()
 
   return result
 }
@@ -246,6 +210,23 @@ async function executeFullCompact(
     },
   )
 
+  const noticeText = notice
+    ? `Context fully compressed due to token limit. ${notice}`
+    : `Context fully compressed due to token limit.`
+
+  return finalizeSummary(summaryResponse, noticeText)
+}
+
+// ── Shared Finalization ──
+
+/**
+ * Shared tail for both selective and full compression:
+ * validate summary → zero usage → recover files → build result → clear caches.
+ */
+async function finalizeSummary(
+  summaryResponse: any,
+  noticeText: string,
+): Promise<Message[]> {
   const summary = extractSummaryText(summaryResponse)
   if (!summary) {
     throw new Error('Failed to generate conversation summary')
@@ -261,11 +242,7 @@ async function executeFullCompact(
   const recoveredFiles = await selectAndReadFiles()
 
   const result: Message[] = [
-    createUserMessage(
-      notice
-        ? `Context fully compressed due to token limit. ${notice}`
-        : `Context fully compressed due to token limit.`,
-    ),
+    createUserMessage(noticeText),
     summaryResponse,
   ]
 

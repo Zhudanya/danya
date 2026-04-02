@@ -58,7 +58,7 @@ import {
   runStopHooks,
   runUserPromptSubmitHooks,
   updateHookTranscriptForMessages
-} from "./chunk-GMM7B7WX.js";
+} from "./chunk-4WNIORGK.js";
 import {
   getDanyaAgentSessionId,
   setDanyaAgentSessionId
@@ -80,7 +80,7 @@ import {
   queryLLM,
   queryQuick,
   verifyApiKey
-} from "./chunk-YX4FL35K.js";
+} from "./chunk-WPVNCSHY.js";
 import {
   listAllContentFiles,
   ripGrep
@@ -154,7 +154,7 @@ import {
   processUserInput,
   reorderMessages,
   stripSystemMessages
-} from "./chunk-5LONAD3G.js";
+} from "./chunk-MQOOFTBD.js";
 import {
   ModelManager,
   getModelManager,
@@ -284,7 +284,7 @@ function detectEngine(projectPath, depth = 0) {
   }
   return null;
 }
-function detectServerLanguage(projectPath) {
+function detectServerLanguage(projectPath, depth = 0) {
   if (existsSync8(join6(projectPath, "go.mod"))) {
     return "go";
   }
@@ -300,9 +300,11 @@ function detectServerLanguage(projectPath) {
   if (existsSync8(join6(projectPath, "CMakeLists.txt"))) {
     return "cpp";
   }
-  const serverDir = join6(projectPath, "server");
-  if (existsSync8(serverDir) && projectPath !== serverDir) {
-    return detectServerLanguage(serverDir);
+  if (depth < 1) {
+    const serverDir = join6(projectPath, "server");
+    if (existsSync8(serverDir)) {
+      return detectServerLanguage(serverDir, depth + 1);
+    }
   }
   return null;
 }
@@ -912,7 +914,7 @@ var getCommandSubcommandPrefix = memoize(
 var getCommandPrefix = memoize(
   async (command4, abortSignal) => {
     const { systemPrompt, userPrompt } = buildBashCommandPrefixDetectionPrompt(command4);
-    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-E2RSEIUC.js");
+    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-LQVS64JY.js");
     const response = await queryQuick2({
       systemPrompt,
       userPrompt,
@@ -4981,7 +4983,7 @@ function formatParseError(error) {
   return error instanceof Error ? error.message : String(error);
 }
 async function defaultGateQuery(args) {
-  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-E2RSEIUC.js");
+  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-LQVS64JY.js");
   const messages = [
     {
       type: "user",
@@ -12440,7 +12442,7 @@ async function createAndStoreApiKey(accessToken) {
       }
       saveGlobalConfig(config2);
       try {
-        const { resetAnthropicClient } = await import("./llm-E2RSEIUC.js");
+        const { resetAnthropicClient } = await import("./llm-LQVS64JY.js");
         resetAnthropicClient();
       } catch {
       }
@@ -16791,7 +16793,7 @@ async function refreshPluginRuntimeFromInstalls() {
   const existingRoots = getSessionPlugins().map((p) => p.rootDir);
   const dirs = Array.from(/* @__PURE__ */ new Set([...existingRoots, ...installedRoots]));
   if (dirs.length === 0) return [];
-  const { configureSessionPlugins } = await import("./pluginRuntime-GVPO6QJM.js");
+  const { configureSessionPlugins } = await import("./pluginRuntime-PYIOF5TC.js");
   const { errors } = await configureSessionPlugins({ pluginDirs: dirs });
   return errors;
 }
@@ -25190,7 +25192,7 @@ function useStatusLine() {
 // src/ui/components/PromptInput.tsx
 async function interpretHashCommand(input) {
   try {
-    const { queryQuick: queryQuick2 } = await import("./llm-E2RSEIUC.js");
+    const { queryQuick: queryQuick2 } = await import("./llm-LQVS64JY.js");
     const systemPrompt = [
       "You're helping the user structure notes that will be added to their KODING.md file.",
       "Format the user's input into a well-structured note that will be useful for later reference.",
@@ -26415,23 +26417,8 @@ ${conversationToSummarize}`;
       prependCLISysprompt: true
     }
   );
-  const summary = extractSummaryText(summaryResponse);
-  if (!summary) {
-    throw new Error("Failed to generate conversation summary");
-  }
-  summaryResponse.message.usage = {
-    input_tokens: 0,
-    output_tokens: summaryResponse.message.usage.output_tokens,
-    cache_creation_input_tokens: 0,
-    cache_read_input_tokens: 0
-  };
-  const recoveredFiles = await selectAndReadFiles();
-  const result = [
-    createUserMessage(
-      notice ? `Context selectively compressed (${toCompact.length} groups summarized, ${toKeep.length} preserved). ${notice}` : `Context selectively compressed (${toCompact.length} groups summarized, ${toKeep.length} preserved).`
-    ),
-    summaryResponse
-  ];
+  const noticeText = notice ? `Context selectively compressed (${toCompact.length} groups summarized, ${toKeep.length} preserved). ${notice}` : `Context selectively compressed (${toCompact.length} groups summarized, ${toKeep.length} preserved).`;
+  const result = await finalizeSummary(summaryResponse, noticeText);
   for (const group of toKeep) {
     for (const msg of group.messages) {
       if (msg.original) {
@@ -26439,24 +26426,6 @@ ${conversationToSummarize}`;
       }
     }
   }
-  for (const file of recoveredFiles) {
-    const contentWithLines = addLineNumbers({ content: file.content, startLine: 1 });
-    result.push(
-      createUserMessage(
-        `**Recovered File: ${file.path}**
-
-\`\`\`
-${contentWithLines}
-\`\`\`
-
-*Automatically recovered (${file.tokens} tokens)${file.truncated ? " [truncated]" : ""}*`
-      )
-    );
-  }
-  getMessagesSetter()([]);
-  getContext.cache.clear?.();
-  getCodeStyle.cache.clear?.();
-  resetFileFreshnessSession();
   return result;
 }
 async function executeFullCompact(messages, toolUseContext, tokenCount) {
@@ -26476,6 +26445,10 @@ async function executeFullCompact(messages, toolUseContext, tokenCount) {
       prependCLISysprompt: true
     }
   );
+  const noticeText = notice ? `Context fully compressed due to token limit. ${notice}` : `Context fully compressed due to token limit.`;
+  return finalizeSummary(summaryResponse, noticeText);
+}
+async function finalizeSummary(summaryResponse, noticeText) {
   const summary = extractSummaryText(summaryResponse);
   if (!summary) {
     throw new Error("Failed to generate conversation summary");
@@ -26488,9 +26461,7 @@ async function executeFullCompact(messages, toolUseContext, tokenCount) {
   };
   const recoveredFiles = await selectAndReadFiles();
   const result = [
-    createUserMessage(
-      notice ? `Context fully compressed due to token limit. ${notice}` : `Context fully compressed due to token limit.`
-    ),
+    createUserMessage(noticeText),
     summaryResponse
   ];
   for (const file of recoveredFiles) {
@@ -28483,7 +28454,7 @@ init_log();
 import { randomUUID as randomUUID5 } from "crypto";
 init_log();
 async function generateAgentWithClaude(prompt) {
-  const { queryModel } = await import("./llm-E2RSEIUC.js");
+  const { queryModel } = await import("./llm-LQVS64JY.js");
   const systemPrompt = `You are an expert at creating AI agent configurations. Based on the user's description, generate a specialized agent configuration.
 
 Return your response as a JSON object with exactly these fields:

@@ -30,7 +30,7 @@ Common options:
   process.exit(0);
 }
 if (hasFlag("--acp")) {
-  await import("./acp-RN5HHCPI.js");
+  await import("./acp-ZF2OK6H6.js");
 } else {
-  await import("./cli-EVLEFVGB.js");
+  await import("./cli-ASN6MMXJ.js");
 }

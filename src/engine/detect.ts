@@ -50,7 +50,7 @@ export function detectEngine(projectPath: string, depth: number = 0): EngineType
   return null
 }
 
-export function detectServerLanguage(projectPath: string): ServerLanguage {
+export function detectServerLanguage(projectPath: string, depth: number = 0): ServerLanguage {
   // Go: has go.mod
   if (existsSync(join(projectPath, 'go.mod'))) {
     return 'go'
@@ -73,10 +73,12 @@ export function detectServerLanguage(projectPath: string): ServerLanguage {
     return 'cpp'
   }
 
-  // Check server/ subdirectory
-  const serverDir = join(projectPath, 'server')
-  if (existsSync(serverDir) && projectPath !== serverDir) {
-    return detectServerLanguage(serverDir)
+  // Check server/ subdirectory (max depth 1)
+  if (depth < 1) {
+    const serverDir = join(projectPath, 'server')
+    if (existsSync(serverDir)) {
+      return detectServerLanguage(serverDir, depth + 1)
+    }
   }
 
   return null
