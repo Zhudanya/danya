@@ -51,7 +51,9 @@ export function buildTemplateContext(
     protoPath = 'proto/'
   }
 
-  if (serverLanguage === 'go') {
+  // Only apply Go paths if no engine is set (server-only project)
+  // In workspace mode, engine and server are in separate sub-projects
+  if (serverLanguage === 'go' && !engine) {
     configGenPath = 'common/config/cfg_*.go'
     ormPath = 'orm/(golang|redis|mongo)/'
     protoPath = 'resources/proto/'

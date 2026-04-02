@@ -17,19 +17,16 @@ export function installBundle(
   const installed: InstalledFiles = []
 
   for (const [relativePath, content] of Object.entries(bundleContent)) {
-    const targetPath = join(targetDir, relativePath)
-    const dir = dirname(targetPath)
+    const isTemplate = relativePath.endsWith('.tmpl')
+    const finalRelPath = isTemplate ? relativePath.replace(/\.tmpl$/, '') : relativePath
+    const finalPath = join(targetDir, finalRelPath)
+    const dir = dirname(finalPath)
 
-    if (!existsSync(targetPath) || options.force) {
+    if (!existsSync(finalPath) || options.force) {
       mkdirSync(dir, { recursive: true })
-      const rendered = relativePath.endsWith('.tmpl')
-        ? renderTemplate(content, ctx)
-        : content
-      const finalPath = relativePath.endsWith('.tmpl')
-        ? targetPath.replace(/\.tmpl$/, '')
-        : targetPath
+      const rendered = isTemplate ? renderTemplate(content, ctx) : content
       writeFileSync(finalPath, rendered, { encoding: 'utf-8', mode: relativePath.includes('hooks/') ? 0o755 : 0o644 })
-      installed.push(relative(targetDir, finalPath))
+      installed.push(finalRelPath)
     }
   }
 

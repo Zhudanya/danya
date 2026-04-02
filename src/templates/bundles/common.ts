@@ -327,18 +327,18 @@ INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | sed -n 's/.*"tool_name"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
 EXIT_CODE=$(echo "$INPUT" | sed -n 's/.*"exit_code"[[:space:]]*:[[:space:]]*\\([0-9]*\\).*/\\1/p' 2>/dev/null)
 
-# Track error state in a temp file
-STATE_FILE="/tmp/danya-error-state-$$"
+# Track error state using project-scoped file (stable across hook invocations)
+STATE_FILE=".danya/.error-state"
 
 case "$TOOL_NAME" in
   Bash)
     if [ "$EXIT_CODE" != "0" ] && [ -n "$EXIT_CODE" ]; then
       # Error occurred — record it
-      echo "error" > "$STATE_FILE"
+      echo "error" > "$STATE_FILE" 2>/dev/null
     elif [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE" 2>/dev/null)" = "error" ]; then
       # Previous error, now success — fix confirmed
       rm -f "$STATE_FILE"
-      echo '{"systemMessage":"💡 Error was fixed. Consider running /fix-harness to update rules and prevent this error pattern in the future."}'
+      echo '{"systemMessage":"Error was fixed. Consider running /fix-harness to update rules and prevent this error pattern in the future."}'
     fi
     ;;
 esac

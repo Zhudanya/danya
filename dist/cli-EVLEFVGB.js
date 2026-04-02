@@ -7,7 +7,7 @@ import {
 } from "./chunk-PDSAJX7G.js";
 import {
   getAllTools
-} from "./chunk-4AVVKZNB.js";
+} from "./chunk-2ELE6QXJ.js";
 import {
   DanyaAgentStructuredStdio
 } from "./chunk-P5VWDMRD.js";
@@ -32,7 +32,7 @@ import {
   review_default,
   useExitOnCtrlCD,
   useTerminalSize
-} from "./chunk-G76VFGQL.js";
+} from "./chunk-ZIYUEAYT.js";
 import "./chunk-5ONWVNJH.js";
 import {
   addMcpServer,
@@ -55,13 +55,13 @@ import "./chunk-HNK7M2ZO.js";
 import "./chunk-U7ZJW3CQ.js";
 import "./chunk-Y5LQPJWK.js";
 import "./chunk-JVGG2YQR.js";
-import "./chunk-IMR5BHXA.js";
+import "./chunk-GMM7B7WX.js";
 import "./chunk-U7Z4MXY4.js";
 import {
   clearOutputStyleCache
 } from "./chunk-HRXRIW33.js";
 import "./chunk-VMJRNHDU.js";
-import "./chunk-XCY7AM56.js";
+import "./chunk-YX4FL35K.js";
 import "./chunk-SSS2WVMA.js";
 import "./chunk-KS52NNBY.js";
 import "./chunk-M75PDOOM.js";
@@ -77,7 +77,7 @@ import {
   setEnabledSettingSourcesFromCli
 } from "./chunk-WAY3DKFO.js";
 import "./chunk-2VQWLLDU.js";
-import "./chunk-MUM4USJX.js";
+import "./chunk-5LONAD3G.js";
 import {
   getModelManager,
   isDefaultSlowAndCapableModel
@@ -303,7 +303,7 @@ function createPrintModeControlRequestHandler(args) {
 
 // src/entrypoints/cli/stdio/streamJsonSession.ts
 async function runPrintModeStreamJsonSession(args) {
-  const { runDanyaAgentStreamJsonSession } = await import("./kodeAgentStreamJsonSession-563JB3CW.js");
+  const { runDanyaAgentStreamJsonSession } = await import("./kodeAgentStreamJsonSession-5UCBAFWZ.js");
   await runDanyaAgentStreamJsonSession(args);
 }
 
@@ -457,11 +457,11 @@ async function runPrintMode({
 `);
     process.exit(0);
   }
-  const { createUserMessage } = await import("./messages-5NJ72TUY.js");
-  const { getSystemPrompt } = await import("./prompts-G2TSAL44.js");
+  const { createUserMessage } = await import("./messages-GEZ74UBB.js");
+  const { getSystemPrompt } = await import("./prompts-XBI5UEB4.js");
   const { getContext: getContext2 } = await import("./context-LEXLLT4O.js");
   const { getTotalCost } = await import("./costTracker-5WKZXN5S.js");
-  const { query } = await import("./query-FOMQUMZV.js");
+  const { query } = await import("./query-EN3HSSHR.js");
   const { getDanyaAgentSessionId } = await import("./kodeAgentSessionId-WUT74FSH.js");
   const { danyaMessageToSdkMessage, makeSdkInitMessage, makeSdkResultMessage } = await import("./kodeAgentStreamJson-EDHHWNNX.js");
   const { DanyaAgentStructuredStdio: DanyaAgentStructuredStdio2 } = await import("./kodeAgentStructuredStdio-UA5P5UNU.js");
@@ -2050,7 +2050,7 @@ async function parseArgs(stdinContent, renderContext) {
         const all = [...installed, ...requested].filter(Boolean);
         const deduped = Array.from(new Set(all));
         if (deduped.length > 0) {
-          const { configureSessionPlugins } = await import("./pluginRuntime-PNCKBJR2.js");
+          const { configureSessionPlugins } = await import("./pluginRuntime-GVPO6QJM.js");
           const { errors } = await configureSessionPlugins({
             pluginDirs: deduped
           });
@@ -2060,9 +2060,9 @@ async function parseArgs(stdinContent, renderContext) {
         }
       }
       const [{ ask }, { getTools }, { getCommands }] = await Promise.all([
-        import("./ask-4IZZDY3E.js"),
-        import("./tools-5SKMT6DC.js"),
-        import("./commands-JISWTMCK.js")
+        import("./ask-B5AWCEED.js"),
+        import("./tools-CWZ57QG7.js"),
+        import("./commands-7OIKBNIQ.js")
       ]);
       const commands = await getCommands();
       const mcpClientsPromise = Array.isArray(mcpConfig) && mcpConfig.length > 0 || strictMcpConfig === true ? getClientsForCliMcpConfig({
@@ -2268,7 +2268,7 @@ async function parseArgs(stdinContent, renderContext) {
         const isDefaultModel = await isDefaultSlowAndCapableModel();
         {
           const { render: render3 } = await import("ink");
-          const { REPL } = await import("./REPL-UT2VWQO5.js");
+          const { REPL } = await import("./REPL-FZZEAV2B.js");
           render3(
             /* @__PURE__ */ React10.createElement(
               REPL,
@@ -2447,7 +2447,7 @@ Model profiles (${active.length}/${profiles.length} active):
       try {
         const workingDir = typeof options?.cwd === "string" ? options.cwd : cwd();
         await setup(workingDir, false);
-        const { validateAgentTemplates } = await import("./agentsValidate-M2NTSSB3.js");
+        const { validateAgentTemplates } = await import("./agentsValidate-5X3PSY2O.js");
         const report = await validateAgentTemplates({
           cwd: workingDir,
           paths: Array.isArray(paths) ? paths : [],
@@ -3658,8 +3658,8 @@ ${skillList}`);
       await setup(cwd2, safe);
       assertMinVersion();
       const [{ getTools }, { getCommands }] = await Promise.all([
-        import("./tools-5SKMT6DC.js"),
-        import("./commands-JISWTMCK.js")
+        import("./tools-CWZ57QG7.js"),
+        import("./commands-7OIKBNIQ.js")
       ]);
       const [allTools, commands, mcpClients] = await Promise.all([
         getTools(
@@ -3741,7 +3741,7 @@ ${skillList}`);
           const isDefaultModel = await isDefaultSlowAndCapableModel();
           {
             const { render: render3 } = await import("ink");
-            const { REPL } = await import("./REPL-UT2VWQO5.js");
+            const { REPL } = await import("./REPL-FZZEAV2B.js");
             render3(
               /* @__PURE__ */ React10.createElement(
                 REPL,
@@ -3873,7 +3873,7 @@ async function gracefulExit(code = 0) {
   }
   isGracefulExitInProgress = true;
   try {
-    const { runSessionEndHooks } = await import("./kodeHooks-YLICX5UG.js");
+    const { runSessionEndHooks } = await import("./kodeHooks-3JLZT3VE.js");
     const { getDanyaAgentSessionId } = await import("./kodeAgentSessionId-WUT74FSH.js");
     const { tmpdir } = await import("os");
     const { join: join2 } = await import("path");

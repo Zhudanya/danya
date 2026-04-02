@@ -2,6 +2,8 @@
  * Unity engine bundle — rules, commands, memory adapted from game-harness-engineering/client
  */
 
+import * as common from './common'
+
 export const UNITY_RULES_CONSTITUTION = `# Forbidden Zone Constitution
 
 ## Auto-Generated Code (DO NOT edit manually)
@@ -108,22 +110,22 @@ export function getUnityBundle(): Record<string, string> {
     'rules/constitution.md.tmpl': UNITY_RULES_CONSTITUTION,
     'rules/golden-principles.md': UNITY_RULES_GOLDEN_PRINCIPLES,
     'rules/unity-csharp.md': UNITY_RULES_STYLE,
-    'rules/known-pitfalls.md': require('./common').RULE_KNOWN_PITFALLS,
-    'rules/architecture-boundaries.md': require('./common').RULE_ARCHITECTURE_BOUNDARIES,
-    'commands/auto-work.md': require('./common').CMD_AUTO_WORK,
-    'commands/auto-bugfix.md': require('./common').CMD_AUTO_BUGFIX,
-    'commands/review.md': require('./common').CMD_REVIEW,
-    'commands/fix-harness.md': require('./common').CMD_FIX_HARNESS,
-    'commands/plan.md': require('./common').CMD_PLAN,
-    'commands/verify.md': require('./common').CMD_VERIFY,
-    'commands/parallel-execute.md': require('./common').CMD_PARALLEL_EXECUTE,
-    'memory/MEMORY.md': require('./common').MEMORY_INDEX,
+    'rules/known-pitfalls.md': common.RULE_KNOWN_PITFALLS,
+    'rules/architecture-boundaries.md': common.RULE_ARCHITECTURE_BOUNDARIES,
+    'commands/auto-work.md': common.CMD_AUTO_WORK,
+    'commands/auto-bugfix.md': common.CMD_AUTO_BUGFIX,
+    'commands/review.md': common.CMD_REVIEW,
+    'commands/fix-harness.md': common.CMD_FIX_HARNESS,
+    'commands/plan.md': common.CMD_PLAN,
+    'commands/verify.md': common.CMD_VERIFY,
+    'commands/parallel-execute.md': common.CMD_PARALLEL_EXECUTE,
+    'memory/MEMORY.md': common.MEMORY_INDEX,
     'memory/architecture-layers.md': UNITY_MEMORY_ARCHITECTURE,
-    'hooks/constitution-guard.sh': require('./common').HOOK_CONSTITUTION_GUARD,
+    'hooks/constitution-guard.sh': common.HOOK_CONSTITUTION_GUARD,
     'hooks/syntax-check.sh': UNITY_HOOK_SYNTAX,
-    'hooks/pre-commit.sh': require('./common').HOOK_PRE_COMMIT,
-    'hooks/post-commit.sh': require('./common').HOOK_POST_COMMIT,
-    'hooks/push-gate.sh': require('./common').HOOK_PUSH_GATE,
-    'hooks/harness-evolution.sh': require('./common').HOOK_HARNESS_EVOLUTION,
+    'hooks/pre-commit.sh': common.HOOK_PRE_COMMIT,
+    'hooks/post-commit.sh': common.HOOK_POST_COMMIT,
+    'hooks/push-gate.sh': common.HOOK_PUSH_GATE,
+    'hooks/harness-evolution.sh': common.HOOK_HARNESS_EVOLUTION,
   }
 }

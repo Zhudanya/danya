@@ -1,4 +1,4 @@
-import { existsSync } from 'fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'fs'
 import { join } from 'path'
 import { globSync } from 'glob'
 
@@ -11,7 +11,7 @@ export interface ProjectDetection {
   languages: string[]
 }
 
-export function detectEngine(projectPath: string): EngineType {
+export function detectEngine(projectPath: string, depth: number = 0): EngineType {
   // Unity: has ProjectSettings/ and Assets/ directories
   if (
     existsSync(join(projectPath, 'ProjectSettings')) &&
@@ -35,14 +35,15 @@ export function detectEngine(projectPath: string): EngineType {
     return 'godot'
   }
 
-  // Check parent directories for workspace mode (e.g., workspace/client/ is Unity)
-  // This handles the game-harness-engineering structure where client/ is a subdirectory
-  const parentCandidates = ['client', 'server', 'game-client', 'game-server']
-  for (const candidate of parentCandidates) {
-    const subPath = join(projectPath, candidate)
-    if (existsSync(subPath)) {
-      const subEngine = detectEngine(subPath)
-      if (subEngine) return subEngine
+  // Check subdirectories for workspace mode (max depth 1 to prevent infinite recursion)
+  if (depth < 1) {
+    const subCandidates = ['client', 'server', 'game-client', 'game-server']
+    for (const candidate of subCandidates) {
+      const subPath = join(projectPath, candidate)
+      if (existsSync(subPath)) {
+        const subEngine = detectEngine(subPath, depth + 1)
+        if (subEngine) return subEngine
+      }
     }
   }
 
@@ -58,7 +59,6 @@ export function detectServerLanguage(projectPath: string): ServerLanguage {
   // Go: has Makefile with go build references
   if (existsSync(join(projectPath, 'Makefile'))) {
     try {
-      const { readFileSync } = require('fs')
       const makefile = readFileSync(join(projectPath, 'Makefile'), 'utf-8')
       if (makefile.includes('go build') || makefile.includes('go test')) {
         return 'go'
@@ -94,8 +94,6 @@ export function detectLanguages(engine: EngineType, serverLanguage: ServerLangua
       break
     case 'godot':
       languages.push('GDScript')
-      // Check if Godot project uses C#
-      languages.push('C#') // Godot 4 supports both
       break
   }
 
@@ -154,7 +152,6 @@ function inferRole(name: string, engine: EngineType, serverLanguage: ServerLangu
 }
 
 export function detectWorkspace(rootPath: string): WorkspaceDetection {
-  const { readdirSync, statSync } = require('fs')
   const subProjects: SubProjectInfo[] = []
 
   try {

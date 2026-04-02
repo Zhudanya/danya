@@ -58,7 +58,7 @@ import {
   runStopHooks,
   runUserPromptSubmitHooks,
   updateHookTranscriptForMessages
-} from "./chunk-IMR5BHXA.js";
+} from "./chunk-GMM7B7WX.js";
 import {
   getDanyaAgentSessionId,
   setDanyaAgentSessionId
@@ -80,7 +80,7 @@ import {
   queryLLM,
   queryQuick,
   verifyApiKey
-} from "./chunk-XCY7AM56.js";
+} from "./chunk-YX4FL35K.js";
 import {
   listAllContentFiles,
   ripGrep
@@ -154,7 +154,7 @@ import {
   processUserInput,
   reorderMessages,
   stripSystemMessages
-} from "./chunk-MUM4USJX.js";
+} from "./chunk-5LONAD3G.js";
 import {
   ModelManager,
   getModelManager,
@@ -251,15 +251,14 @@ import {
 import {
   __esm,
   __export,
-  __require,
   __toCommonJS
 } from "./chunk-M3TKNAUR.js";
 
 // src/engine/detect.ts
-import { existsSync as existsSync8 } from "fs";
+import { existsSync as existsSync8, readFileSync as readFileSync6, readdirSync as readdirSync2, statSync as statSync9 } from "fs";
 import { join as join6 } from "path";
 import { globSync } from "glob";
-function detectEngine(projectPath) {
+function detectEngine(projectPath, depth = 0) {
   if (existsSync8(join6(projectPath, "ProjectSettings")) && existsSync8(join6(projectPath, "Assets"))) {
     return "unity";
   }
@@ -273,12 +272,14 @@ function detectEngine(projectPath) {
   if (existsSync8(join6(projectPath, "project.godot"))) {
     return "godot";
   }
-  const parentCandidates = ["client", "server", "game-client", "game-server"];
-  for (const candidate of parentCandidates) {
-    const subPath = join6(projectPath, candidate);
-    if (existsSync8(subPath)) {
-      const subEngine = detectEngine(subPath);
-      if (subEngine) return subEngine;
+  if (depth < 1) {
+    const subCandidates = ["client", "server", "game-client", "game-server"];
+    for (const candidate of subCandidates) {
+      const subPath = join6(projectPath, candidate);
+      if (existsSync8(subPath)) {
+        const subEngine = detectEngine(subPath, depth + 1);
+        if (subEngine) return subEngine;
+      }
     }
   }
   return null;
@@ -289,8 +290,7 @@ function detectServerLanguage(projectPath) {
   }
   if (existsSync8(join6(projectPath, "Makefile"))) {
     try {
-      const { readFileSync: readFileSync13 } = __require("fs");
-      const makefile = readFileSync13(join6(projectPath, "Makefile"), "utf-8");
+      const makefile = readFileSync6(join6(projectPath, "Makefile"), "utf-8");
       if (makefile.includes("go build") || makefile.includes("go test")) {
         return "go";
       }
@@ -317,7 +317,6 @@ function detectLanguages(engine, serverLanguage) {
       break;
     case "godot":
       languages.push("GDScript");
-      languages.push("C#");
       break;
   }
   switch (serverLanguage) {
@@ -351,15 +350,14 @@ function inferRole(name2, engine, serverLanguage) {
   return "unknown";
 }
 function detectWorkspace(rootPath) {
-  const { readdirSync: readdirSync6, statSync: statSync15 } = __require("fs");
   const subProjects = [];
   try {
-    const entries = readdirSync6(rootPath);
+    const entries = readdirSync2(rootPath);
     for (const entry of entries) {
       if (entry.startsWith(".") || entry === "node_modules" || entry === "dist" || entry === "Docs" || entry === "Tools") continue;
       const subPath = join6(rootPath, entry);
       try {
-        if (!statSync15(subPath).isDirectory()) continue;
+        if (!statSync9(subPath).isDirectory()) continue;
       } catch {
         continue;
       }
@@ -712,18 +710,18 @@ INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | sed -n 's/.*"tool_name"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
 EXIT_CODE=$(echo "$INPUT" | sed -n 's/.*"exit_code"[[:space:]]*:[[:space:]]*\\([0-9]*\\).*/\\1/p' 2>/dev/null)
 
-# Track error state in a temp file
-STATE_FILE="/tmp/danya-error-state-$$"
+# Track error state using project-scoped file (stable across hook invocations)
+STATE_FILE=".danya/.error-state"
 
 case "$TOOL_NAME" in
   Bash)
     if [ "$EXIT_CODE" != "0" ] && [ -n "$EXIT_CODE" ]; then
       # Error occurred \u2014 record it
-      echo "error" > "$STATE_FILE"
+      echo "error" > "$STATE_FILE" 2>/dev/null
     elif [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE" 2>/dev/null)" = "error" ]; then
       # Previous error, now success \u2014 fix confirmed
       rm -f "$STATE_FILE"
-      echo '{"systemMessage":"\u{1F4A1} Error was fixed. Consider running /fix-harness to update rules and prevent this error pattern in the future."}'
+      echo '{"systemMessage":"Error was fixed. Consider running /fix-harness to update rules and prevent this error pattern in the future."}'
     fi
     ;;
 esac
@@ -738,7 +736,7 @@ init_state();
 init_product();
 
 // src/tools/system/BashTool/BashTool.tsx
-import { statSync as statSync14 } from "fs";
+import { statSync as statSync15 } from "fs";
 import { EOL as EOL3 } from "os";
 import { isAbsolute as isAbsolute10, relative as relative15, resolve as resolve10 } from "path";
 import * as React108 from "react";
@@ -914,7 +912,7 @@ var getCommandSubcommandPrefix = memoize(
 var getCommandPrefix = memoize(
   async (command4, abortSignal) => {
     const { systemPrompt, userPrompt } = buildBashCommandPrefixDetectionPrompt(command4);
-    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-QWCVITWY.js");
+    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-E2RSEIUC.js");
     const response = await queryQuick2({
       systemPrompt,
       userPrompt,
@@ -4983,7 +4981,7 @@ function formatParseError(error) {
   return error instanceof Error ? error.message : String(error);
 }
 async function defaultGateQuery(args) {
-  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-QWCVITWY.js");
+  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-E2RSEIUC.js");
   const messages = [
     {
       type: "user",
@@ -10973,7 +10971,7 @@ function buildTemplateContext(projectName, engine, serverLanguage, instructionsF
     frameworkPath = "scripts/core/";
     protoPath = "proto/";
   }
-  if (serverLanguage === "go") {
+  if (serverLanguage === "go" && !engine) {
     configGenPath = "common/config/cfg_*.go";
     ormPath = "orm/(golang|redis|mongo)/";
     protoPath = "resources/proto/";
@@ -10983,24 +10981,26 @@ function buildTemplateContext(projectName, engine, serverLanguage, instructionsF
 
 // src/templates/bundleInstaller.ts
 import { mkdirSync as mkdirSync5, writeFileSync as writeFileSync4, existsSync as existsSync9 } from "fs";
-import { join as join7, relative as relative11, dirname as dirname6 } from "path";
+import { join as join7, dirname as dirname6 } from "path";
 function installBundle(targetDir, bundleContent, ctx, options = {}) {
   const installed = [];
   for (const [relativePath, content] of Object.entries(bundleContent)) {
-    const targetPath = join7(targetDir, relativePath);
-    const dir = dirname6(targetPath);
-    if (!existsSync9(targetPath) || options.force) {
+    const isTemplate = relativePath.endsWith(".tmpl");
+    const finalRelPath = isTemplate ? relativePath.replace(/\.tmpl$/, "") : relativePath;
+    const finalPath = join7(targetDir, finalRelPath);
+    const dir = dirname6(finalPath);
+    if (!existsSync9(finalPath) || options.force) {
       mkdirSync5(dir, { recursive: true });
-      const rendered = relativePath.endsWith(".tmpl") ? renderTemplate(content, ctx) : content;
-      const finalPath = relativePath.endsWith(".tmpl") ? targetPath.replace(/\.tmpl$/, "") : targetPath;
+      const rendered = isTemplate ? renderTemplate(content, ctx) : content;
       writeFileSync4(finalPath, rendered, { encoding: "utf-8", mode: relativePath.includes("hooks/") ? 493 : 420 });
-      installed.push(relative11(targetDir, finalPath));
+      installed.push(finalRelPath);
     }
   }
   return installed;
 }
 
 // src/templates/bundles/unity.ts
+init_common();
 var UNITY_RULES_CONSTITUTION = `# Forbidden Zone Constitution
 
 ## Auto-Generated Code (DO NOT edit manually)
@@ -11102,23 +11102,23 @@ function getUnityBundle() {
     "rules/constitution.md.tmpl": UNITY_RULES_CONSTITUTION,
     "rules/golden-principles.md": UNITY_RULES_GOLDEN_PRINCIPLES,
     "rules/unity-csharp.md": UNITY_RULES_STYLE,
-    "rules/known-pitfalls.md": (init_common(), __toCommonJS(common_exports)).RULE_KNOWN_PITFALLS,
-    "rules/architecture-boundaries.md": (init_common(), __toCommonJS(common_exports)).RULE_ARCHITECTURE_BOUNDARIES,
-    "commands/auto-work.md": (init_common(), __toCommonJS(common_exports)).CMD_AUTO_WORK,
-    "commands/auto-bugfix.md": (init_common(), __toCommonJS(common_exports)).CMD_AUTO_BUGFIX,
-    "commands/review.md": (init_common(), __toCommonJS(common_exports)).CMD_REVIEW,
-    "commands/fix-harness.md": (init_common(), __toCommonJS(common_exports)).CMD_FIX_HARNESS,
-    "commands/plan.md": (init_common(), __toCommonJS(common_exports)).CMD_PLAN,
-    "commands/verify.md": (init_common(), __toCommonJS(common_exports)).CMD_VERIFY,
-    "commands/parallel-execute.md": (init_common(), __toCommonJS(common_exports)).CMD_PARALLEL_EXECUTE,
-    "memory/MEMORY.md": (init_common(), __toCommonJS(common_exports)).MEMORY_INDEX,
+    "rules/known-pitfalls.md": RULE_KNOWN_PITFALLS,
+    "rules/architecture-boundaries.md": RULE_ARCHITECTURE_BOUNDARIES,
+    "commands/auto-work.md": CMD_AUTO_WORK,
+    "commands/auto-bugfix.md": CMD_AUTO_BUGFIX,
+    "commands/review.md": CMD_REVIEW,
+    "commands/fix-harness.md": CMD_FIX_HARNESS,
+    "commands/plan.md": CMD_PLAN,
+    "commands/verify.md": CMD_VERIFY,
+    "commands/parallel-execute.md": CMD_PARALLEL_EXECUTE,
+    "memory/MEMORY.md": MEMORY_INDEX,
     "memory/architecture-layers.md": UNITY_MEMORY_ARCHITECTURE,
-    "hooks/constitution-guard.sh": (init_common(), __toCommonJS(common_exports)).HOOK_CONSTITUTION_GUARD,
+    "hooks/constitution-guard.sh": HOOK_CONSTITUTION_GUARD,
     "hooks/syntax-check.sh": UNITY_HOOK_SYNTAX,
-    "hooks/pre-commit.sh": (init_common(), __toCommonJS(common_exports)).HOOK_PRE_COMMIT,
-    "hooks/post-commit.sh": (init_common(), __toCommonJS(common_exports)).HOOK_POST_COMMIT,
-    "hooks/push-gate.sh": (init_common(), __toCommonJS(common_exports)).HOOK_PUSH_GATE,
-    "hooks/harness-evolution.sh": (init_common(), __toCommonJS(common_exports)).HOOK_HARNESS_EVOLUTION
+    "hooks/pre-commit.sh": HOOK_PRE_COMMIT,
+    "hooks/post-commit.sh": HOOK_POST_COMMIT,
+    "hooks/push-gate.sh": HOOK_PUSH_GATE,
+    "hooks/harness-evolution.sh": HOOK_HARNESS_EVOLUTION
   };
 }
 
@@ -11496,7 +11496,7 @@ function getBundleForEngine(engine, serverLanguage) {
 }
 
 // src/services/harness/consolidate.ts
-import { existsSync as existsSync10, readdirSync as readdirSync3, readFileSync as readFileSync7, writeFileSync as writeFileSync5, mkdirSync as mkdirSync6, statSync as statSync10 } from "fs";
+import { existsSync as existsSync10, readdirSync as readdirSync4, readFileSync as readFileSync8, writeFileSync as writeFileSync5, mkdirSync as mkdirSync6, statSync as statSync11 } from "fs";
 import { join as join8 } from "path";
 var CONSOLIDATION_DIRS = ["rules", "commands", "memory", "skills", "hooks"];
 var LEGACY_DIRS = [".claude", ".codex"];
@@ -11521,7 +11521,7 @@ function consolidateLegacyIntoDanya(projectDir) {
 function copyMissing(legacyDir, danyaDir, prefix, result) {
   let entries;
   try {
-    entries = readdirSync3(legacyDir);
+    entries = readdirSync4(legacyDir);
   } catch {
     return;
   }
@@ -11529,7 +11529,7 @@ function copyMissing(legacyDir, danyaDir, prefix, result) {
     const legacyPath = join8(legacyDir, entry);
     const danyaPath = join8(danyaDir, entry);
     try {
-      if (statSync10(legacyPath).isDirectory()) {
+      if (statSync11(legacyPath).isDirectory()) {
         mkdirSync6(danyaPath, { recursive: true });
         copyMissing(legacyPath, danyaPath, `${prefix}/${entry}`, result);
         continue;
@@ -11542,7 +11542,7 @@ function copyMissing(legacyDir, danyaDir, prefix, result) {
       result.skipped.push(relPath);
     } else {
       try {
-        const content = readFileSync7(legacyPath);
+        const content = readFileSync8(legacyPath);
         writeFileSync5(danyaPath, content, {
           mode: prefix === "hooks" ? 493 : 420
         });
@@ -11559,12 +11559,12 @@ function mergeSettings(legacyDir, danyaDir, result) {
   let legacyConfig;
   let danyaConfig;
   try {
-    legacyConfig = JSON.parse(readFileSync7(legacySettings, "utf-8"));
+    legacyConfig = JSON.parse(readFileSync8(legacySettings, "utf-8"));
   } catch {
     return;
   }
   try {
-    danyaConfig = existsSync10(danyaSettings) ? JSON.parse(readFileSync7(danyaSettings, "utf-8")) : {};
+    danyaConfig = existsSync10(danyaSettings) ? JSON.parse(readFileSync8(danyaSettings, "utf-8")) : {};
   } catch {
     danyaConfig = {};
   }
@@ -12008,7 +12008,7 @@ function getReplStaticPrefixLength(orderedMessages, allMessages, unresolvedToolU
 
 // src/commands/messages-debug.ts
 init_log();
-import { existsSync as existsSync14, readdirSync as readdirSync4, readFileSync as readFileSync8, statSync as statSync11 } from "fs";
+import { existsSync as existsSync14, readdirSync as readdirSync5, readFileSync as readFileSync9, statSync as statSync12 } from "fs";
 import { join as join12 } from "path";
 function isDebugMode() {
   return process.argv.includes("--debug") || process.argv.includes("--debug-verbose");
@@ -12041,14 +12041,14 @@ function getProgressText(message) {
 function getLatestMessagesLogFile() {
   const dir = CACHE_PATHS.messages();
   if (!existsSync14(dir)) return null;
-  const files = readdirSync4(dir).filter((f) => f.endsWith(".json"));
+  const files = readdirSync5(dir).filter((f) => f.endsWith(".json"));
   if (files.length === 0) return null;
   let best = null;
   for (const file of files) {
     const fullPath = join12(dir, file);
     let mtimeMs = 0;
     try {
-      mtimeMs = statSync11(fullPath).mtimeMs;
+      mtimeMs = statSync12(fullPath).mtimeMs;
     } catch {
       continue;
     }
@@ -12161,7 +12161,7 @@ var command3 = {
     const latestLog = getLatestMessagesLogFile();
     const latestLogContent = latestLog && existsSync14(latestLog.path) ? (() => {
       try {
-        return JSON.parse(readFileSync8(latestLog.path, "utf8"));
+        return JSON.parse(readFileSync9(latestLog.path, "utf8"));
       } catch {
         return null;
       }
@@ -12440,7 +12440,7 @@ async function createAndStoreApiKey(accessToken) {
       }
       saveGlobalConfig(config2);
       try {
-        const { resetAnthropicClient } = await import("./llm-QWCVITWY.js");
+        const { resetAnthropicClient } = await import("./llm-E2RSEIUC.js");
         resetAnthropicClient();
       } catch {
       }
@@ -16791,7 +16791,7 @@ async function refreshPluginRuntimeFromInstalls() {
   const existingRoots = getSessionPlugins().map((p) => p.rootDir);
   const dirs = Array.from(/* @__PURE__ */ new Set([...existingRoots, ...installedRoots]));
   if (dirs.length === 0) return [];
-  const { configureSessionPlugins } = await import("./pluginRuntime-PNCKBJR2.js");
+  const { configureSessionPlugins } = await import("./pluginRuntime-GVPO6QJM.js");
   const { errors } = await configureSessionPlugins({ pluginDirs: dirs });
   return errors;
 }
@@ -19931,7 +19931,7 @@ function PermissionRequestTitle({
 
 // src/ui/components/permissions/file-edit-permission-request/FileEditToolDiff.tsx
 import * as React73 from "react";
-import { existsSync as existsSync15, readFileSync as readFileSync9 } from "fs";
+import { existsSync as existsSync15, readFileSync as readFileSync10 } from "fs";
 import { useMemo as useMemo12 } from "react";
 import { Box as Box54, Text as Text59 } from "ink";
 init_state();
@@ -19945,7 +19945,7 @@ function FileEditToolDiff({
   width
 }) {
   const file = useMemo12(
-    () => existsSync15(file_path) ? readFileSync9(file_path, "utf8") : "",
+    () => existsSync15(file_path) ? readFileSync10(file_path, "utf8") : "",
     [file_path]
   );
   const patch = useMemo12(
@@ -20552,7 +20552,7 @@ import chalk10 from "chalk";
 
 // src/ui/components/permissions/file-write-permission-request/FileWriteToolDiff.tsx
 import * as React77 from "react";
-import { existsSync as existsSync16, readFileSync as readFileSync10 } from "fs";
+import { existsSync as existsSync16, readFileSync as readFileSync11 } from "fs";
 import { useMemo as useMemo16 } from "react";
 import { Box as Box58, Text as Text63 } from "ink";
 init_state();
@@ -20569,7 +20569,7 @@ function FileWriteToolDiff({
       return "";
     }
     const enc = detectFileEncoding(file_path);
-    return readFileSync10(file_path, enc);
+    return readFileSync11(file_path, enc);
   }, [file_path, fileExists]);
   const hunks = useMemo16(() => {
     if (!fileExists) {
@@ -20782,7 +20782,7 @@ init_env();
 import chalk11 from "chalk";
 init_state();
 import { basename as basename7, dirname as dirname9 } from "path";
-import { statSync as statSync12 } from "fs";
+import { statSync as statSync13 } from "fs";
 function pathArgNameForToolUse(toolUseConfirm) {
   switch (toolUseConfirm.tool) {
     case FileWriteTool:
@@ -20811,7 +20811,7 @@ function isMultiFile(toolUseConfirm) {
 }
 function pathToPermissionDirectory2(path5) {
   try {
-    const stats = statSync12(path5);
+    const stats = statSync13(path5);
     if (stats.isDirectory()) return path5;
   } catch {
   }
@@ -21893,7 +21893,7 @@ init_planMode();
 
 // src/utils/system/externalEditor.ts
 import { spawn, spawnSync } from "child_process";
-import { mkdtempSync, readFileSync as readFileSync11, rmSync, writeFileSync as writeFileSync7 } from "fs";
+import { mkdtempSync, readFileSync as readFileSync12, rmSync, writeFileSync as writeFileSync7 } from "fs";
 import { tmpdir } from "os";
 import { join as join13 } from "path";
 var isWindows = process.platform === "win32";
@@ -22015,7 +22015,7 @@ async function launchExternalEditor(initialText) {
   }
   restoreStdinState(wasRaw);
   try {
-    const edited = normalizeNewlines(readFileSync11(filePath, "utf-8"));
+    const edited = normalizeNewlines(readFileSync12(filePath, "utf-8"));
     rmSync(dir, { recursive: true, force: true });
     return { text: edited, editorLabel: editorCommand.displayName };
   } catch (error) {
@@ -23036,7 +23036,7 @@ function getCompletionContext(args) {
 }
 
 // src/utils/completion/fileSuggestions.ts
-import { existsSync as existsSync18, readdirSync as readdirSync5, statSync as statSync13 } from "fs";
+import { existsSync as existsSync18, readdirSync as readdirSync6, statSync as statSync14 } from "fs";
 import { basename as basename8, dirname as dirname10, join as join14, resolve as resolve9 } from "path";
 function generateFileSuggestions(args) {
   const { prefix, cwd: cwd2 } = args;
@@ -23053,7 +23053,7 @@ function generateFileSuggestions(args) {
       searchPath = resolve9(cwd2, userPath);
     }
     const endsWithSlash = userPath.endsWith("/");
-    const searchStat = existsSync18(searchPath) ? statSync13(searchPath) : null;
+    const searchStat = existsSync18(searchPath) ? statSync14(searchPath) : null;
     let searchDir;
     let nameFilter;
     if (endsWithSlash || searchStat?.isDirectory()) {
@@ -23065,7 +23065,7 @@ function generateFileSuggestions(args) {
     }
     if (!existsSync18(searchDir)) return [];
     const showHidden = nameFilter.startsWith(".") || userPath.includes("/.");
-    const entries = readdirSync5(searchDir).filter((entry) => {
+    const entries = readdirSync6(searchDir).filter((entry) => {
       if (!showHidden && entry.startsWith(".")) return false;
       if (nameFilter && !entry.toLowerCase().startsWith(nameFilter.toLowerCase()))
         return false;
@@ -23073,15 +23073,15 @@ function generateFileSuggestions(args) {
     }).sort((a, b) => {
       const aPath = join14(searchDir, a);
       const bPath = join14(searchDir, b);
-      const aIsDir = statSync13(aPath).isDirectory();
-      const bIsDir = statSync13(bPath).isDirectory();
+      const aIsDir = statSync14(aPath).isDirectory();
+      const bIsDir = statSync14(bPath).isDirectory();
       if (aIsDir && !bIsDir) return -1;
       if (!aIsDir && bIsDir) return 1;
       return a.toLowerCase().localeCompare(b.toLowerCase());
     }).slice(0, 25);
     return entries.map((entry) => {
       const entryPath = join14(searchDir, entry);
-      const isDir = statSync13(entryPath).isDirectory();
+      const isDir = statSync14(entryPath).isDirectory();
       const icon = isDir ? "\u{1F4C1}" : "\u{1F4C4}";
       let value;
       if (userPath.includes("/")) {
@@ -24414,19 +24414,19 @@ function useUnifiedCompletion({
     if (systemCommands.length > 0 || isLoadingCommands) return;
     setIsLoadingCommands(true);
     try {
-      const { readdirSync: readdirSync6, statSync: statSync15 } = await import("fs");
+      const { readdirSync: readdirSync7, statSync: statSync16 } = await import("fs");
       const pathDirs = (process.env.PATH || "").split(":").filter(Boolean);
       const commandSet = /* @__PURE__ */ new Set();
       const essentialCommands = getEssentialCommands();
       essentialCommands.forEach((cmd) => commandSet.add(cmd));
       for (const dir of pathDirs) {
         try {
-          if (readdirSync6 && statSync15) {
-            const entries = readdirSync6(dir);
+          if (readdirSync7 && statSync16) {
+            const entries = readdirSync7(dir);
             for (const entry of entries) {
               try {
                 const fullPath = `${dir}/${entry}`;
-                const stats = statSync15(fullPath);
+                const stats = statSync16(fullPath);
                 if (stats.isFile() && (stats.mode & 73) !== 0) {
                   commandSet.add(entry);
                 }
@@ -24961,7 +24961,7 @@ function TokenWarning({ tokenUsage }) {
 // src/utils/commands/hashCommand.ts
 init_log();
 import { join as join15 } from "path";
-import { readFileSync as readFileSync12, writeFileSync as writeFileSync9 } from "fs";
+import { readFileSync as readFileSync13, writeFileSync as writeFileSync9 } from "fs";
 function handleHashCommand(interpreted) {
   try {
     const cwd2 = process.cwd();
@@ -24970,7 +24970,7 @@ function handleHashCommand(interpreted) {
     const filesToUpdate = [];
     filesToUpdate.push({ path: agentsPath, name: "AGENTS.md" });
     try {
-      readFileSync12(legacyPath, "utf-8");
+      readFileSync13(legacyPath, "utf-8");
       filesToUpdate.push({ path: legacyPath, name: "CLAUDE.md" });
     } catch {
     }
@@ -24985,7 +24985,7 @@ _Added on ${now.toLocaleString()} ${timezone}_`;
       try {
         let existingContent = "";
         try {
-          existingContent = readFileSync12(file.path, "utf-8").trim();
+          existingContent = readFileSync13(file.path, "utf-8").trim();
         } catch {
         }
         const separator = existingContent ? "\n\n" : "";
@@ -25190,7 +25190,7 @@ function useStatusLine() {
 // src/ui/components/PromptInput.tsx
 async function interpretHashCommand(input) {
   try {
-    const { queryQuick: queryQuick2 } = await import("./llm-QWCVITWY.js");
+    const { queryQuick: queryQuick2 } = await import("./llm-E2RSEIUC.js");
     const systemPrompt = [
       "You're helping the user structure notes that will be added to their KODING.md file.",
       "Format the user's input into a well-structured note that will be useful for later reference.",
@@ -26222,35 +26222,121 @@ async function selectAndReadFiles() {
 
 // src/utils/session/autoCompactCore.ts
 init_log();
-async function getMainConversationContextLimit() {
-  try {
-    const modelManager = getModelManager();
-    const resolution = modelManager.resolveModelWithInfo("main");
-    const modelProfile = resolution.success ? resolution.profile : null;
-    if (modelProfile?.contextLength) {
-      return modelProfile.contextLength;
+
+// src/services/compact/compact.ts
+var DEFAULT_COMPACTION_CONFIG = {
+  triggerThresholdPercent: 90,
+  targetPercent: 60,
+  preserveRecentMessages: 4,
+  enabled: true
+};
+function groupMessages(messages, preserveCount) {
+  const groups = [];
+  const preserveStartIdx = Math.max(0, messages.length - preserveCount);
+  let currentGroup = null;
+  for (let i = 0; i < messages.length; i++) {
+    const msg = messages[i];
+    const isPreserved = i >= preserveStartIdx;
+    if (isPreserved) {
+      if (currentGroup) {
+        groups.push(currentGroup);
+        currentGroup = null;
+      }
+      groups.push({
+        type: "preserved",
+        messages: [msg],
+        totalTokens: msg.tokens
+      });
+      continue;
     }
-    return 2e5;
-  } catch (error) {
-    return 2e5;
+    if (msg.type === "tool_result") {
+      if (currentGroup?.type === "tool_use") {
+        currentGroup.messages.push(msg);
+        currentGroup.totalTokens += msg.tokens;
+      } else {
+        if (currentGroup) groups.push(currentGroup);
+        currentGroup = {
+          type: "tool_use",
+          messages: [msg],
+          totalTokens: msg.tokens
+        };
+      }
+    } else if (msg.type === "system") {
+      if (currentGroup) groups.push(currentGroup);
+      groups.push({
+        type: "system",
+        messages: [msg],
+        totalTokens: msg.tokens
+      });
+      currentGroup = null;
+    } else {
+      if (currentGroup?.type === "conversation") {
+        currentGroup.messages.push(msg);
+        currentGroup.totalTokens += msg.tokens;
+      } else {
+        if (currentGroup) groups.push(currentGroup);
+        currentGroup = {
+          type: msg.type === "assistant" ? "tool_use" : "conversation",
+          messages: [msg],
+          totalTokens: msg.tokens
+        };
+      }
+    }
   }
+  if (currentGroup) groups.push(currentGroup);
+  return groups;
 }
-var COMPRESSION_PROMPT2 = `Please provide a comprehensive summary of our conversation structured as follows:
+function calculateCompactionTarget(currentTokens, contextWindowSize, config2 = DEFAULT_COMPACTION_CONFIG) {
+  const targetTokens = Math.floor(contextWindowSize * (config2.targetPercent / 100));
+  return Math.max(0, currentTokens - targetTokens);
+}
+function selectGroupsForCompaction(groups, tokensToFree) {
+  const toCompact = [];
+  const toKeep = [];
+  let freed = 0;
+  for (const group of groups) {
+    if (group.type === "preserved") {
+      toKeep.push(group);
+      continue;
+    }
+    if (freed < tokensToFree) {
+      toCompact.push(group);
+      freed += group.totalTokens;
+    } else {
+      toKeep.push(group);
+    }
+  }
+  return { toCompact, toKeep };
+}
+function buildCompactionPrompt(groups) {
+  const lines = [];
+  for (const group of groups) {
+    for (const msg of group.messages) {
+      const prefix = msg.type === "user" ? "User" : msg.type === "assistant" ? "Assistant" : "System";
+      const content = msg.content.length > 2e3 ? msg.content.slice(0, 2e3) + "... (truncated)" : msg.content;
+      lines.push(`[${prefix}]: ${content}`);
+    }
+  }
+  return lines.join("\n\n");
+}
+
+// src/utils/session/autoCompactCore.ts
+var COMPRESSION_PROMPT2 = `Please provide a comprehensive summary of the following conversation history, structured as follows:
 
 ## Technical Context
 Development environment, tools, frameworks, and configurations in use. Programming languages, libraries, and technical constraints. File structure, directory organization, and project architecture.
 
-## Project Overview  
+## Project Overview
 Main project goals, features, and scope. Key components, modules, and their relationships. Data models, APIs, and integration patterns.
 
 ## Code Changes
-Files created, modified, or analyzed during our conversation. Specific code implementations, functions, and algorithms added. Configuration changes and structural modifications.
+Files created, modified, or analyzed during the conversation. Specific code implementations, functions, and algorithms added. Configuration changes and structural modifications.
 
 ## Debugging & Issues
 Problems encountered and their root causes. Solutions implemented and their effectiveness. Error messages, logs, and diagnostic information.
 
 ## Current Status
-What we just completed successfully. Current state of the codebase and any ongoing work. Test results, validation steps, and verification performed.
+What was most recently completed. Current state of the codebase and any ongoing work. Test results, validation steps, and verification performed.
 
 ## Pending Tasks
 Immediate next steps and priorities. Planned features, improvements, and refactoring. Known issues, technical debt, and areas needing attention.
@@ -26262,14 +26348,22 @@ Coding style, formatting, and organizational preferences. Communication patterns
 Important technical decisions made and their rationale. Alternative approaches considered and why they were rejected. Trade-offs accepted and their implications.
 
 Focus on information essential for continuing the conversation effectively, including specific details about code, files, errors, and plans.`;
-async function calculateThresholds(tokenCount) {
-  const contextLimit = await getMainConversationContextLimit();
-  return calculateAutoCompactThresholds(tokenCount, contextLimit);
+async function getMainConversationContextLimit() {
+  try {
+    const modelManager = getModelManager();
+    const resolution = modelManager.resolveModelWithInfo("main");
+    const modelProfile = resolution.success ? resolution.profile : null;
+    if (modelProfile?.contextLength) return modelProfile.contextLength;
+    return 2e5;
+  } catch {
+    return 2e5;
+  }
 }
 async function shouldAutoCompact(messages) {
   if (messages.length < 3) return false;
   const tokenCount = countTokens(messages);
-  const { isAboveAutoCompactThreshold } = await calculateThresholds(tokenCount);
+  const contextLimit = await getMainConversationContextLimit();
+  const { isAboveAutoCompactThreshold } = calculateAutoCompactThresholds(tokenCount, contextLimit);
   return isAboveAutoCompactThreshold;
 }
 async function checkAutoCompact(messages, toolUseContext) {
@@ -26278,10 +26372,7 @@ async function checkAutoCompact(messages, toolUseContext) {
   }
   try {
     const compactedMessages = await executeAutoCompact(messages, toolUseContext);
-    return {
-      messages: compactedMessages,
-      wasCompacted: true
-    };
+    return { messages: compactedMessages, wasCompacted: true };
   } catch (error) {
     logError(error);
     debug.warn("AUTO_COMPACT_FAILED", {
@@ -26291,30 +26382,86 @@ async function checkAutoCompact(messages, toolUseContext) {
   }
 }
 async function executeAutoCompact(messages, toolUseContext) {
-  const summaryRequest = createUserMessage(COMPRESSION_PROMPT2);
   const tokenCount = countTokens(messages);
-  const modelManager = getModelManager();
-  const compactResolution = modelManager.resolveModelWithInfo("compact");
-  const mainResolution = modelManager.resolveModelWithInfo("main");
-  let compressionModelPointer = "compact";
-  let compressionNotice = null;
-  if (!compactResolution.success || !compactResolution.profile) {
-    compressionModelPointer = "main";
-    compressionNotice = compactResolution.error || "Compression model pointer 'compact' is not configured.";
-  } else {
-    const compactBudget = Math.floor(
-      compactResolution.profile.contextLength * 0.9
-    );
-    if (compactBudget > 0 && tokenCount > compactBudget) {
-      compressionModelPointer = "main";
-      compressionNotice = `Compression model '${compactResolution.profile.name}' does not fit current context (~${Math.round(tokenCount / 1e3)}k tokens).`;
+  const contextLimit = await getMainConversationContextLimit();
+  const compactableMessages = messagesToCompactable(messages);
+  const groups = groupMessages(compactableMessages, DEFAULT_COMPACTION_CONFIG.preserveRecentMessages);
+  const tokensToFree = calculateCompactionTarget(tokenCount, contextLimit);
+  const { toCompact, toKeep } = selectGroupsForCompaction(groups, tokensToFree);
+  if (toCompact.length === 0) {
+    return executeFullCompact(messages, toolUseContext, tokenCount);
+  }
+  const conversationToSummarize = buildCompactionPrompt(toCompact);
+  const { modelPointer, notice } = resolveCompressionModel(tokenCount);
+  const summaryPrompt = `${COMPRESSION_PROMPT2}
+
+---
+
+Conversation to summarize:
+
+${conversationToSummarize}`;
+  const summaryRequest = createUserMessage(summaryPrompt);
+  const summaryResponse = await queryLLM(
+    normalizeMessagesForAPI([summaryRequest]),
+    [
+      "You are a helpful AI assistant tasked with creating comprehensive conversation summaries that preserve all essential context for continuing development work."
+    ],
+    0,
+    [],
+    toolUseContext.abortController.signal,
+    {
+      safeMode: false,
+      model: modelPointer,
+      prependCLISysprompt: true
+    }
+  );
+  const summary = extractSummaryText(summaryResponse);
+  if (!summary) {
+    throw new Error("Failed to generate conversation summary");
+  }
+  summaryResponse.message.usage = {
+    input_tokens: 0,
+    output_tokens: summaryResponse.message.usage.output_tokens,
+    cache_creation_input_tokens: 0,
+    cache_read_input_tokens: 0
+  };
+  const recoveredFiles = await selectAndReadFiles();
+  const result = [
+    createUserMessage(
+      notice ? `Context selectively compressed (${toCompact.length} groups summarized, ${toKeep.length} preserved). ${notice}` : `Context selectively compressed (${toCompact.length} groups summarized, ${toKeep.length} preserved).`
+    ),
+    summaryResponse
+  ];
+  for (const group of toKeep) {
+    for (const msg of group.messages) {
+      if (msg.original) {
+        result.push(msg.original);
+      }
     }
   }
-  if (compressionModelPointer === "main" && (!mainResolution.success || !mainResolution.profile)) {
-    throw new Error(
-      mainResolution.error || "Compression fallback failed: model pointer 'main' is not configured."
+  for (const file of recoveredFiles) {
+    const contentWithLines = addLineNumbers({ content: file.content, startLine: 1 });
+    result.push(
+      createUserMessage(
+        `**Recovered File: ${file.path}**
+
+\`\`\`
+${contentWithLines}
+\`\`\`
+
+*Automatically recovered (${file.tokens} tokens)${file.truncated ? " [truncated]" : ""}*`
+      )
     );
   }
+  getMessagesSetter()([]);
+  getContext.cache.clear?.();
+  getCodeStyle.cache.clear?.();
+  resetFileFreshnessSession();
+  return result;
+}
+async function executeFullCompact(messages, toolUseContext, tokenCount) {
+  const { modelPointer, notice } = resolveCompressionModel(tokenCount);
+  const summaryRequest = createUserMessage(COMPRESSION_PROMPT2);
   const summaryResponse = await queryLLM(
     normalizeMessagesForAPI([...messages, summaryRequest]),
     [
@@ -26325,16 +26472,13 @@ async function executeAutoCompact(messages, toolUseContext) {
     toolUseContext.abortController.signal,
     {
       safeMode: false,
-      model: compressionModelPointer,
+      model: modelPointer,
       prependCLISysprompt: true
     }
   );
-  const content = summaryResponse.message.content;
-  const summary = typeof content === "string" ? content : content.length > 0 && content[0]?.type === "text" ? content[0].text : null;
+  const summary = extractSummaryText(summaryResponse);
   if (!summary) {
-    throw new Error(
-      "Failed to generate conversation summary - response did not contain valid text content"
-    );
+    throw new Error("Failed to generate conversation summary");
   }
   summaryResponse.message.usage = {
     input_tokens: 0,
@@ -26343,19 +26487,16 @@ async function executeAutoCompact(messages, toolUseContext) {
     cache_read_input_tokens: 0
   };
   const recoveredFiles = await selectAndReadFiles();
-  const compactedMessages = [
+  const result = [
     createUserMessage(
-      compressionNotice ? `Context automatically compressed due to token limit. ${compressionNotice} Using '${compressionModelPointer}' for compression.` : `Context automatically compressed due to token limit. Using '${compressionModelPointer}' for compression.`
+      notice ? `Context fully compressed due to token limit. ${notice}` : `Context fully compressed due to token limit.`
     ),
     summaryResponse
   ];
-  if (recoveredFiles.length > 0) {
-    for (const file of recoveredFiles) {
-      const contentWithLines = addLineNumbers({
-        content: file.content,
-        startLine: 1
-      });
-      const recoveryMessage = createUserMessage(
+  for (const file of recoveredFiles) {
+    const contentWithLines = addLineNumbers({ content: file.content, startLine: 1 });
+    result.push(
+      createUserMessage(
         `**Recovered File: ${file.path}**
 
 \`\`\`
@@ -26363,15 +26504,62 @@ ${contentWithLines}
 \`\`\`
 
 *Automatically recovered (${file.tokens} tokens)${file.truncated ? " [truncated]" : ""}*`
-      );
-      compactedMessages.push(recoveryMessage);
-    }
+      )
+    );
   }
   getMessagesSetter()([]);
   getContext.cache.clear?.();
   getCodeStyle.cache.clear?.();
   resetFileFreshnessSession();
-  return compactedMessages;
+  return result;
+}
+function resolveCompressionModel(tokenCount) {
+  const modelManager = getModelManager();
+  const compactResolution = modelManager.resolveModelWithInfo("compact");
+  const mainResolution = modelManager.resolveModelWithInfo("main");
+  let modelPointer = "compact";
+  let notice = null;
+  if (!compactResolution.success || !compactResolution.profile) {
+    modelPointer = "main";
+    notice = compactResolution.error || "Compression model 'compact' not configured.";
+  } else {
+    const compactBudget = Math.floor(compactResolution.profile.contextLength * 0.9);
+    if (compactBudget > 0 && tokenCount > compactBudget) {
+      modelPointer = "main";
+      notice = `Compression model '${compactResolution.profile.name}' can't fit context (~${Math.round(tokenCount / 1e3)}k tokens).`;
+    }
+  }
+  if (modelPointer === "main" && (!mainResolution.success || !mainResolution.profile)) {
+    throw new Error(mainResolution.error || "Compression fallback failed: 'main' not configured.");
+  }
+  return { modelPointer, notice };
+}
+function extractSummaryText(response) {
+  const content = response.message.content;
+  if (typeof content === "string") return content;
+  if (Array.isArray(content)) {
+    for (const block of content) {
+      if (block?.type === "text" && block.text) return block.text;
+    }
+  }
+  return null;
+}
+function messagesToCompactable(messages) {
+  return messages.map((msg) => {
+    let content = "";
+    let type2 = "user";
+    if (msg.type === "user") {
+      type2 = "user";
+      const rawContent = msg.message?.content;
+      content = typeof rawContent === "string" ? rawContent : Array.isArray(rawContent) ? rawContent.map((c) => c.text || "").join("\n") : "";
+    } else if (msg.type === "assistant") {
+      type2 = "assistant";
+      const rawContent = msg.message?.content;
+      content = typeof rawContent === "string" ? rawContent : Array.isArray(rawContent) ? rawContent.map((c) => c.text || "").join("\n") : "";
+    }
+    const tokens = Math.ceil(content.length * 0.25);
+    return { type: type2, content, tokens, original: msg };
+  });
 }
 
 // src/app/query.ts
@@ -28295,7 +28483,7 @@ init_log();
 import { randomUUID as randomUUID5 } from "crypto";
 init_log();
 async function generateAgentWithClaude(prompt) {
-  const { queryModel } = await import("./llm-QWCVITWY.js");
+  const { queryModel } = await import("./llm-E2RSEIUC.js");
   const systemPrompt = `You are an expert at creating AI agent configurations. Based on the user's description, generate a specialized agent configuration.
 
 Return your response as a JSON object with exactly these fields:
@@ -31965,7 +32153,7 @@ ${footerParts.join(" ")}`;
               for (const filePath of filePaths) {
                 const fullFilePath = isAbsolute10(filePath) ? filePath : resolve10(getCwd(), filePath);
                 try {
-                  readFileTimestamps[fullFilePath] = statSync14(fullFilePath).mtimeMs;
+                  readFileTimestamps[fullFilePath] = statSync15(fullFilePath).mtimeMs;
                 } catch (e) {
                   logError(e);
                 }
