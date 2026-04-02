@@ -31,6 +31,8 @@ import orchestrate from './orchestrate'
 import redBlue from './red-blue'
 import monitor from './monitor'
 import btw from './btw'
+import enterWorktree from './enter-worktree'
+import exitWorktree from './exit-worktree'
 import rename from './rename'
 import statusline from './statusline'
 import tag from './tag'
@@ -129,6 +131,8 @@ const COMMANDS = memoize((): Command[] => [
   redBlue,
   monitor,
   btw,
+  enterWorktree,
+  exitWorktree,
   todos,
   ...(isAnthropicAuthEnabled() ? [logout, login()] : []),
   ...INTERNAL_ONLY_COMMANDS,
