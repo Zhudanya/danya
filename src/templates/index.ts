@@ -37,6 +37,10 @@ function getSharedToolsBundle(): Record<string, string> {
     'agents/skill-extractor.md': agents.AGENT_SKILL_EXTRACTOR,
     // Task template
     'templates/program-template.md': agents.TEMPLATE_PROGRAM,
+    // Exec plans directory (for /parallel-execute task files)
+    'docs/exec-plans/active/.gitkeep': '',
+    // Skills directory (large reference docs, loaded on demand)
+    'skills/.gitkeep': '',
     // Monitor data collection
     'monitor/log-tool-use.py': monitor.MONITOR_LOG_TOOL_USE,
     'monitor/log-session-end.py': monitor.MONITOR_LOG_SESSION_END,

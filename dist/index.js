@@ -3,7 +3,7 @@ const require = __kodeCreateRequire(import.meta.url);
 import {
   MACRO,
   init_macros
-} from "./chunk-FHMQUTJ3.js";
+} from "./chunk-HLV7FB2P.js";
 import "./chunk-M3TKNAUR.js";
 
 // src/entrypoints/index.ts
@@ -30,7 +30,7 @@ Common options:
   process.exit(0);
 }
 if (hasFlag("--acp")) {
-  await import("./acp-SACMIQZS.js");
+  await import("./acp-72T5HIBO.js");
 } else {
-  await import("./cli-Y5RE2XCX.js");
+  await import("./cli-3HJE7VND.js");
 }
