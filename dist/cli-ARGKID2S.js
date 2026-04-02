@@ -796,7 +796,7 @@ async function runPrintMode({
 // src/utils/session/cleanup.ts
 init_log();
 import { promises as fs } from "fs";
-import { join as join2 } from "path";
+import { join } from "path";
 var THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1e3;
 function convertFileNameToDate(filename) {
   const isoStr = filename.split(".")[0].replace(/T(\d{2})-(\d{2})-(\d{2})-(\d{3})Z/, "T$1:$2:$3.$4Z");
@@ -814,7 +814,7 @@ async function cleanupOldMessageFiles() {
         try {
           const timestamp = convertFileNameToDate(file);
           if (timestamp < thirtyDaysAgo) {
-            await fs.unlink(join2(path, file));
+            await fs.unlink(join(path, file));
             if (path === messagePath) {
               deletedCounts.messages++;
             } else {
@@ -3856,6 +3856,7 @@ ${skillList}`);
     console.log(`Removed context.${key}`);
     process.exit(0);
   });
+  const { join: join2 } = __require("path");
   function runScript(scriptPath, args, env) {
     const { execFileSync } = __require("child_process");
     const { existsSync: existsSync2 } = __require("fs");
@@ -3879,35 +3880,35 @@ Run "danya init" first to initialize the harness.`);
   }
   program.command("auto-work <requirement>").description("Shell-enforced full-auto pipeline (each stage = independent danya -p)").option("--model <model>", "Model to use", "sonnet").option("--max-turns <n>", "Max turns per stage", "30").action(async (requirement, opts) => {
     try {
-      runScript(join(cwd(), ".danya", "scripts", "auto-work-loop.sh"), [requirement], { MODEL: opts.model, MAX_TURNS: opts.maxTurns });
+      runScript(join2(cwd(), ".danya", "scripts", "auto-work-loop.sh"), [requirement], { MODEL: opts.model, MAX_TURNS: opts.maxTurns });
     } catch (e) {
       process.exit(e.status || 1);
     }
   });
   program.command("parallel <tasks-dir>").description("Wave-based parallel execution (each task in independent worktree)").action(async (tasksDir) => {
     try {
-      runScript(join(cwd(), ".danya", "scripts", "parallel-wave.sh"), [tasksDir]);
+      runScript(join2(cwd(), ".danya", "scripts", "parallel-wave.sh"), [tasksDir]);
     } catch (e) {
       process.exit(e.status || 1);
     }
   });
   program.command("red-blue [scope]").description("Adversarial red-blue testing loop").option("-n, --rounds <n>", "Max rounds", "5").option("--model <model>", "Model to use", "sonnet").action(async (scope, opts) => {
     try {
-      runScript(join(cwd(), ".danya", "scripts", "red-blue-loop.sh"), [scope || "."], { MODEL: opts.model, MAX_ROUNDS: opts.rounds });
+      runScript(join2(cwd(), ".danya", "scripts", "red-blue-loop.sh"), [scope || "."], { MODEL: opts.model, MAX_ROUNDS: opts.rounds });
     } catch (e) {
       process.exit(e.status || 1);
     }
   });
   program.command("orchestrate <task-file>").description("Auto-research iteration loop (AI codes \u2192 verify \u2192 commit/revert)").option("-n, --iterations <n>", "Max iterations", "20").option("--model <model>", "Model to use", "sonnet").action(async (taskFile, opts) => {
     try {
-      runScript(join(cwd(), ".danya", "scripts", "orchestrator.sh"), [taskFile], { MODEL: opts.model, MAX_ITERATIONS: opts.iterations });
+      runScript(join2(cwd(), ".danya", "scripts", "orchestrator.sh"), [taskFile], { MODEL: opts.model, MAX_ITERATIONS: opts.iterations });
     } catch (e) {
       process.exit(e.status || 1);
     }
   });
   program.command("check-env").description("Validate environment dependencies for Danya tools").action(async () => {
     try {
-      runScript(join(cwd(), ".danya", "scripts", "check-env.sh"), []);
+      runScript(join2(cwd(), ".danya", "scripts", "check-env.sh"), []);
     } catch {
     }
   });
@@ -3916,7 +3917,7 @@ Run "danya init" first to initialize the harness.`);
     if (opts.days) args.push("--days", opts.days);
     if (opts.top) args.push("--top", opts.top);
     try {
-      runPython(join(cwd(), ".danya", "monitor", "analyze.py"), args);
+      runPython(join2(cwd(), ".danya", "monitor", "analyze.py"), args);
     } catch (e) {
       process.exit(e.status || 1);
     }
@@ -3929,13 +3930,13 @@ Run "danya init" first to initialize the harness.`);
     }
     if (opts.verbose) args.push("-v");
     try {
-      runPython(join(cwd(), ".danya", "monitor", "dashboard.py"), args);
+      runPython(join2(cwd(), ".danya", "monitor", "dashboard.py"), args);
     } catch {
     }
   });
   program.command("report").description("Monthly orchestrator report").action(async () => {
     try {
-      runScript(join(cwd(), ".danya", "scripts", "monthly-report.sh"), []);
+      runScript(join2(cwd(), ".danya", "scripts", "monthly-report.sh"), []);
     } catch {
     }
   });
@@ -3961,9 +3962,9 @@ async function gracefulExit(code = 0) {
     const { runSessionEndHooks } = await import("./kodeHooks-HWSEGZ5X.js");
     const { getDanyaAgentSessionId } = await import("./kodeAgentSessionId-WUT74FSH.js");
     const { tmpdir } = await import("os");
-    const { join: join3 } = await import("path");
+    const { join: join2 } = await import("path");
     const sessionId = getDanyaAgentSessionId();
-    const transcriptPath = join3(
+    const transcriptPath = join2(
       tmpdir(),
       "danya-hooks-transcripts",
       `${sessionId}.transcript.txt`

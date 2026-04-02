@@ -32,5 +32,5 @@ Common options:
 if (hasFlag("--acp")) {
   await import("./acp-EXBBRWNU.js");
 } else {
-  await import("./cli-77DGFV52.js");
+  await import("./cli-ARGKID2S.js");
 }

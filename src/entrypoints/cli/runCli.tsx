@@ -2764,6 +2764,7 @@ async function parseArgs(
     })
 
   // ── Danya Tools CLI Subcommands ──────────────────
+  const { join } = require('path')
 
   function runScript(scriptPath: string, args: string[], env?: Record<string, string>) {
     const { execFileSync } = require('child_process')
