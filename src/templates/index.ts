@@ -43,6 +43,10 @@ function getSharedToolsBundle(): Record<string, string> {
     'monitor/log-verify.py': monitor.MONITOR_LOG_VERIFY,
     'monitor/log-bugfix.py': monitor.MONITOR_LOG_BUGFIX,
     'monitor/log-review.py': monitor.MONITOR_LOG_REVIEW,
+    'monitor/analyze.py': monitor.MONITOR_ANALYZE,
+    'monitor/dashboard.py': monitor.MONITOR_DASHBOARD,
+    // Monthly report
+    'scripts/monthly-report.sh': monitor.SCRIPT_MONTHLY_REPORT,
   }
 }
 

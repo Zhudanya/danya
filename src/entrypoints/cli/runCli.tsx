@@ -2837,6 +2837,55 @@ async function parseArgs(
       } catch { /* check-env reports its own errors */ }
     })
 
+  program
+    .command('analyze')
+    .description('Analyze harness effectiveness metrics')
+    .requiredOption('--metric <metric>', 'Metric: tool-usage|top-tools|session-count|verify-time|bugfix-rounds|review-scores|summary|compare')
+    .option('--days <n>', 'Last N days')
+    .option('--top <n>', 'Top N (for top-tools)', '10')
+    .action(async (opts) => {
+      const { execSync } = await import('child_process')
+      const scriptPath = join(cwd(), '.danya', 'monitor', 'analyze.py')
+      const args = [`--metric`, opts.metric]
+      if (opts.days) args.push('--days', opts.days)
+      if (opts.top) args.push('--top', opts.top)
+      try {
+        execSync(`python3 "${scriptPath}" ${args.join(' ')}`, { stdio: 'inherit', cwd: cwd() })
+      } catch (e: any) {
+        process.exit(e.status || 1)
+      }
+    })
+
+  program
+    .command('dashboard')
+    .description('Real-time monitoring dashboard')
+    .option('-w, --watch [interval]', 'Watch mode (refresh every N seconds)')
+    .option('-v, --verbose', 'Show detailed info')
+    .action(async (opts) => {
+      const { execSync } = await import('child_process')
+      const scriptPath = join(cwd(), '.danya', 'monitor', 'dashboard.py')
+      const args: string[] = []
+      if (opts.watch !== undefined) {
+        args.push('-w')
+        if (typeof opts.watch === 'string') args.push(opts.watch)
+      }
+      if (opts.verbose) args.push('-v')
+      try {
+        execSync(`python3 "${scriptPath}" ${args.join(' ')}`, { stdio: 'inherit', cwd: cwd() })
+      } catch { /* dashboard handles its own exit */ }
+    })
+
+  program
+    .command('report')
+    .description('Monthly orchestrator report')
+    .action(async () => {
+      const { execSync } = await import('child_process')
+      const scriptPath = join(cwd(), '.danya', 'scripts', 'monthly-report.sh')
+      try {
+        execSync(`bash "${scriptPath}"`, { stdio: 'inherit', cwd: cwd() })
+      } catch { /* report handles its own output */ }
+    })
+
   await program.parseAsync(process.argv)
   return program
 }
