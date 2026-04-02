@@ -11,7 +11,10 @@ const fixHarnessCommand: Command = {
   isHidden: false,
   type: 'prompt',
   progressMessage: 'Analyzing error and updating harness rules...',
-  argDescription: '[error-description]',
+  argumentHint: '[error-description]',
+  userFacingName() {
+    return 'fix-harness'
+  },
   async getPromptForCommand(args: string) {
     return [
       {

@@ -206,7 +206,7 @@ async function configureSessionPlugins(args) {
   setSessionPlugins(plugins);
   const { reloadCustomCommands } = await import("./customCommands-RLUKKBRZ.js");
   reloadCustomCommands();
-  const { getCommands } = await import("./commands-2ZTE7CJ7.js");
+  const { getCommands } = await import("./commands-HOJLHVIM.js");
   getCommands.cache.clear?.();
   const { getClients, getMCPTools } = await import("./mcp-DE5HUK63.js");
   getClients.cache?.clear?.();

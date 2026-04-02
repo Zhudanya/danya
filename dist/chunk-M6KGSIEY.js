@@ -28,7 +28,7 @@ import {
   hasReadPermission,
   init_detect,
   query
-} from "./chunk-NPFMLPUW.js";
+} from "./chunk-MI7TDXSR.js";
 import {
   FallbackToolUseRejectedMessage,
   MCPTool,
@@ -37,7 +37,7 @@ import {
 } from "./chunk-RO73O3Q7.js";
 import {
   queryLLM
-} from "./chunk-WPVNCSHY.js";
+} from "./chunk-WBTVYDL5.js";
 import {
   generateAgentId
 } from "./chunk-QJMLHIGS.js";
@@ -51,7 +51,7 @@ import {
   createAssistantMessage,
   createUserMessage,
   getLastAssistantMessageId
-} from "./chunk-MQOOFTBD.js";
+} from "./chunk-LHCLJEB2.js";
 import {
   getModelManager
 } from "./chunk-BTAVLAZT.js";

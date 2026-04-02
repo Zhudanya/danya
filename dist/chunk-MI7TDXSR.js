@@ -58,7 +58,7 @@ import {
   runStopHooks,
   runUserPromptSubmitHooks,
   updateHookTranscriptForMessages
-} from "./chunk-4WNIORGK.js";
+} from "./chunk-NCRKRJNJ.js";
 import {
   getDanyaAgentSessionId,
   setDanyaAgentSessionId
@@ -80,7 +80,7 @@ import {
   queryLLM,
   queryQuick,
   verifyApiKey
-} from "./chunk-WPVNCSHY.js";
+} from "./chunk-WBTVYDL5.js";
 import {
   listAllContentFiles,
   ripGrep
@@ -154,7 +154,7 @@ import {
   processUserInput,
   reorderMessages,
   stripSystemMessages
-} from "./chunk-MQOOFTBD.js";
+} from "./chunk-LHCLJEB2.js";
 import {
   ModelManager,
   getModelManager,
@@ -914,7 +914,7 @@ var getCommandSubcommandPrefix = memoize(
 var getCommandPrefix = memoize(
   async (command4, abortSignal) => {
     const { systemPrompt, userPrompt } = buildBashCommandPrefixDetectionPrompt(command4);
-    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-LQVS64JY.js");
+    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-U3UUPOEK.js");
     const response = await queryQuick2({
       systemPrompt,
       userPrompt,
@@ -4983,7 +4983,7 @@ function formatParseError(error) {
   return error instanceof Error ? error.message : String(error);
 }
 async function defaultGateQuery(args) {
-  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-LQVS64JY.js");
+  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-U3UUPOEK.js");
   const messages = [
     {
       type: "user",
@@ -12442,7 +12442,7 @@ async function createAndStoreApiKey(accessToken) {
       }
       saveGlobalConfig(config2);
       try {
-        const { resetAnthropicClient } = await import("./llm-LQVS64JY.js");
+        const { resetAnthropicClient } = await import("./llm-U3UUPOEK.js");
         resetAnthropicClient();
       } catch {
       }
@@ -16793,7 +16793,7 @@ async function refreshPluginRuntimeFromInstalls() {
   const existingRoots = getSessionPlugins().map((p) => p.rootDir);
   const dirs = Array.from(/* @__PURE__ */ new Set([...existingRoots, ...installedRoots]));
   if (dirs.length === 0) return [];
-  const { configureSessionPlugins } = await import("./pluginRuntime-PYIOF5TC.js");
+  const { configureSessionPlugins } = await import("./pluginRuntime-375VGZQ4.js");
   const { errors } = await configureSessionPlugins({ pluginDirs: dirs });
   return errors;
 }
@@ -18158,7 +18158,10 @@ var fixHarnessCommand = {
   isHidden: false,
   type: "prompt",
   progressMessage: "Analyzing error and updating harness rules...",
-  argDescription: "[error-description]",
+  argumentHint: "[error-description]",
+  userFacingName() {
+    return "fix-harness";
+  },
   async getPromptForCommand(args) {
     return [
       {
@@ -25192,7 +25195,7 @@ function useStatusLine() {
 // src/ui/components/PromptInput.tsx
 async function interpretHashCommand(input) {
   try {
-    const { queryQuick: queryQuick2 } = await import("./llm-LQVS64JY.js");
+    const { queryQuick: queryQuick2 } = await import("./llm-U3UUPOEK.js");
     const systemPrompt = [
       "You're helping the user structure notes that will be added to their KODING.md file.",
       "Format the user's input into a well-structured note that will be useful for later reference.",
@@ -28454,7 +28457,7 @@ init_log();
 import { randomUUID as randomUUID5 } from "crypto";
 init_log();
 async function generateAgentWithClaude(prompt) {
-  const { queryModel } = await import("./llm-LQVS64JY.js");
+  const { queryModel } = await import("./llm-U3UUPOEK.js");
   const systemPrompt = `You are an expert at creating AI agent configurations. Based on the user's description, generate a specialized agent configuration.
 
 Return your response as a JSON object with exactly these fields:
