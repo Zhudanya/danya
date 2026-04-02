@@ -34,17 +34,21 @@ npm install -g @danya-ai/cli@latest
 ## 快速使用
 
 ```bash
-# 初始化游戏项目（自动检测引擎，生成配置和 Hook）
+# 进入你的游戏项目，启动 danya（首次启动会引导配置 AI 模型）
 cd <你的游戏项目>
-danya init
-
-# 启动交互模式（首次启动会引导配置 AI 模型）
 danya
 
+# 初始化 harness（自动检测引擎，生成完整的规则、命令、Hook 体系）
+# 注：首次启动时会自动初始化，也可以手动执行：
+/init
+
 # 常用命令
+/auto-work "添加背包排序功能"          # 全自动流水线（分类→规划→编码→审查→提交→沉淀→自演进）
+/auto-bugfix "角色状态切换动画异常"     # Bug 自动修复（必须先复现才能修）
 /review                              # 评分制代码审查（100 分制）
-/auto-work "添加背包排序功能"          # 全自动流水线
-/auto-bugfix "角色状态切换动画异常"     # Bug 自动修复
+/fix-harness                         # 更新 harness 规则（自演进）
+/plan "大功能需求"                    # 分析需求，生成开发计划
+/verify                              # 机械验证（quick | build | full）
 /parallel-execute prepare "大功能"     # 波次并行执行
 ```
 
@@ -80,80 +84,40 @@ danya
 
 ---
 
+## Danya 是什么
+
+Danya 是一个运行在终端中的 AI 编程助手，**专门为游戏开发场景设计**。它不是一个通用的代码补全工具，而是一个理解游戏项目架构、强制执行质量标准、并能自动化整个开发工作流的 Agent。
+
+**开箱即用**——进入游戏项目启动 Danya，它会自动检测引擎类型，生成完整的 harness 体系（规则、命令、Hook、记忆），不需要你手动搭建任何环境。如果你之前用过 Claude Code 或 Codex，已有的 `.claude/` 或 `.codex/` 配置会自动整合到 `.danya/` 中。
+
+---
+
 ## 功能特性
 
+### 基础能力
 - **AI 驱动的助手** — 使用先进的 AI 模型理解并响应你的请求
 - **多模型协同** — 灵活切换和组合使用多个 AI 模型（20+ 提供商），发挥各自优势
 - **代码编辑** — 直接编辑文件，提供智能建议和改进
 - **代码库理解** — 分析项目结构和代码关系
 - **命令执行** — 实时运行 shell 命令并查看结果
-- **工作流自动化** — 用简单的提示处理复杂的开发任务
 - **交互式界面** — 美观的终端界面，支持语法高亮
-- **工具系统** — 可扩展的架构，为不同任务提供专门的工具（22 通用 + 13 游戏专用）
-- **上下文管理** — 智能的上下文处理，保持对话连续性
+- **工具系统** — 可扩展的架构（22 通用 + 13 游戏专用 = 35 个工具）
+
+### 游戏开发专用
 - **游戏引擎感知** — 自动识别 Unity / UE / Godot / Go 服务器，注入引擎领域知识
-- **门禁链质量管控** — 6 道门禁强制执行代码质量标准
-- **评分制审查** — 100 分制量化审查，33 条引擎检查规则
-- **知识自动沉淀** — 开发成果自动文档化，不丢失项目知识
+- **完整 Harness 内置** — `/init` 自动释放规则、命令、Hook、记忆模板，开箱即用
+- **门禁链质量管控** — 6 道门禁强制执行代码质量标准（Hook 硬拦截，Agent 无法绕过）
+- **评分制审查** — 100 分制量化审查，33 条引擎检查规则，质量棘轮
+- **全自动流水线** — /auto-work（7 阶段）、/auto-bugfix（5 轮）、/parallel-execute（波次并行）
+- **Harness 自演进** — Agent 出错修复后自动检测并更新规则，防止同类错误再次发生
+- **知识自动沉淀** — 开发成果自动文档化到 Docs/，不丢失项目知识
 
----
-
-## Danya 是什么
-
-Danya 是一个运行在终端中的 AI 编程助手，**专门为游戏开发场景设计**。它不是一个通用的代码补全工具，而是一个理解游戏项目架构、强制执行质量标准、并能自动化整个开发工作流的 Agent。
-
-你可以把它理解为：**Claude Code 的游戏开发定制版**，融合了传统 Agent 的成熟工具系统、Kode 的多模型能力、以及 Game Harness Engineering 的质量治理体系。
-
-```
-                    ┌──────────────────────────┐
-                    │         Danya            │
-                    │                          │
-                    │  传统 Agent 的工具系统    │
-                    │  + Kode 的多模型能力      │
-                    │  + Game Harness 的质量治理 │
-                    │  + 游戏开发领域知识        │
-                    └──────────────────────────┘
-```
-
----
-
-## 与 Claude Code / Codex / Kode 的区别
-
-### 一句话总结
-
-| 产品 | 定位 | 一句话描述 |
-|------|------|----------|
-| **Claude Code** | 通用编程助手 | Anthropic 官方 CLI，能力强但不懂游戏 |
-| **Codex (OpenAI)** | 通用编程助手 | OpenAI 的终端 Agent，只支持 OpenAI 模型 |
-| **Kode** | 通用编程助手 | Claude Code 开源替代，支持多模型 |
-| **Danya** | **游戏开发编程助手** | 为游戏项目定制：理解引擎、门禁链、评分审查 |
-
-### 详细对比
-
-| 能力 | Claude Code | Codex | Kode | **Danya** |
-|------|------------|-------|------|-----------|
-| **游戏引擎理解** | 无 | 无 | 无 | **Unity / UE / Godot 自动识别，注入引擎知识** |
-| **禁区防护** | 无 | 无 | 无 | **自动检测 auto-generated 代码，Hook 硬拦截** |
-| **评分制审查** | 无 | 无 | 无 | **100 分制，33 条引擎检查，质量棘轮** |
-| **门禁链** | 无 | 无 | 无 | **6 道门禁：Guard→Syntax→Verify→Commit→Review→Push** |
-| **全自动流水线** | 无 | 无 | 无 | **/auto-work, /auto-bugfix, /parallel-execute** |
-| **知识沉淀** | 无 | 无 | 无 | **自动写 Docs/（功能/Bug/调研）** |
-| **Harness 自演进** | 无 | 无 | 无 | **Agent 出错后自动更新规则** |
-| 多模型支持 | 仅 Anthropic | 仅 OpenAI | **20+ 提供商** | **20+ 提供商（继承 Kode）** |
-| Hook 系统 | 18 种事件 | 无 | 4 种事件 | **18 种事件** |
-| 权限系统 | 规则层叠 | 简单 | 简单 | **规则层叠** |
-| 工具系统 | 43 个工具 | ~10 | 22 个 | **22 通用 + 13 游戏专用 = 35 个工具** |
-
-### 核心差异：通用 vs 游戏专用
-
-Claude Code / Codex / Kode 是**通用编程助手**——它们不知道：
-- Unity 中应该用 `UniTask` 而不是 `Task`
-- 配置和协议目录下的代码是自动生成的，不能手动编辑
-- Go 游戏服务端应该用架构约定特点
-- 游戏项目的多层架构不能反向引用
-- 修改 `.proto` 文件后必须同步客户端和服务端
-
-Danya **理解这些**，并且通过机械化的 Hook 和评分制审查来**强制执行**。
+### 工程化能力
+- **三层隔离** — 自动检测 workspace（client + server），workspace 层 + 子项目层各有独立配置
+- **Legacy 兼容** — 自动整合 `.claude/` 和 `.codex/` 已有配置到 `.danya/`，无缝迁移
+- **智能上下文压缩** — 语义分组 + 选择性压缩 + 8 段结构化摘要 + 关键文件自动恢复
+- **Subagent 调度** — 5+ 工具调用自动使用子 Agent，避免主上下文污染
+- **自动初始化** — 首次启动时静默生成 `.danya/` 完整体系，无需手动 /init
 
 ---
 
@@ -180,36 +144,49 @@ Danya 启动时自动检测项目引擎类型，注入对应的领域知识：
 
 这意味着 Agent 从**第一行输出**就知道项目的规则，不需要你反复提醒。
 
-### 2. 自动生成代码禁区防护
+### 2. 完整 Harness 开箱即用
 
-游戏项目中有大量自动生成的代码（配置表、ORM、Protobuf 桩代码）。通用助手不知道这些不能碰，经常修改后被下一次生成覆盖。
+进入项目启动 Danya，自动生成完整的治理体系：
+
+```
+.danya/
+├── rules/           — 约束规则（constitution、golden-principles、known-pitfalls...）
+├── commands/        — 工作流命令（auto-work、review、fix-harness、verify...）
+├── memory/          — 持久领域知识（架构层级、调用链、配置管线...）
+├── hooks/           — 机械执行脚本（禁区守卫、提交检查、推送闸门、自演进检测...）
+├── settings.json    — Hook 注册
+├── gate-chain.json  — 门禁链配置
+└── guard-rules.json — 禁区规则
+```
+
+4 套引擎模板内置（Unity、Go Server、Unreal、Godot），根据检测结果自动选择。用户可以自由增删改规则，Danya 不会覆盖用户的自定义内容。
+
+### 3. 自动生成代码禁区防护
 
 Danya 的 **Gate 0 (Guard)** 在文件编辑前就拦截：
 
 ```
 Agent 尝试编辑 Config/Gen/XXXConfig.cs
   → Guard Hook 检测到禁区
-  → ❌ 阻断编辑
+  → 阻断编辑
   → 告知 Agent："这是自动生成代码，改 Excel 源文件后重新生成"
 ```
 
-### 3. 评分制代码审查（不再是 PASS/FAIL）
-
-通用助手的代码审查只能给出主观的"看起来不错"。Danya 用**量化的评分系统**：
+### 4. 评分制代码审查（不再是 PASS/FAIL）
 
 ```
 初始分：100
 CRITICAL: -30（任何 CRITICAL = 直接 FAIL）
 HIGH:     -10
 MEDIUM:    -3
-通过线：≥80 且无 CRITICAL
+通过线：>=80 且无 CRITICAL
 
 质量棘轮：分数只升不降，防止"修一个 bug 引入两个新 bug"
 ```
 
 33 条机械检查自动运行（5 套引擎规则），AI 判断补充架构和逻辑审查。
 
-### 4. 全自动开发流水线
+### 5. 全自动开发流水线
 
 一条命令完成整个开发周期：
 
@@ -223,8 +200,6 @@ MEDIUM:    -3
 → Stage 4: 提交 → <feat>(inventory) add item sorting
 → Stage 5: 沉淀 → Docs/Version/v1.2/inventory-sorting/summary.md
 → Stage 6: 自演进 → 更新规则文件
-
-═══ AUTO-WORK COMPLETE ═══
 ```
 
 Bug 修复有专用流水线，**必须先复现才能修**：
@@ -235,7 +210,35 @@ Bug 修复有专用流水线，**必须先复现才能修**：
 → 复现 → 定位根因 → 修复(最多5轮) → 审查 → 提交 → 经验固化
 ```
 
-### 5. 多模型支持（国内团队友好）
+### 6. Harness 自演进
+
+Agent 修复错误后，系统自动检测"出错→修复"模式，提示更新规则：
+
+```
+Agent 编译出错 → 修复 → 编译成功
+  → 系统检测到 error-then-fix 模式
+  → 提示 Agent 运行 /fix-harness
+  → 自动路由到正确的规则文件（constitution / golden-principles / known-pitfalls...）
+  → 添加：错误写法 + 正确写法
+  → 下次不再犯同样的错
+```
+
+### 7. 三层隔离（Workspace 模式）
+
+当项目包含客户端 + 服务器时，Danya 自动识别并创建分层配置：
+
+```
+workspace/
+├── .danya/                — 跨项目规则（协议同步、配置表、版本管理）
+├── client/
+│   └── .danya/            — 客户端专属（Unity 规则、C# Hook、UI 架构）
+└── server/
+    └── .danya/            — 服务端专属（Go 规则、RPC 约束、ECS 架构）
+```
+
+单项目（仅客户端或仅服务器）则只用一层。
+
+### 8. 多模型支持（国内团队友好）
 
 不锁定任何一家 AI 提供商。4 种语义指针让不同任务用不同模型：
 
@@ -249,7 +252,17 @@ pointers:
 
 内置 3 个预设：`china.yaml`（DeepSeek+千问+智谱）、`international.yaml`（Claude+GPT）、`single-model.yaml`（单模型极简配置）。
 
-### 6. 知识不丢失
+### 9. 智能上下文压缩
+
+长对话不会"失忆"——融合两种压缩策略的最优方案：
+
+- **选择性压缩**：只压缩最老的消息，保留最近 4 条原文
+- **语义分组**：工具调用请求和结果配对，不拆散完整交互
+- **8 段结构化摘要**：技术上下文、项目概览、代码变更、调试问题、当前状态、待办任务、用户偏好、关键决策
+- **关键文件自动恢复**：压缩后自动恢复最近访问的 5 个文件
+- **模型智能切换**：优先用 compact 模型压缩，装不下时自动切 main 模型
+
+### 10. 知识不丢失
 
 游戏项目的知识容易随人员流动丢失。Danya 在每次任务完成后**自动沉淀**：
 
@@ -295,21 +308,23 @@ Edit → Guard → Syntax → Verify → Commit → Review → Push
 
 - **机械执行（Hook）**：Guard / Syntax / Commit / Push — shell 脚本，Agent 无法绕过
 - **AI 判断（评分）**：Review — 需要理解代码质量，靠评分系统量化
+- **自演进检测（Hook）**：PostToolUse 自动检测 error-then-fix 模式
 
 **Push 令牌制**：审查通过才生成 `push-approved` 令牌，push 时检查并消费（一次性使用）。
 
 ---
 
-## 技术架构
+## 与其他工具的兼容
 
-融合三个项目的最优设计：
-
-| 来源 | 贡献 |
+| 场景 | 行为 |
 |------|------|
-| **XXXXXX XXXX** | 工具系统(43工具)、Hook 系统(18事件)、权限层叠、对话压缩、Prompt 缓存 |
-| **Kode** | 多模型系统(20+提供商)、Provider 适配器、模型配置 YAML、React/Ink 终端 UI |
-| **Game Harness Engineering （Danya 原创）** | 门禁链、评分审查、全自动流水线、知识沉淀、Harness 自演进 |
-| **Danya 原创** | 游戏引擎检测、引擎变体提示词、13 个游戏工具、AGENTS.md 模板 |
+| 项目已有 `.claude/` | 自动整合到 `.danya/`，不丢失自定义内容 |
+| 项目已有 `.codex/` | 同上，自动整合 |
+| `.danya/` 和 `.claude/` 同时存在 | `.danya/` 优先，`.claude/` 中独有的内容整合进来 |
+| 同名文件冲突 | `.danya/` 的保留，`.claude/` 的跳过 |
+| 运行时 | 只读 `.danya/`，不再读 `.claude/` 或 `.codex/` |
+| Claude 模型 | `/init` 生成 `CLAUDE.md` |
+| 其他模型 | `/init` 生成 `AGENTS.md` |
 
 ---
 
@@ -330,25 +345,22 @@ Edit → Guard → Syntax → Verify → Commit → Review → Push
 
 ```
 ~/.danya/config.json       — 全局配置（API Key、模型配置）
-.danya/settings.json       — 项目 Hook 和权限配置
-.danya/gate-chain.json     — 门禁链配置
-.danya/guard-rules.json    — 禁区规则
-AGENTS.md                  — 项目指令（AI 读取的规则和上下文）
+.danya/
+├── settings.json          — Hook 注册
+├── gate-chain.json        — 门禁链配置
+├── guard-rules.json       — 禁区规则
+├── rules/                 — 约束规则（可自定义）
+├── commands/              — 工作流命令（可自定义）
+├── memory/                — 持久领域知识
+└── hooks/                 — 机械执行脚本
+CLAUDE.md / AGENTS.md      — 项目指令
 ```
-
----
-
-## 文档
-
-- [快速开始](docs/getting-started.md)
-- [配置指南](docs/configuration.md)
-- 引擎指南：[Unity](docs/engine-guides/unity.md) | [Unreal](docs/engine-guides/unreal.md) | [Godot](docs/engine-guides/godot.md) | [Go 服务端](docs/engine-guides/go-server.md)
 
 ---
 
 ## 学习项目声明
 
-Danya 是一个**学习项目**，用于研究 AI Agent 在游戏开发中的工程化实践。它融合了 Claude Code、Kode、Game Harness Engineering 的设计，不用于商业用途。
+Danya 是一个**学习项目**，用于研究 AI Agent 在游戏开发中的工程化实践。不用于商业用途。
 
 核心价值不在于"又做了一个 Claude Code"，而在于回答一个问题：**AI Agent 专门为游戏开发定制后，能比通用助手好多少？**
 
@@ -357,7 +369,9 @@ Danya 是一个**学习项目**，用于研究 AI Agent 在游戏开发中的工
 - 通用助手不知道自动生成目录不能碰 → Danya Hook 硬拦截
 - 通用助手的审查是 PASS/FAIL → Danya 是 100 分制量化评分
 - 通用助手不沉淀知识 → Danya 自动写文档到 Docs/
-- 将一套经过验证的 Harness 融合到 Agent 中，开箱即用
+- 通用助手出错不会自我进化 → Danya 自动更新规则防止重犯
+- 通用助手不懂 workspace 隔离 → Danya 自动识别 client/server 分层配置
+- 将一套经过验证的 Game Harness 融合到 Agent 中，开箱即用
 
 **领域专用 > 通用万能。**
 
