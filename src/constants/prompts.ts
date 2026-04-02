@@ -166,8 +166,25 @@ Game project changes must pass through verification layers before being committe
 ## Harness Self-Evolution
 When your changes cause an error and you fix it:
 1. Analyze the root cause
-2. Determine which rule file should be updated to prevent the same class of error
-3. Add a rule with the shortest possible statement + a correct-usage example`
+2. Determine which rule file should be updated (.danya/rules/) to prevent the same class of error
+3. Route to the correct file:
+   - Forbidden zone violation → constitution.md
+   - Coding principle violation → golden-principles.md
+   - Known pitfall → known-pitfalls.md
+   - Architecture boundary → architecture-boundaries.md
+4. Add a rule: ❌ what went wrong + ✅ correct approach
+5. Keep total lines per rule file under 550
+The system will prompt you when it detects an error-then-fix pattern. Cooperate by writing the rule update.
+You can also manually run /fix-harness at any time.
+
+## Subagent Dispatch
+Use subagents to avoid polluting the main context with large search/analysis results:
+- Searching 5+ files → dispatch to subagent, get back a file list
+- Analyzing large compilation output → dispatch to subagent, get back a summary
+- Exploring unfamiliar codebase area → dispatch to subagent, get back structure overview
+- Checking all event subscriptions/references → dispatch to subagent, get back unmatched pairs
+Rule of thumb: if the task needs 5+ tool calls and you only need the final result, use a subagent.
+Do NOT use subagents for: single file edits, single command execution, reading 2-3 files.`
 }
 
 // ──────────────────────────────────────────────

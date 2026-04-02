@@ -16,6 +16,7 @@ import { gt } from 'semver'
 import { isDirEmpty } from '@utils/fs/file'
 import { MACRO } from '@constants/macros'
 import { PROJECT_FILE, PRODUCT_NAME } from '@constants/product'
+import { autoInitHarness } from '../screens/autoInitHarness'
 
 export function markProjectOnboardingComplete(): void {
   const projectConfig = getCurrentProjectConfig()
@@ -68,6 +69,13 @@ export default function ProjectOnboarding({
   const isWorkspaceDirEmpty = isDirEmpty(workspaceDir)
   const shouldRecommendProjectGuide =
     !workspaceHasProjectGuide && !isWorkspaceDirEmpty
+
+  // Auto-init harness if .danya/ doesn't exist
+  React.useEffect(() => {
+    if (!isWorkspaceDirEmpty) {
+      autoInitHarness(workspaceDir)
+    }
+  }, [workspaceDir, isWorkspaceDirEmpty])
 
   const theme = getTheme()
 

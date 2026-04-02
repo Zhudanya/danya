@@ -14,7 +14,6 @@ export function loadHooksFromSettings(cwd: string): HooksConfig {
 
   const candidates = [
     join(cwd, '.danya', 'settings.json'),
-    join(cwd, '.claude', 'settings.json'), // legacy compat
   ]
 
   for (const path of candidates) {

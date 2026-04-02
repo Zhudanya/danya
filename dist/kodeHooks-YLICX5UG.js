@@ -13,7 +13,7 @@ import {
   runStopHooks,
   runUserPromptSubmitHooks,
   updateHookTranscriptForMessages
-} from "./chunk-H3P32G2A.js";
+} from "./chunk-IMR5BHXA.js";
 import "./chunk-U7Z4MXY4.js";
 import "./chunk-2VUDETSP.js";
 import "./chunk-2VQWLLDU.js";

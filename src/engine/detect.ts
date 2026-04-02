@@ -124,3 +124,68 @@ export function detectProject(projectPath: string): ProjectDetection {
 
   return { engine, serverLanguage, languages }
 }
+
+// ── Workspace Detection ────────────────────────────────
+
+export type WorkspaceType = 'workspace' | 'single-project'
+
+export interface SubProjectInfo {
+  name: string
+  path: string
+  engine: EngineType
+  serverLanguage: ServerLanguage
+  role: 'client' | 'server' | 'shared' | 'unknown'
+}
+
+export interface WorkspaceDetection {
+  type: WorkspaceType
+  rootPath: string
+  subProjects: SubProjectInfo[]
+}
+
+function inferRole(name: string, engine: EngineType, serverLanguage: ServerLanguage): SubProjectInfo['role'] {
+  const lower = name.toLowerCase()
+  if (lower.includes('client') || lower.includes('game-client')) return 'client'
+  if (lower.includes('server') || lower.includes('game-server')) return 'server'
+  if (lower.includes('shared') || lower.includes('common')) return 'shared'
+  if (engine) return 'client'
+  if (serverLanguage) return 'server'
+  return 'unknown'
+}
+
+export function detectWorkspace(rootPath: string): WorkspaceDetection {
+  const { readdirSync, statSync } = require('fs')
+  const subProjects: SubProjectInfo[] = []
+
+  try {
+    const entries = readdirSync(rootPath) as string[]
+    for (const entry of entries) {
+      if (entry.startsWith('.') || entry === 'node_modules' || entry === 'dist' || entry === 'Docs' || entry === 'Tools') continue
+      const subPath = join(rootPath, entry)
+      try {
+        if (!statSync(subPath).isDirectory()) continue
+      } catch { continue }
+
+      const engine = detectEngine(subPath)
+      const serverLanguage = detectServerLanguage(subPath)
+
+      if (engine || serverLanguage) {
+        subProjects.push({
+          name: entry,
+          path: subPath,
+          engine,
+          serverLanguage,
+          role: inferRole(entry, engine, serverLanguage),
+        })
+      }
+    }
+  } catch {
+    // ignore read errors
+  }
+
+  if (subProjects.length >= 2) {
+    return { type: 'workspace', rootPath, subProjects }
+  }
+
+  return { type: 'single-project', rootPath, subProjects: [] }
+}

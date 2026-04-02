@@ -506,7 +506,7 @@ async function runPromptHook(args) {
     fallbackTimeoutMs: args.fallbackTimeoutMs
   });
   try {
-    const { queryQuick } = await import("./llmLazy-45EGHX2A.js");
+    const { queryQuick } = await import("./llmLazy-LXGY32B6.js");
     const systemPrompt = [
       "You are executing a Danya prompt hook.",
       "Return a single JSON object only (no markdown, no prose).",

@@ -26,6 +26,7 @@ import review from './review'
 import autoWork from './auto-work'
 import autoBugfix from './auto-bugfix'
 import parallelExecute from './parallel-execute'
+import fixHarness from './fix-harness'
 import rename from './rename'
 import statusline from './statusline'
 import tag from './tag'
@@ -119,6 +120,7 @@ const COMMANDS = memoize((): Command[] => [
   autoWork,
   autoBugfix,
   parallelExecute,
+  fixHarness,
   todos,
   ...(isAnthropicAuthEnabled() ? [logout, login()] : []),
   ...INTERNAL_ONLY_COMMANDS,

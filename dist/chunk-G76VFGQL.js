@@ -58,7 +58,7 @@ import {
   runStopHooks,
   runUserPromptSubmitHooks,
   updateHookTranscriptForMessages
-} from "./chunk-H3P32G2A.js";
+} from "./chunk-IMR5BHXA.js";
 import {
   getDanyaAgentSessionId,
   setDanyaAgentSessionId
@@ -80,7 +80,7 @@ import {
   queryLLM,
   queryQuick,
   verifyApiKey
-} from "./chunk-6KD43S3G.js";
+} from "./chunk-XCY7AM56.js";
 import {
   listAllContentFiles,
   ripGrep
@@ -154,7 +154,7 @@ import {
   processUserInput,
   reorderMessages,
   stripSystemMessages
-} from "./chunk-QUAOJLG6.js";
+} from "./chunk-MUM4USJX.js";
 import {
   ModelManager,
   getModelManager,
@@ -251,15 +251,16 @@ import {
 import {
   __esm,
   __export,
-  __require
+  __require,
+  __toCommonJS
 } from "./chunk-M3TKNAUR.js";
 
 // src/engine/detect.ts
-import { existsSync as existsSync15 } from "fs";
-import { join as join13 } from "path";
+import { existsSync as existsSync8 } from "fs";
+import { join as join6 } from "path";
 import { globSync } from "glob";
 function detectEngine(projectPath) {
-  if (existsSync15(join13(projectPath, "ProjectSettings")) && existsSync15(join13(projectPath, "Assets"))) {
+  if (existsSync8(join6(projectPath, "ProjectSettings")) && existsSync8(join6(projectPath, "Assets"))) {
     return "unity";
   }
   try {
@@ -269,13 +270,13 @@ function detectEngine(projectPath) {
     }
   } catch {
   }
-  if (existsSync15(join13(projectPath, "project.godot"))) {
+  if (existsSync8(join6(projectPath, "project.godot"))) {
     return "godot";
   }
   const parentCandidates = ["client", "server", "game-client", "game-server"];
   for (const candidate of parentCandidates) {
-    const subPath = join13(projectPath, candidate);
-    if (existsSync15(subPath)) {
+    const subPath = join6(projectPath, candidate);
+    if (existsSync8(subPath)) {
       const subEngine = detectEngine(subPath);
       if (subEngine) return subEngine;
     }
@@ -283,24 +284,24 @@ function detectEngine(projectPath) {
   return null;
 }
 function detectServerLanguage(projectPath) {
-  if (existsSync15(join13(projectPath, "go.mod"))) {
+  if (existsSync8(join6(projectPath, "go.mod"))) {
     return "go";
   }
-  if (existsSync15(join13(projectPath, "Makefile"))) {
+  if (existsSync8(join6(projectPath, "Makefile"))) {
     try {
-      const { readFileSync: readFileSync11 } = __require("fs");
-      const makefile = readFileSync11(join13(projectPath, "Makefile"), "utf-8");
+      const { readFileSync: readFileSync13 } = __require("fs");
+      const makefile = readFileSync13(join6(projectPath, "Makefile"), "utf-8");
       if (makefile.includes("go build") || makefile.includes("go test")) {
         return "go";
       }
     } catch {
     }
   }
-  if (existsSync15(join13(projectPath, "CMakeLists.txt"))) {
+  if (existsSync8(join6(projectPath, "CMakeLists.txt"))) {
     return "cpp";
   }
-  const serverDir = join13(projectPath, "server");
-  if (existsSync15(serverDir) && projectPath !== serverDir) {
+  const serverDir = join6(projectPath, "server");
+  if (existsSync8(serverDir) && projectPath !== serverDir) {
     return detectServerLanguage(serverDir);
   }
   return null;
@@ -340,8 +341,394 @@ function detectProject(projectPath) {
   const languages = detectLanguages(engine, serverLanguage);
   return { engine, serverLanguage, languages };
 }
+function inferRole(name2, engine, serverLanguage) {
+  const lower = name2.toLowerCase();
+  if (lower.includes("client") || lower.includes("game-client")) return "client";
+  if (lower.includes("server") || lower.includes("game-server")) return "server";
+  if (lower.includes("shared") || lower.includes("common")) return "shared";
+  if (engine) return "client";
+  if (serverLanguage) return "server";
+  return "unknown";
+}
+function detectWorkspace(rootPath) {
+  const { readdirSync: readdirSync6, statSync: statSync15 } = __require("fs");
+  const subProjects = [];
+  try {
+    const entries = readdirSync6(rootPath);
+    for (const entry of entries) {
+      if (entry.startsWith(".") || entry === "node_modules" || entry === "dist" || entry === "Docs" || entry === "Tools") continue;
+      const subPath = join6(rootPath, entry);
+      try {
+        if (!statSync15(subPath).isDirectory()) continue;
+      } catch {
+        continue;
+      }
+      const engine = detectEngine(subPath);
+      const serverLanguage = detectServerLanguage(subPath);
+      if (engine || serverLanguage) {
+        subProjects.push({
+          name: entry,
+          path: subPath,
+          engine,
+          serverLanguage,
+          role: inferRole(entry, engine, serverLanguage)
+        });
+      }
+    }
+  } catch {
+  }
+  if (subProjects.length >= 2) {
+    return { type: "workspace", rootPath, subProjects };
+  }
+  return { type: "single-project", rootPath, subProjects: [] };
+}
 var init_detect = __esm({
   "src/engine/detect.ts"() {
+  }
+});
+
+// src/templates/bundles/common.ts
+var common_exports = {};
+__export(common_exports, {
+  CMD_AUTO_BUGFIX: () => CMD_AUTO_BUGFIX,
+  CMD_AUTO_WORK: () => CMD_AUTO_WORK,
+  CMD_FIX_HARNESS: () => CMD_FIX_HARNESS,
+  CMD_PARALLEL_EXECUTE: () => CMD_PARALLEL_EXECUTE,
+  CMD_PLAN: () => CMD_PLAN,
+  CMD_REVIEW: () => CMD_REVIEW,
+  CMD_VERIFY: () => CMD_VERIFY,
+  HOOK_CONSTITUTION_GUARD: () => HOOK_CONSTITUTION_GUARD,
+  HOOK_HARNESS_EVOLUTION: () => HOOK_HARNESS_EVOLUTION,
+  HOOK_POST_COMMIT: () => HOOK_POST_COMMIT,
+  HOOK_PRE_COMMIT: () => HOOK_PRE_COMMIT,
+  HOOK_PUSH_GATE: () => HOOK_PUSH_GATE,
+  MEMORY_INDEX: () => MEMORY_INDEX,
+  RULE_ARCHITECTURE_BOUNDARIES: () => RULE_ARCHITECTURE_BOUNDARIES,
+  RULE_KNOWN_PITFALLS: () => RULE_KNOWN_PITFALLS
+});
+var CMD_AUTO_WORK, CMD_AUTO_BUGFIX, CMD_REVIEW, CMD_FIX_HARNESS, CMD_PLAN, CMD_VERIFY, CMD_PARALLEL_EXECUTE, RULE_KNOWN_PITFALLS, RULE_ARCHITECTURE_BOUNDARIES, MEMORY_INDEX, HOOK_CONSTITUTION_GUARD, HOOK_PRE_COMMIT, HOOK_POST_COMMIT, HOOK_PUSH_GATE, HOOK_HARNESS_EVOLUTION;
+var init_common = __esm({
+  "src/templates/bundles/common.ts"() {
+    CMD_AUTO_WORK = `# /auto-work <requirement>
+
+Full-auto development pipeline. Walks through the entire cycle without manual intervention.
+
+## Stages
+
+### Stage 0: Classify
+Determine requirement type: bug | feature | refactor
+
+### Stage 1: Plan
+- List all files to modify with 1-line intent per file
+- If >3 tasks and parallelizable \u2192 switch to parallel mode
+
+### Stage 2: Code
+- Modify files per plan
+- After each file \u2192 compile check immediately (fail-fast)
+- After all: run /verify
+- Verify fail \u2192 fix (max 3 rounds), else abort
+
+### Stage 3: Review
+- Run /review (100-point scoring)
+- CRITICAL \u2192 fail; <80 \u2192 fail
+- Quality ratchet: score must not drop
+- Pass \u2192 write push-approved marker
+
+### Stage 4: Commit
+- git add + git commit
+- Pre-commit hook runs lint + test
+- Fail \u2192 fix and retry (max 2 times)
+
+### Stage 5: Knowledge Deposit
+- Feature \u2192 Docs/Version/<version>/<feature>/summary.md
+- Bug \u2192 Docs/Bugs/<version>/<bug-name>.md
+- New module \u2192 Docs/Engine/Business/<module>/
+
+### Stage 6: Harness Self-Evolution
+- Check for errors fixed in Stages 2-3
+- If found \u2192 update .danya/rules/ to prevent recurrence
+
+## Termination Conditions
+- Verify fail after 3 rounds (Stage 2)
+- Review score <80 after 3 rounds (Stage 3)
+- Commit fail after 2 attempts (Stage 4)
+
+## Important
+- Do NOT push. Push is manual after human review.
+- Do NOT skip stages. Each stage must complete before next.
+`;
+    CMD_AUTO_BUGFIX = `# /auto-bugfix <bug-description>
+
+Autonomous bug-fix pipeline. Must reproduce before fixing.
+
+## Flow
+
+### Step 1: Reproduce
+- Analyze bug description
+- Find reproduction steps
+- Verify the bug exists (compile, run test, check logs)
+- If NOT reproducible \u2192 report and STOP
+
+### Step 2: Root Cause Analysis
+- Trace from symptom to root cause
+- Do NOT guess. Read code, check logs, add debug output if needed.
+
+### Step 3: Fix (max 5 rounds)
+- Modify code to fix root cause
+- Run /verify after each fix attempt
+- If verify fails \u2192 analyze why and try again
+- If 5 rounds exhausted \u2192 report failure
+
+### Step 4: Review + Commit
+- Run /review (must pass \u226580, no CRITICAL)
+- git commit with descriptive message
+
+### Step 5: Knowledge Deposit
+- Write to Docs/Bugs/<version>/<bug-name>.md
+- Include: reproduction steps, root cause, fix, lessons learned
+
+### Step 6: Harness Evolution
+- If this bug type isn't in known-pitfalls.md \u2192 add it
+`;
+    CMD_REVIEW = `# /review
+
+Score-based code review. Quantitative, not subjective.
+
+## Pre-check
+Run /verify first. If verify fails, fix before reviewing.
+
+## Scoring System
+- Initial score: 100
+- CRITICAL: -30 each (any CRITICAL = automatic FAIL)
+- HIGH: -10 each
+- MEDIUM: -3 each
+- Pass threshold: \u226580 AND no CRITICAL
+
+## Check Categories
+
+### 1. Architecture Compliance (mechanical + AI)
+- Forbidden file edits (constitution)?
+- Cross-layer imports?
+- Package boundary violations?
+
+### 2. Coding Standards (mechanical + AI)
+- Engine-specific style violations?
+- Error handling patterns?
+- Naming conventions?
+
+### 3. Logic Review (AI only)
+- Intent clarity
+- Error propagation
+- Concurrency safety
+- Edge cases
+- Dead code
+
+### 4. Harness Completeness
+- Were errors fixed during development?
+- Did rules get updated to match?
+
+## Quality Ratchet
+Score must not drop compared to previous review. If it drops, the fix introduced regressions.
+
+## Output
+On PASS: write .danya/push-approved marker (one-time use).
+On FAIL: list all issues with severity, do NOT write marker.
+`;
+    CMD_FIX_HARNESS = `# /fix-harness [error-description]
+
+Update harness rules after discovering an error pattern.
+
+## Process
+
+1. Analyze the error that occurred
+2. Route to the correct rule file:
+   - Forbidden zone violation \u2192 constitution.md
+   - Coding principle violation \u2192 golden-principles.md
+   - Known pitfall re-occurrence \u2192 known-pitfalls.md
+   - Architecture boundary violation \u2192 architecture-boundaries.md
+   - Style issue \u2192 engine-style rule file
+3. Add a concise rule:
+   - \u274C What went wrong (with example)
+   - \u2705 Correct approach (with example)
+4. If mechanically checkable \u2192 add to /verify checks
+5. Check total rule file lines < 550 (if exceeded, consolidate)
+
+## Important
+- Only add NEW patterns not already captured
+- Keep rules minimal: one error = one rule
+- Include correct-usage example, not just prohibition
+`;
+    CMD_PLAN = `# /plan <requirement>
+
+Analyze requirement and create a development plan.
+
+## Output Format
+
+### 1. Requirement Analysis
+- What needs to change and why
+- Scope assessment
+
+### 2. File Checklist
+For each file to modify:
+- File path
+- 1-line description of changes
+- Risk level (low/medium/high)
+
+### 3. Execution Order
+- Dependencies between changes
+- Which files can be modified in parallel
+- Which must be sequential
+
+### 4. Verification Strategy
+- How to verify each change works
+- Integration test approach
+
+## Rules
+- Read existing code before planning changes
+- Check architecture boundaries before proposing cross-layer changes
+- Flag any forbidden zone files that would need regeneration
+`;
+    CMD_VERIFY = `# /verify [level]
+
+Mechanical verification checks. Levels: quick | build | full
+
+## quick (default)
+- Lint check
+- Syntax check (engine-specific)
+
+## build
+- Everything in quick
+- Full compilation/build
+
+## full
+- Everything in build
+- Run tests
+- Architecture boundary check
+
+## Important
+- Run this BEFORE /review
+- If verify fails, fix issues before reviewing
+- Exit with clear pass/fail and error details
+`;
+    CMD_PARALLEL_EXECUTE = `# /parallel-execute <mode> <description>
+
+Wave-based parallel task execution.
+
+## Modes
+- prepare: Decompose task into sub-tasks with dependency declarations
+- execute: Run prepared tasks in parallel waves
+
+## Prepare Mode
+Create task files in .danya/exec-plans/active/:
+- task-01.md, task-02.md, etc.
+- Each has YAML frontmatter with \`depends: []\` field
+- Tasks with no dependencies \u2192 Wave 1
+- Tasks depending on Wave 1 \u2192 Wave 2, etc.
+
+## Execute Mode
+- Parse dependency DAG \u2192 compute waves
+- Wave 1: run all independent tasks in parallel (separate worktrees)
+- Collect results, merge successful tasks
+- Wave 2: run next batch
+- Continue until all waves complete
+- Run /verify full on integrated code
+
+## Rules
+- Each task must be atomic (can succeed/fail independently)
+- Failed task \u2192 rollback its worktree, don't affect others
+- Cyclic dependencies \u2192 error, re-decompose
+`;
+    RULE_KNOWN_PITFALLS = `# Known Pitfalls
+
+Real errors encountered during development. Each entry prevents the same mistake.
+
+_This file grows through harness self-evolution. Start empty, fill as errors occur._
+`;
+    RULE_ARCHITECTURE_BOUNDARIES = `# Architecture Boundaries
+
+Dependency direction rules. Higher layers can import lower layers, not vice versa.
+
+## General Principle
+- One-way dependencies: lower layers must NOT reference higher layers
+- Cross-module communication through events/interfaces, not direct references
+
+_Customize with your project's actual layer structure._
+`;
+    MEMORY_INDEX = `# Project Memory
+
+Persistent domain knowledge. Updated as the agent learns about this project.
+
+_Memory files are auto-loaded each session and survive context compression._
+`;
+    HOOK_CONSTITUTION_GUARD = `#!/bin/bash
+# Gate 0: GUARD \u2014 forbidden zone check. Exit 2 = block.
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
+[ -z "$FILE_PATH" ] && exit 0
+FILE_PATH=$(echo "$FILE_PATH" | sed 's/\\\\\\\\/\\//g')
+RULES=".danya/guard-rules.json"
+[ ! -f "$RULES" ] && exit 0
+while IFS= read -r p; do
+  p=$(echo "$p" | tr -d '"' | tr -d ' ')
+  [ -z "$p" ] && continue
+  if echo "$FILE_PATH" | grep -qE "$p" 2>/dev/null; then
+    echo "{\\"systemMessage\\":\\"\u274C GUARD: $FILE_PATH is in forbidden zone ($p). Edit the source data and regenerate instead.\\"}"
+    exit 2
+  fi
+done < <(grep '"pattern"' "$RULES" | sed 's/.*"pattern"\\s*:\\s*"//;s/".*//')
+exit 0
+`;
+    HOOK_PRE_COMMIT = `#!/bin/bash
+# Gate 3: COMMIT \u2014 pre-commit lint + test. Exit 2 = block.
+INPUT=$(cat)
+CMD=$(echo "$INPUT" | sed -n 's/.*"command"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
+echo "$CMD" | grep -qE 'git\\s+commit' || exit 0
+if [ -f "Makefile" ]; then
+  make lint > /tmp/danya-lint.log 2>&1 || { echo "\u274C Lint failed" >&2; tail -10 /tmp/danya-lint.log >&2; exit 2; }
+  make test > /tmp/danya-test.log 2>&1 || { echo "\u274C Tests failed" >&2; tail -10 /tmp/danya-test.log >&2; exit 2; }
+fi
+exit 0
+`;
+    HOOK_POST_COMMIT = `#!/bin/bash
+# Gate 4: Post-commit review reminder. Always exit 0.
+echo '{"systemMessage":"\u2705 Commit done. Run /review before push (score \u226580, no CRITICAL)."}'
+exit 0
+`;
+    HOOK_PUSH_GATE = `#!/bin/bash
+# Gate 5: PUSH \u2014 check push-approved marker. Exit 2 = block.
+INPUT=$(cat)
+CMD=$(echo "$INPUT" | sed -n 's/.*"command"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
+echo "$CMD" | grep -qE 'git[[:space:]]+push' || exit 0
+MARKER=".danya/push-approved"
+[ ! -f "$MARKER" ] && { echo "\u274C PUSH BLOCKED: run /review first" >&2; exit 2; }
+rm -f "$MARKER"
+exit 0
+`;
+    HOOK_HARNESS_EVOLUTION = `#!/bin/bash
+# PostToolUse: detect error-then-fix pattern for harness self-evolution.
+# Reads tool result, checks if a previous error was just fixed.
+# If so, injects a system message prompting the agent to update rules.
+INPUT=$(cat)
+TOOL_NAME=$(echo "$INPUT" | sed -n 's/.*"tool_name"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
+EXIT_CODE=$(echo "$INPUT" | sed -n 's/.*"exit_code"[[:space:]]*:[[:space:]]*\\([0-9]*\\).*/\\1/p' 2>/dev/null)
+
+# Track error state in a temp file
+STATE_FILE="/tmp/danya-error-state-$$"
+
+case "$TOOL_NAME" in
+  Bash)
+    if [ "$EXIT_CODE" != "0" ] && [ -n "$EXIT_CODE" ]; then
+      # Error occurred \u2014 record it
+      echo "error" > "$STATE_FILE"
+    elif [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE" 2>/dev/null)" = "error" ]; then
+      # Previous error, now success \u2014 fix confirmed
+      rm -f "$STATE_FILE"
+      echo '{"systemMessage":"\u{1F4A1} Error was fixed. Consider running /fix-harness to update rules and prevent this error pattern in the future."}'
+    fi
+    ;;
+esac
+exit 0
+`;
   }
 });
 
@@ -351,9 +738,9 @@ init_state();
 init_product();
 
 // src/tools/system/BashTool/BashTool.tsx
-import { statSync as statSync12 } from "fs";
+import { statSync as statSync14 } from "fs";
 import { EOL as EOL3 } from "os";
-import { isAbsolute as isAbsolute10, relative as relative13, resolve as resolve10 } from "path";
+import { isAbsolute as isAbsolute10, relative as relative15, resolve as resolve10 } from "path";
 import * as React108 from "react";
 import { z as z16 } from "zod";
 init_product();
@@ -527,7 +914,7 @@ var getCommandSubcommandPrefix = memoize(
 var getCommandPrefix = memoize(
   async (command4, abortSignal) => {
     const { systemPrompt, userPrompt } = buildBashCommandPrefixDetectionPrompt(command4);
-    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-IFU62ZT4.js");
+    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-QWCVITWY.js");
     const response = await queryQuick2({
       systemPrompt,
       userPrompt,
@@ -1623,11 +2010,11 @@ function isSensitiveFilePath(inputPath) {
   if (p.startsWith("\\\\") || p.startsWith("//")) return true;
   const absolutePath = resolveLikeCliPath(p);
   const parts = toPosixPath(absolutePath).split(POSIX_SEP);
-  const basename6 = parts[parts.length - 1] ?? "";
+  const basename9 = parts[parts.length - 1] ?? "";
   for (const part of parts) {
     if (SENSITIVE_DIR_NAMES.has(toLower(part))) return true;
   }
-  if (basename6 && SENSITIVE_FILE_NAMES.has(toLower(basename6))) return true;
+  if (basename9 && SENSITIVE_FILE_NAMES.has(toLower(basename9))) return true;
   return false;
 }
 function getSettingsPathsForWriteProtection(options) {
@@ -1708,13 +2095,13 @@ function isPathInWorkingDirectories(inputPath, context) {
         toPosixPath(resolvedCandidate)
       );
       const rootPosix = normalizeMacPrivatePrefix(toPosixPath(resolvedRoot));
-      const relative14 = posixRelative(
+      const relative16 = posixRelative(
         toLower(rootPosix),
         toLower(candidatePosix)
       );
-      if (relative14 === "") return true;
-      if (hasParentTraversalSegment(relative14)) return false;
-      if (POSIX.isAbsolute(relative14)) return false;
+      if (relative16 === "") return true;
+      if (hasParentTraversalSegment(relative16)) return false;
+      if (POSIX.isAbsolute(relative16)) return false;
       return true;
     });
   });
@@ -1817,9 +2204,9 @@ function matchPermissionRuleForPath(args) {
   }
   for (const [root, patternsMap] of grouped.entries()) {
     const baseRoot = root ?? getCwd();
-    const relative14 = posixRelative(baseRoot, targetPosix);
-    if (relative14.startsWith(`..${POSIX_SEP}`)) continue;
-    if (!relative14) continue;
+    const relative16 = posixRelative(baseRoot, targetPosix);
+    if (relative16.startsWith(`..${POSIX_SEP}`)) continue;
+    if (!relative16) continue;
     const matchAll = patternsMap.get("/**")?.ruleString ?? patternsMap.get("**")?.ruleString ?? null;
     if (matchAll) return matchAll;
     const patterns = Array.from(patternsMap.keys()).map((pattern) => {
@@ -1833,7 +2220,7 @@ function matchPermissionRuleForPath(args) {
       return candidate;
     });
     const matcher = buildIgnoreMatcher(patterns);
-    const result = matcher.test(relative14);
+    const result = matcher.test(relative16);
     if (!result.ignored || !result.rule) continue;
     let matched = result.rule.pattern;
     const matchedWithGlob = `${matched}/**`;
@@ -4596,7 +4983,7 @@ function formatParseError(error) {
   return error instanceof Error ? error.message : String(error);
 }
 async function defaultGateQuery(args) {
-  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-IFU62ZT4.js");
+  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-QWCVITWY.js");
   const messages = [
     {
       type: "user",
@@ -10539,8 +10926,8 @@ var help_default = help;
 import * as React28 from "react";
 import { OrderedList } from "@inkjs/ui";
 import { Box as Box21, Text as Text24 } from "ink";
-import { existsSync as existsSync8 } from "fs";
-import { join as join6 } from "path";
+import { existsSync as existsSync13 } from "fs";
+import { join as join11 } from "path";
 import { homedir as homedir6 } from "os";
 
 // src/constants/releaseNotes.ts
@@ -10554,6 +10941,869 @@ var RELEASE_NOTES = {
 import { gt } from "semver";
 init_macros();
 init_product();
+
+// src/ui/screens/autoInitHarness.ts
+import { existsSync as existsSync12 } from "fs";
+import { join as join10 } from "path";
+
+// src/commands/initProject.ts
+init_detect();
+import { writeFileSync as writeFileSync6, existsSync as existsSync11 } from "fs";
+import { join as join9, basename as basename4 } from "path";
+
+// src/templates/templateEngine.ts
+function renderTemplate(content, ctx) {
+  return content.replace(/\{\{PROJECT_NAME\}\}/g, ctx.projectName).replace(/\{\{ENGINE\}\}/g, ctx.engine ?? "unknown").replace(/\{\{SERVER_LANG\}\}/g, ctx.serverLanguage ?? "none").replace(/\{\{CONFIG_GEN_PATH\}\}/g, ctx.configGenPath).replace(/\{\{FRAMEWORK_PATH\}\}/g, ctx.frameworkPath).replace(/\{\{PROTO_PATH\}\}/g, ctx.protoPath).replace(/\{\{ORM_PATH\}\}/g, ctx.ormPath).replace(/\{\{INSTRUCTIONS_FILE\}\}/g, ctx.instructionsFile);
+}
+function buildTemplateContext(projectName, engine, serverLanguage, instructionsFile) {
+  let configGenPath = "Config/Gen/";
+  let frameworkPath = "Scripts/Framework/";
+  let protoPath = "Proto/";
+  let ormPath = "orm/";
+  if (engine === "unity") {
+    configGenPath = "Assets/Scripts/Gameplay/Config/Gen/";
+    frameworkPath = "Assets/Scripts/Framework/";
+    protoPath = "Assets/Scripts/Proto/";
+  } else if (engine === "unreal") {
+    configGenPath = "Source/Generated/";
+    frameworkPath = "Source/Core/";
+    protoPath = "Source/Proto/";
+  } else if (engine === "godot") {
+    configGenPath = "scripts/generated/";
+    frameworkPath = "scripts/core/";
+    protoPath = "proto/";
+  }
+  if (serverLanguage === "go") {
+    configGenPath = "common/config/cfg_*.go";
+    ormPath = "orm/(golang|redis|mongo)/";
+    protoPath = "resources/proto/";
+  }
+  return { projectName, engine, serverLanguage, configGenPath, frameworkPath, protoPath, ormPath, instructionsFile };
+}
+
+// src/templates/bundleInstaller.ts
+import { mkdirSync as mkdirSync5, writeFileSync as writeFileSync4, existsSync as existsSync9 } from "fs";
+import { join as join7, relative as relative11, dirname as dirname6 } from "path";
+function installBundle(targetDir, bundleContent, ctx, options = {}) {
+  const installed = [];
+  for (const [relativePath, content] of Object.entries(bundleContent)) {
+    const targetPath = join7(targetDir, relativePath);
+    const dir = dirname6(targetPath);
+    if (!existsSync9(targetPath) || options.force) {
+      mkdirSync5(dir, { recursive: true });
+      const rendered = relativePath.endsWith(".tmpl") ? renderTemplate(content, ctx) : content;
+      const finalPath = relativePath.endsWith(".tmpl") ? targetPath.replace(/\.tmpl$/, "") : targetPath;
+      writeFileSync4(finalPath, rendered, { encoding: "utf-8", mode: relativePath.includes("hooks/") ? 493 : 420 });
+      installed.push(relative11(targetDir, finalPath));
+    }
+  }
+  return installed;
+}
+
+// src/templates/bundles/unity.ts
+var UNITY_RULES_CONSTITUTION = `# Forbidden Zone Constitution
+
+## Auto-Generated Code (DO NOT edit manually)
+- \`{{CONFIG_GEN_PATH}}\` \u2014 Generated config. Edit Excel/data source \u2192 run ConfigGenerate.
+- \`*_pb.cs\` \u2014 Protobuf generated. Edit .proto \u2192 regenerate.
+
+## Framework Layer (requires approval)
+- \`{{FRAMEWORK_PATH}}\` \u2014 Core framework code. Modifying without understanding impacts all systems.
+
+## Art & Resource Directories
+- \`ArtResources/\`, \`PackResources/\` \u2014 Managed by art pipeline, not code.
+- \`.unity\` scene files \u2014 Binary, merge-unfriendly. Coordinate with team.
+
+## Third-Party Plugins
+- \`Assets/Plugins/\`, \`Assets/3rd/\` \u2014 No modification unless marked with [CUSTOM_MOD].
+`;
+var UNITY_RULES_GOLDEN_PRINCIPLES = `# Golden Principles \u2014 Unity/C#
+
+Non-negotiable coding rules for this project.
+
+## Logging
+- \u274C \`Debug.Log\`, \`Debug.LogWarning\`, \`Debug.LogError\`
+- \u2705 Use project logger (MLog or equivalent)
+
+## Async
+- \u274C \`System.Threading.Tasks.Task\`, \`async/await\` with Task
+- \u2705 \`UniTask\` for all async operations
+
+## Object Lifecycle
+- \u274C \`Destroy()\` on pooled objects
+- \u2705 \`ObjectPoolUtility.Return()\` or equivalent pool API
+
+## Events
+- Subscribe in \`OnEnable()\` / initialization
+- Unsubscribe in \`OnDisable()\` / cleanup
+- \u274C Unmatched Subscribe without Unsubscribe \u2192 memory leak
+
+## Architecture
+- One-way dependencies: Framework \u2190 Gameplay \u2190 Renderer \u2190 Tools
+- \u274C Lower layer referencing higher layer
+- \u2705 Cross-module communication through EventManager/interfaces
+
+## Null Safety
+- Always null-check GetComponent<T>() results
+- Use TryGetComponent<T>() where possible
+- Never assume Find() returns non-null
+`;
+var UNITY_RULES_STYLE = `# Unity C# Style Guide
+
+## Naming
+- Classes/Structs: PascalCase
+- Methods: PascalCase
+- Private fields: _camelCase with underscore prefix
+- Public properties: PascalCase
+- Constants: UPPER_SNAKE_CASE
+- Enums: PascalCase (members too)
+
+## File Organization
+- One primary class per file
+- File name matches class name
+- Namespace matches directory structure
+
+## MonoBehaviour
+- Lifecycle order: Awake \u2192 OnEnable \u2192 Start \u2192 Update \u2192 OnDisable \u2192 OnDestroy
+- Heavy init in Awake, subscriptions in OnEnable
+- Never call Destroy() in Awake or OnEnable
+`;
+var UNITY_MEMORY_ARCHITECTURE = `---
+name: architecture-layers
+description: Unity project layer structure and dependencies
+type: project
+---
+
+## Layer Structure
+
+| Layer | Responsibility | Can Reference |
+|-------|---------------|---------------|
+| Framework | Core systems, managers, utilities | Nothing above |
+| Gameplay | Game logic, features, handlers | Framework |
+| Renderer | Visual, UI, effects | Framework, Gameplay |
+| Tools | Editor tools, debug utilities | All layers |
+
+_Update this with your project's actual architecture as you learn it._
+`;
+var UNITY_HOOK_SYNTAX = `#!/bin/bash
+# Gate 1: SYNTAX \u2014 post-edit C# syntax check.
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
+[ -z "$FILE_PATH" ] && exit 0
+echo "$FILE_PATH" | grep -qE '\\.cs$' || exit 0
+# If dotnet-csharp-syntax-check is available, use it
+if command -v dotnet-csharp-syntax-check &>/dev/null; then
+  dotnet-csharp-syntax-check "$FILE_PATH" 2>&1 || true
+fi
+exit 0
+`;
+function getUnityBundle() {
+  return {
+    "rules/constitution.md.tmpl": UNITY_RULES_CONSTITUTION,
+    "rules/golden-principles.md": UNITY_RULES_GOLDEN_PRINCIPLES,
+    "rules/unity-csharp.md": UNITY_RULES_STYLE,
+    "rules/known-pitfalls.md": (init_common(), __toCommonJS(common_exports)).RULE_KNOWN_PITFALLS,
+    "rules/architecture-boundaries.md": (init_common(), __toCommonJS(common_exports)).RULE_ARCHITECTURE_BOUNDARIES,
+    "commands/auto-work.md": (init_common(), __toCommonJS(common_exports)).CMD_AUTO_WORK,
+    "commands/auto-bugfix.md": (init_common(), __toCommonJS(common_exports)).CMD_AUTO_BUGFIX,
+    "commands/review.md": (init_common(), __toCommonJS(common_exports)).CMD_REVIEW,
+    "commands/fix-harness.md": (init_common(), __toCommonJS(common_exports)).CMD_FIX_HARNESS,
+    "commands/plan.md": (init_common(), __toCommonJS(common_exports)).CMD_PLAN,
+    "commands/verify.md": (init_common(), __toCommonJS(common_exports)).CMD_VERIFY,
+    "commands/parallel-execute.md": (init_common(), __toCommonJS(common_exports)).CMD_PARALLEL_EXECUTE,
+    "memory/MEMORY.md": (init_common(), __toCommonJS(common_exports)).MEMORY_INDEX,
+    "memory/architecture-layers.md": UNITY_MEMORY_ARCHITECTURE,
+    "hooks/constitution-guard.sh": (init_common(), __toCommonJS(common_exports)).HOOK_CONSTITUTION_GUARD,
+    "hooks/syntax-check.sh": UNITY_HOOK_SYNTAX,
+    "hooks/pre-commit.sh": (init_common(), __toCommonJS(common_exports)).HOOK_PRE_COMMIT,
+    "hooks/post-commit.sh": (init_common(), __toCommonJS(common_exports)).HOOK_POST_COMMIT,
+    "hooks/push-gate.sh": (init_common(), __toCommonJS(common_exports)).HOOK_PUSH_GATE,
+    "hooks/harness-evolution.sh": (init_common(), __toCommonJS(common_exports)).HOOK_HARNESS_EVOLUTION
+  };
+}
+
+// src/templates/bundles/goServer.ts
+init_common();
+var GO_RULES_CONSTITUTION = `# Forbidden Zone Constitution
+
+## Auto-Generated Code (DO NOT edit manually)
+- \`{{ORM_PATH}}\` \u2014 ORM generated from XML. Edit XML \u2192 run ORM generator.
+- \`{{CONFIG_GEN_PATH}}\` \u2014 Config generated from game data. Edit data source \u2192 regenerate.
+- \`*_service.go\`, \`*_client.go\` \u2014 Protobuf RPC wrappers. Edit .proto \u2192 protoc.
+
+## Git Submodules (edit in upstream repo)
+- \`base/\` \u2014 Shared base library. Edit in the base repo, then update submodule.
+- \`{{PROTO_PATH}}\` \u2014 Proto definitions. Edit in proto repo.
+
+## Important
+When you see these files, tell the user HOW to regenerate instead of editing directly.
+`;
+var GO_RULES_GOLDEN_PRINCIPLES = `# Golden Principles \u2014 Go Server
+
+Non-negotiable coding rules.
+
+## Error Handling
+- \u274C \`_ = err\` (errcheck enforced)
+- \u274C \`fmt.Errorf("...")\` without %w
+- \u2705 \`fmt.Errorf("context: %w", err)\` \u2014 always wrap errors
+
+## RPC Handlers
+- \u274C Log error + return error (double reporting)
+- \u2705 RPC handler: catch error \u2192 return RpcError, no log
+- \u2705 Internal logic: log.Errorf + return err
+
+## Goroutines
+- \u274C Bare \`go func() { ... }()\`
+- \u2705 \`safego.Go(func() { ... })\` \u2014 panic recovery built-in
+
+## Atomics
+- \u274C \`sync/atomic\`
+- \u2705 \`go.uber.org/atomic\`
+
+## UUID
+- \u274C \`pborman/uuid\`
+- \u2705 \`google/uuid\`
+
+## Database Operations
+- \u274C Direct DB access from game logic
+- \u2705 All DB operations through db_server RPC
+
+## ECS (if applicable)
+- Components: data only, no logic
+- Systems: logic only, operate on components
+- \u274C Logic in components, data mutation outside systems
+
+## Workflow
+- Plan first for multi-file changes
+- Use TaskCreate for progress tracking
+- Use subagent for 5+ file searches
+`;
+var GO_RULES_STYLE = `# Go Style Guide
+
+## File Naming
+- snake_case for all .go files
+- _test.go suffix for tests
+- Group by feature, not by type
+
+## Error Handling
+- Check errors immediately after function call
+- Wrap with context: fmt.Errorf("operation: %w", err)
+- Don't ignore errors silently
+
+## Logging
+- log.Debugf \u2014 development only, verbose
+- log.Infof \u2014 normal operations
+- log.Warnf \u2014 recoverable issues
+- log.Errorf \u2014 errors that need attention
+- \u274C fmt.Println, fmt.Printf for logging
+
+## Testing
+- Table-driven tests preferred
+- go test ./... must pass before commit
+`;
+var GO_MEMORY_ARCHITECTURE = `---
+name: cluster-architecture
+description: Go microservices cluster structure
+type: project
+---
+
+## Service Architecture
+
+_Update this with your project's actual services as you learn them._
+
+| Service | Role |
+|---------|------|
+| gate_server | Client connection, protocol decode |
+| logic_server | Game logic, state management |
+| scene_server | Scene/combat, ECS-based |
+| db_server | Database operations (all DB access goes here) |
+
+## Startup Order
+Services have dependency order. Check project docs or startup scripts.
+
+## RPC Call Chain
+Typical request flow: client \u2192 gate \u2192 logic \u2192 scene \u2192 db
+`;
+var GO_HOOK_VERIFY = `#!/bin/bash
+# Leveled verification for Go server.
+LEVEL=\${1:-quick}
+case "$LEVEL" in
+  quick)
+    go vet ./... 2>&1 || exit 1
+    ;;
+  build)
+    go vet ./... 2>&1 || exit 1
+    go build ./... 2>&1 || exit 1
+    ;;
+  full)
+    go vet ./... 2>&1 || exit 1
+    go build ./... 2>&1 || exit 1
+    go test ./... 2>&1 || exit 1
+    ;;
+esac
+exit 0
+`;
+function getGoServerBundle() {
+  return {
+    "rules/constitution.md.tmpl": GO_RULES_CONSTITUTION,
+    "rules/golden-principles.md": GO_RULES_GOLDEN_PRINCIPLES,
+    "rules/go-style.md": GO_RULES_STYLE,
+    "rules/known-pitfalls.md": RULE_KNOWN_PITFALLS,
+    "rules/architecture-boundaries.md": RULE_ARCHITECTURE_BOUNDARIES,
+    "commands/auto-work.md": CMD_AUTO_WORK,
+    "commands/auto-bugfix.md": CMD_AUTO_BUGFIX,
+    "commands/review.md": CMD_REVIEW,
+    "commands/fix-harness.md": CMD_FIX_HARNESS,
+    "commands/plan.md": CMD_PLAN,
+    "commands/verify.md": CMD_VERIFY,
+    "commands/parallel-execute.md": CMD_PARALLEL_EXECUTE,
+    "memory/MEMORY.md": MEMORY_INDEX,
+    "memory/cluster-architecture.md": GO_MEMORY_ARCHITECTURE,
+    "hooks/constitution-guard.sh": HOOK_CONSTITUTION_GUARD,
+    "hooks/verify-server.sh": GO_HOOK_VERIFY,
+    "hooks/pre-commit.sh": HOOK_PRE_COMMIT,
+    "hooks/post-commit.sh": HOOK_POST_COMMIT,
+    "hooks/push-gate.sh": HOOK_PUSH_GATE,
+    "hooks/harness-evolution.sh": HOOK_HARNESS_EVOLUTION
+  };
+}
+
+// src/templates/bundles/unreal.ts
+init_common();
+var UE_RULES_CONSTITUTION = `# Forbidden Zone Constitution
+
+## Auto-Generated Code
+- \`{{CONFIG_GEN_PATH}}\` \u2014 Generated code. Do not edit manually.
+- \`Intermediate/\` \u2014 Build intermediates. Never commit or edit.
+- \`*.generated.h\` \u2014 UHT generated headers.
+
+## Engine Source
+- \`Engine/\` \u2014 Unreal Engine source. Modify only in engine fork.
+`;
+var UE_RULES_GOLDEN_PRINCIPLES = `# Golden Principles \u2014 Unreal C++
+
+## Memory Management
+- \u274C Raw \`new\` for UObjects
+- \u2705 \`NewObject<T>()\`, \`CreateDefaultSubobject<T>()\`
+- All UObject* references must have UPROPERTY()
+
+## Logging
+- \u274C printf, cout, std::cerr
+- \u2705 UE_LOG(LogCategory, Verbosity, TEXT("..."))
+
+## Threading
+- \u274C std::thread
+- \u2705 FRunnable, AsyncTask, FGraphEvent
+
+## Naming Conventions
+- F = Struct (FVector, FTransform)
+- U = UObject-derived (UActorComponent)
+- A = AActor-derived (ACharacter)
+- E = Enum (EMovementMode)
+- I = Interface (IInteractable)
+- b prefix for booleans (bIsActive)
+
+## Garbage Collection
+- Pointers in containers must be UPROPERTY() or AddToRoot()
+- Use TWeakObjectPtr for non-owning references
+- Never cache raw pointers to UObjects across frames
+`;
+var UE_RULES_STYLE = `# Unreal C++ Style Guide
+
+## Headers
+- #pragma once (not include guards)
+- Engine headers before project headers
+- Minimal includes in headers, forward-declare where possible
+
+## Code Organization
+- .h in Public/, .cpp in Private/
+- One class per file pair
+- Module boundaries respected
+`;
+function getUnrealBundle() {
+  return {
+    "rules/constitution.md.tmpl": UE_RULES_CONSTITUTION,
+    "rules/golden-principles.md": UE_RULES_GOLDEN_PRINCIPLES,
+    "rules/unreal-cpp.md": UE_RULES_STYLE,
+    "rules/known-pitfalls.md": RULE_KNOWN_PITFALLS,
+    "rules/architecture-boundaries.md": RULE_ARCHITECTURE_BOUNDARIES,
+    "commands/auto-work.md": CMD_AUTO_WORK,
+    "commands/auto-bugfix.md": CMD_AUTO_BUGFIX,
+    "commands/review.md": CMD_REVIEW,
+    "commands/fix-harness.md": CMD_FIX_HARNESS,
+    "commands/plan.md": CMD_PLAN,
+    "commands/verify.md": CMD_VERIFY,
+    "commands/parallel-execute.md": CMD_PARALLEL_EXECUTE,
+    "memory/MEMORY.md": MEMORY_INDEX,
+    "hooks/constitution-guard.sh": HOOK_CONSTITUTION_GUARD,
+    "hooks/pre-commit.sh": HOOK_PRE_COMMIT,
+    "hooks/post-commit.sh": HOOK_POST_COMMIT,
+    "hooks/push-gate.sh": HOOK_PUSH_GATE,
+    "hooks/harness-evolution.sh": HOOK_HARNESS_EVOLUTION
+  };
+}
+
+// src/templates/bundles/godot.ts
+init_common();
+var GODOT_RULES_CONSTITUTION = `# Forbidden Zone Constitution
+
+## Auto-Generated Code
+- \`{{CONFIG_GEN_PATH}}\` \u2014 Generated scripts. Edit source data \u2192 regenerate.
+- \`.import/\` \u2014 Godot import cache. Never edit or commit.
+
+## Addons
+- \`addons/\` \u2014 Third-party plugins. Do not modify unless forked.
+`;
+var GODOT_RULES_GOLDEN_PRINCIPLES = `# Golden Principles \u2014 Godot/GDScript
+
+## Type Hints
+- \u2705 All function parameters and return types must have type hints
+- \u274C Untyped \`func process(delta)\`
+- \u2705 \`func _process(delta: float) -> void\`
+
+## Signals
+- Connect in \`_ready()\`
+- Disconnect in \`_exit_tree()\`
+- \u274C Unmatched connect without disconnect
+
+## Physics
+- \u274C Movement in \`_process()\`
+- \u2705 Movement in \`_physics_process()\`
+
+## Node References
+- \u274C Hardcoded paths: \`get_node("../Player/Sprite")\`
+- \u2705 @onready var + @export for configurable references
+
+## Resource Loading
+- \u274C \`load()\` at runtime for large resources
+- \u2705 \`preload()\` for small, always-needed resources
+- \u2705 \`ResourceLoader.load_threaded_request()\` for large resources
+`;
+var GODOT_RULES_STYLE = `# GDScript Style Guide
+
+## Naming
+- Classes: PascalCase
+- Functions/variables: snake_case
+- Constants: UPPER_SNAKE_CASE
+- Signals: snake_case (past tense: health_changed, item_picked_up)
+- Private: underscore prefix (_internal_method)
+
+## File Organization
+- One script per node/scene where possible
+- Autoloads for global systems
+- Class name matches file name
+`;
+function getGodotBundle() {
+  return {
+    "rules/constitution.md.tmpl": GODOT_RULES_CONSTITUTION,
+    "rules/golden-principles.md": GODOT_RULES_GOLDEN_PRINCIPLES,
+    "rules/godot-gdscript.md": GODOT_RULES_STYLE,
+    "rules/known-pitfalls.md": RULE_KNOWN_PITFALLS,
+    "rules/architecture-boundaries.md": RULE_ARCHITECTURE_BOUNDARIES,
+    "commands/auto-work.md": CMD_AUTO_WORK,
+    "commands/auto-bugfix.md": CMD_AUTO_BUGFIX,
+    "commands/review.md": CMD_REVIEW,
+    "commands/fix-harness.md": CMD_FIX_HARNESS,
+    "commands/plan.md": CMD_PLAN,
+    "commands/verify.md": CMD_VERIFY,
+    "commands/parallel-execute.md": CMD_PARALLEL_EXECUTE,
+    "memory/MEMORY.md": MEMORY_INDEX,
+    "hooks/constitution-guard.sh": HOOK_CONSTITUTION_GUARD,
+    "hooks/pre-commit.sh": HOOK_PRE_COMMIT,
+    "hooks/post-commit.sh": HOOK_POST_COMMIT,
+    "hooks/push-gate.sh": HOOK_PUSH_GATE,
+    "hooks/harness-evolution.sh": HOOK_HARNESS_EVOLUTION
+  };
+}
+
+// src/templates/bundles/workspace.ts
+init_common();
+var WORKSPACE_MEMORY_CROSS_PROJECT = `---
+name: cross-project-protocol
+description: Cross-project protocol and data sync rules
+type: project
+---
+
+## Cross-Project Sync Points
+
+_Update as you discover sync boundaries between sub-projects._
+
+### Protobuf
+- Proto definitions are shared between client and server
+- Edit .proto \u2192 regenerate both sides
+- Check field number compatibility when adding fields
+
+### Config Tables
+- Config data flows: Data Source \u2192 Generator \u2192 Client code + Server code
+- Both sides must regenerate when schema changes
+
+### Version Compatibility
+- Client and server versions must match on protocol level
+- Breaking changes require coordinated release
+`;
+var WORKSPACE_MEMORY_PITFALLS = `---
+name: cross-project-pitfalls
+description: Common mistakes when working across sub-projects
+type: project
+---
+
+## Cross-Project Pitfalls
+
+_This file grows through harness self-evolution._
+
+### Proto Field Number Conflicts
+- \u274C Reusing deleted field numbers
+- \u2705 Reserve deleted field numbers, always use new ones
+
+### Config Schema Drift
+- \u274C Changing config format on one side only
+- \u2705 Update generator, regenerate both client and server
+`;
+function getWorkspaceBundle() {
+  return {
+    "commands/fix-harness.md": CMD_FIX_HARNESS,
+    "commands/plan.md": CMD_PLAN,
+    "memory/MEMORY.md": MEMORY_INDEX,
+    "memory/cross-project-protocol.md": WORKSPACE_MEMORY_CROSS_PROJECT,
+    "memory/cross-project-pitfalls.md": WORKSPACE_MEMORY_PITFALLS
+  };
+}
+
+// src/templates/index.ts
+function getBundleForEngine(engine, serverLanguage) {
+  if (engine === "unity") return getUnityBundle();
+  if (engine === "unreal") return getUnrealBundle();
+  if (engine === "godot") return getGodotBundle();
+  if (serverLanguage === "go") return getGoServerBundle();
+  const common = (init_common(), __toCommonJS(common_exports));
+  return {
+    "rules/known-pitfalls.md": common.RULE_KNOWN_PITFALLS,
+    "rules/architecture-boundaries.md": common.RULE_ARCHITECTURE_BOUNDARIES,
+    "commands/auto-work.md": common.CMD_AUTO_WORK,
+    "commands/auto-bugfix.md": common.CMD_AUTO_BUGFIX,
+    "commands/review.md": common.CMD_REVIEW,
+    "commands/fix-harness.md": common.CMD_FIX_HARNESS,
+    "commands/plan.md": common.CMD_PLAN,
+    "commands/verify.md": common.CMD_VERIFY,
+    "commands/parallel-execute.md": common.CMD_PARALLEL_EXECUTE,
+    "memory/MEMORY.md": common.MEMORY_INDEX,
+    "hooks/constitution-guard.sh": common.HOOK_CONSTITUTION_GUARD,
+    "hooks/pre-commit.sh": common.HOOK_PRE_COMMIT,
+    "hooks/post-commit.sh": common.HOOK_POST_COMMIT,
+    "hooks/push-gate.sh": common.HOOK_PUSH_GATE,
+    "hooks/harness-evolution.sh": common.HOOK_HARNESS_EVOLUTION
+  };
+}
+
+// src/services/harness/consolidate.ts
+import { existsSync as existsSync10, readdirSync as readdirSync3, readFileSync as readFileSync7, writeFileSync as writeFileSync5, mkdirSync as mkdirSync6, statSync as statSync10 } from "fs";
+import { join as join8 } from "path";
+var CONSOLIDATION_DIRS = ["rules", "commands", "memory", "skills", "hooks"];
+var LEGACY_DIRS = [".claude", ".codex"];
+function consolidateLegacyIntoDanya(projectDir) {
+  const danyaDir = join8(projectDir, ".danya");
+  const result = { merged: [], skipped: [], sources: [] };
+  for (const legacyName of LEGACY_DIRS) {
+    const legacyDir = join8(projectDir, legacyName);
+    if (!existsSync10(legacyDir)) continue;
+    result.sources.push(legacyName);
+    for (const subDir of CONSOLIDATION_DIRS) {
+      const legacySub = join8(legacyDir, subDir);
+      if (!existsSync10(legacySub)) continue;
+      const danyaSub = join8(danyaDir, subDir);
+      mkdirSync6(danyaSub, { recursive: true });
+      copyMissing(legacySub, danyaSub, subDir, result);
+    }
+    mergeSettings(legacyDir, danyaDir, result);
+  }
+  return result;
+}
+function copyMissing(legacyDir, danyaDir, prefix, result) {
+  let entries;
+  try {
+    entries = readdirSync3(legacyDir);
+  } catch {
+    return;
+  }
+  for (const entry of entries) {
+    const legacyPath = join8(legacyDir, entry);
+    const danyaPath = join8(danyaDir, entry);
+    try {
+      if (statSync10(legacyPath).isDirectory()) {
+        mkdirSync6(danyaPath, { recursive: true });
+        copyMissing(legacyPath, danyaPath, `${prefix}/${entry}`, result);
+        continue;
+      }
+    } catch {
+      continue;
+    }
+    const relPath = `${prefix}/${entry}`;
+    if (existsSync10(danyaPath)) {
+      result.skipped.push(relPath);
+    } else {
+      try {
+        const content = readFileSync7(legacyPath);
+        writeFileSync5(danyaPath, content, {
+          mode: prefix === "hooks" ? 493 : 420
+        });
+        result.merged.push(relPath);
+      } catch {
+      }
+    }
+  }
+}
+function mergeSettings(legacyDir, danyaDir, result) {
+  const legacySettings = join8(legacyDir, "settings.json");
+  const danyaSettings = join8(danyaDir, "settings.json");
+  if (!existsSync10(legacySettings)) return;
+  let legacyConfig;
+  let danyaConfig;
+  try {
+    legacyConfig = JSON.parse(readFileSync7(legacySettings, "utf-8"));
+  } catch {
+    return;
+  }
+  try {
+    danyaConfig = existsSync10(danyaSettings) ? JSON.parse(readFileSync7(danyaSettings, "utf-8")) : {};
+  } catch {
+    danyaConfig = {};
+  }
+  if (legacyConfig.hooks) {
+    if (!danyaConfig.hooks) danyaConfig.hooks = {};
+    for (const [event, handlers] of Object.entries(legacyConfig.hooks)) {
+      if (!danyaConfig.hooks[event]) {
+        danyaConfig.hooks[event] = handlers;
+        result.merged.push(`settings.json:hooks.${event}`);
+      }
+    }
+    writeFileSync5(danyaSettings, JSON.stringify(danyaConfig, null, 2), "utf-8");
+  }
+}
+
+// src/commands/initProject.ts
+async function initDanyaProject(cwd2, force = false) {
+  const danyaDir = join9(cwd2, ".danya");
+  if (existsSync11(danyaDir) && !force) {
+    return "\u26A0\uFE0F .danya/ already exists. Skipping initialization. Use --force to overwrite.";
+  }
+  const workspace = detectWorkspace(cwd2);
+  const instructionsFile = isClaudeModel() ? "CLAUDE.md" : "AGENTS.md";
+  if (workspace.type === "workspace") {
+    return initWorkspace(cwd2, workspace.subProjects, instructionsFile, force);
+  }
+  return initSingleProject(cwd2, instructionsFile, force);
+}
+function initSingleProject(cwd2, instructionsFile, force) {
+  const danyaDir = join9(cwd2, ".danya");
+  const detection = detectProject(cwd2);
+  const projectName = basename4(cwd2);
+  const bundle = getBundleForEngine(detection.engine, detection.serverLanguage);
+  const ctx = buildTemplateContext(projectName, detection.engine, detection.serverLanguage, instructionsFile);
+  const installed = installBundle(danyaDir, bundle, ctx, { force });
+  const guardRules = generateGuardRules(detection.engine, detection.serverLanguage);
+  writeFileSync6(join9(danyaDir, "guard-rules.json"), JSON.stringify(guardRules, null, 2), "utf-8");
+  writeFileSync6(join9(danyaDir, "gate-chain.json"), JSON.stringify({
+    gates: {
+      guard: { enabled: true },
+      syntax: { enabled: true },
+      verify: { enabled: true, default_level: "build" },
+      commit: { enabled: true },
+      review: { enabled: true },
+      push: { enabled: true, require_review: true }
+    }
+  }, null, 2), "utf-8");
+  writeFileSync6(join9(danyaDir, "settings.json"), JSON.stringify(generateSettings(), null, 2), "utf-8");
+  const consolidation = consolidateLegacyIntoDanya(cwd2);
+  writeInstructionsFile(cwd2, instructionsFile, detection.engine, detection.serverLanguage);
+  const legacyMsg = consolidation.sources.length > 0 ? [`  Legacy integrated: ${consolidation.sources.join(", ")} \u2192 .danya/ (${consolidation.merged.length} merged, ${consolidation.skipped.length} skipped)`] : [];
+  return [
+    "\u2705 Danya project initialized! (single-project mode)",
+    "",
+    `Detected: engine=${detection.engine ?? "none"}, server=${detection.serverLanguage ?? "none"}`,
+    `Guard rules: ${guardRules.length} forbidden zone patterns`,
+    `Harness files: ${installed.length} files installed`,
+    "",
+    "Created:",
+    `  .danya/rules/            \u2014 ${countFiles(installed, "rules/")} constraint files`,
+    `  .danya/commands/         \u2014 ${countFiles(installed, "commands/")} workflow commands`,
+    `  .danya/memory/           \u2014 ${countFiles(installed, "memory/")} knowledge files`,
+    `  .danya/hooks/            \u2014 ${countFiles(installed, "hooks/")} hook scripts`,
+    "  .danya/gate-chain.json   \u2014 Gate chain configuration",
+    "  .danya/guard-rules.json  \u2014 Forbidden zone patterns",
+    "  .danya/settings.json     \u2014 Hook registration",
+    ...legacyMsg,
+    "",
+    "Gate chain: Edit \u2192 Guard \u2192 Syntax \u2192 Verify \u2192 Commit \u2192 Review \u2192 Push",
+    "",
+    "Available commands:",
+    "  /auto-work <req>     \u2014 Full-auto pipeline (plan\u2192code\u2192verify\u2192review\u2192commit\u2192sediment\u2192evolve)",
+    "  /auto-bugfix <bug>   \u2014 Bug reproduction + auto-fix (max 5 rounds)",
+    "  /review              \u2014 100-point scoring code review",
+    "  /fix-harness         \u2014 Update rules after error pattern",
+    "  /plan <req>          \u2014 Analysis and planning",
+    "  /verify [level]      \u2014 Mechanical verification (quick|build|full)",
+    "",
+    "Next steps:",
+    `  1. Customize ${instructionsFile} with your project-specific rules`,
+    "  2. Review .danya/rules/ and adjust to your project",
+    "  3. Start developing: danya"
+  ].join("\n");
+}
+function initWorkspace(rootPath, subProjects, instructionsFile, force) {
+  const rootDanyaDir = join9(rootPath, ".danya");
+  const rootName = basename4(rootPath);
+  const wsBundle = getWorkspaceBundle();
+  const wsCtx = buildTemplateContext(rootName, null, null, instructionsFile);
+  const wsInstalled = installBundle(rootDanyaDir, wsBundle, wsCtx, { force });
+  writeFileSync6(join9(rootDanyaDir, "guard-rules.json"), "[]", "utf-8");
+  writeFileSync6(join9(rootDanyaDir, "gate-chain.json"), JSON.stringify({
+    gates: { guard: { enabled: true }, review: { enabled: true }, push: { enabled: true } }
+  }, null, 2), "utf-8");
+  const subResults = [];
+  for (const sub of subProjects) {
+    const subDanyaDir = join9(sub.path, ".danya");
+    const bundle = getBundleForEngine(sub.engine, sub.serverLanguage);
+    const ctx = buildTemplateContext(sub.name, sub.engine, sub.serverLanguage, instructionsFile);
+    const installed = installBundle(subDanyaDir, bundle, ctx, { force });
+    const guardRules = generateGuardRules(sub.engine, sub.serverLanguage);
+    writeFileSync6(join9(subDanyaDir, "guard-rules.json"), JSON.stringify(guardRules, null, 2), "utf-8");
+    writeFileSync6(join9(subDanyaDir, "gate-chain.json"), JSON.stringify({
+      gates: { guard: { enabled: true }, syntax: { enabled: true }, verify: { enabled: true }, commit: { enabled: true }, review: { enabled: true }, push: { enabled: true, require_review: true } }
+    }, null, 2), "utf-8");
+    writeFileSync6(join9(subDanyaDir, "settings.json"), JSON.stringify(generateSettings(), null, 2), "utf-8");
+    consolidateLegacyIntoDanya(sub.path);
+    writeInstructionsFile(sub.path, instructionsFile, sub.engine, sub.serverLanguage);
+    subResults.push(`  ${sub.name}/ (${sub.role}): engine=${sub.engine ?? "none"}, server=${sub.serverLanguage ?? "none"}, ${installed.length} files`);
+  }
+  consolidateLegacyIntoDanya(rootPath);
+  writeInstructionsFile(rootPath, instructionsFile, null, null);
+  return [
+    "\u2705 Danya workspace initialized! (multi-project mode)",
+    "",
+    "Workspace structure:",
+    `  ${rootName}/.danya/         \u2014 Cross-project (${wsInstalled.length} files)`,
+    ...subResults,
+    "",
+    "Three-layer isolation:",
+    "  Layer 1: Workspace \u2014 cross-project rules, memory, commands",
+    "  Layer 2: Sub-projects \u2014 engine-specific rules, hooks, commands",
+    "  Layer 3: Session \u2014 git worktree isolation for parallel tasks",
+    "",
+    "Gate chain per sub-project: Edit \u2192 Guard \u2192 Syntax \u2192 Verify \u2192 Commit \u2192 Review \u2192 Push"
+  ].join("\n");
+}
+function generateSettings() {
+  return {
+    hooks: {
+      PreToolUse: [
+        { matcher: "Edit|Write", hooks: [{ type: "command", command: "bash .danya/hooks/constitution-guard.sh", timeout: 5e3 }] },
+        { matcher: "Bash", commandPattern: "git\\s+commit", hooks: [{ type: "command", command: "bash .danya/hooks/pre-commit.sh", timeout: 3e5 }] },
+        { matcher: "Bash", commandPattern: "git\\s+push", hooks: [{ type: "command", command: "bash .danya/hooks/push-gate.sh", timeout: 5e3 }] }
+      ],
+      PostToolUse: [
+        { matcher: "Bash", hooks: [{ type: "command", command: "bash .danya/hooks/harness-evolution.sh", timeout: 5e3 }] },
+        { matcher: "Bash", commandPattern: "git\\s+commit", hooks: [{ type: "command", command: "bash .danya/hooks/post-commit.sh", timeout: 5e3 }] }
+      ]
+    }
+  };
+}
+function writeInstructionsFile(dir, instructionsFile, engine, serverLanguage) {
+  const path5 = join9(dir, instructionsFile);
+  const altFile = instructionsFile === "CLAUDE.md" ? "AGENTS.md" : "CLAUDE.md";
+  if (existsSync11(path5) || existsSync11(join9(dir, altFile))) return;
+  writeFileSync6(path5, generateInstructionsTemplate(engine, serverLanguage), "utf-8");
+}
+function generateInstructionsTemplate(engine, serverLanguage) {
+  const lines = ["# Project Instructions", ""];
+  lines.push("## Build & Test");
+  if (engine === "unity") {
+    lines.push("- Build: Unity Editor \u2192 File > Build Settings");
+    lines.push("- Test: Window > General > Test Runner");
+  } else if (engine === "unreal") {
+    lines.push("- Build: UnrealBuildTool or IDE build");
+    lines.push("- Test: Automation tab in Session Frontend");
+  } else if (engine === "godot") {
+    lines.push("- Build: godot --export-release <preset>");
+    lines.push("- Test: GUT or custom test framework");
+  }
+  if (serverLanguage === "go") {
+    lines.push("- Server build: make build");
+    lines.push("- Server test: make test");
+    lines.push("- Server lint: make lint");
+  }
+  if (!engine && !serverLanguage) {
+    lines.push("- Build: <your build command>");
+    lines.push("- Test: <your test command>");
+  }
+  lines.push("");
+  lines.push("## Harness");
+  lines.push("This project uses Danya harness. See .danya/ for:");
+  lines.push("- rules/ \u2014 Coding constraints (auto-loaded every session)");
+  lines.push("- commands/ \u2014 Workflow commands (/auto-work, /review, /fix-harness, etc.)");
+  lines.push("- memory/ \u2014 Persistent domain knowledge");
+  lines.push("- hooks/ \u2014 Mechanical enforcement scripts");
+  lines.push("");
+  lines.push("## Forbidden Zones");
+  lines.push("See .danya/guard-rules.json. Hook enforced \u2014 Agent cannot bypass.");
+  lines.push("");
+  return lines.join("\n");
+}
+function generateGuardRules(engine, serverLanguage) {
+  const rules = [];
+  if (engine === "unity") {
+    rules.push(
+      { pattern: "Config/Gen/", description: "Auto-generated config", fix_hint: "Edit Excel \u2192 run ConfigGenerate" },
+      { pattern: "Scripts/Framework/", description: "Core framework", fix_hint: "Needs programmer approval" }
+    );
+  }
+  if (engine === "unreal") {
+    rules.push(
+      { pattern: "Generated/", description: "UE generated code", fix_hint: "Regenerate via UBT" },
+      { pattern: "Intermediate/", description: "Build intermediates", fix_hint: "Do not edit" }
+    );
+  }
+  if (engine === "godot") {
+    rules.push(
+      { pattern: "\\.import/", description: "Godot import cache", fix_hint: "Do not edit" }
+    );
+  }
+  if (serverLanguage === "go") {
+    rules.push(
+      { pattern: "orm/(golang|redis|mongo)/", description: "ORM generated code", fix_hint: "Edit XML \u2192 make orm" },
+      { pattern: "cfg_.*\\.go$", description: "Config generated code", fix_hint: "Edit data source \u2192 regenerate" },
+      { pattern: ".*_pb\\.go$", description: "Protobuf generated", fix_hint: "Edit .proto \u2192 protoc" }
+    );
+  }
+  return rules;
+}
+function countFiles(installed, prefix) {
+  return installed.filter((f) => f.startsWith(prefix)).length;
+}
+function isClaudeModel() {
+  try {
+    const modelManager = getModelManager();
+    const modelName = modelManager.getCurrentModel();
+    return Boolean(modelName && modelName.startsWith("claude"));
+  } catch {
+    return false;
+  }
+}
+
+// src/ui/screens/autoInitHarness.ts
+var hasRun = false;
+function autoInitHarness(cwd2) {
+  if (hasRun) return;
+  hasRun = true;
+  const danyaDir = join10(cwd2, ".danya");
+  if (existsSync12(danyaDir)) return;
+  try {
+    initDanyaProject(cwd2, false).catch(() => {
+    });
+  } catch {
+  }
+}
+
+// src/ui/components/ProjectOnboarding.tsx
 function markProjectOnboardingComplete() {
   const projectConfig = getCurrentProjectConfig();
   if (!projectConfig.hasCompletedProjectOnboarding) {
@@ -10590,9 +11840,14 @@ function ProjectOnboarding({
   if (!showOnboarding && !hasReleaseNotes) {
     return null;
   }
-  const workspaceHasProjectGuide = existsSync8(join6(workspaceDir, PROJECT_FILE));
+  const workspaceHasProjectGuide = existsSync13(join11(workspaceDir, PROJECT_FILE));
   const isWorkspaceDirEmpty = isDirEmpty(workspaceDir);
   const shouldRecommendProjectGuide = !workspaceHasProjectGuide && !isWorkspaceDirEmpty;
+  React28.useEffect(() => {
+    if (!isWorkspaceDirEmpty) {
+      autoInitHarness(workspaceDir);
+    }
+  }, [workspaceDir, isWorkspaceDirEmpty]);
   const theme = getTheme();
   return /* @__PURE__ */ React28.createElement(Box21, { flexDirection: "column", gap: 1, padding: 1, paddingBottom: 0 }, showOnboarding && /* @__PURE__ */ React28.createElement(React28.Fragment, null, /* @__PURE__ */ React28.createElement(Text24, { color: theme.secondaryText }, "Tips for getting started:"), /* @__PURE__ */ React28.createElement(OrderedList, null, (() => {
     const items = [];
@@ -10626,31 +11881,44 @@ function ProjectOnboarding({
 
 // src/commands/init.ts
 init_product();
+init_state();
 var command2 = {
   type: "prompt",
   name: "init",
-  description: `Initialize a new ${PROJECT_FILE} file with codebase documentation`,
+  description: `Initialize Danya harness + ${PROJECT_FILE} for this project`,
   isEnabled: true,
   isHidden: false,
-  progressMessage: "analyzing your codebase",
+  progressMessage: "initializing harness and analyzing codebase",
   userFacingName() {
     return "init";
   },
   async getPromptForCommand(_args) {
     markProjectOnboardingComplete();
+    let harnessResult = "";
+    try {
+      const force = _args.includes("--force");
+      harnessResult = await initDanyaProject(getCwd(), force);
+    } catch (e) {
+      harnessResult = `\u26A0\uFE0F Harness init failed: ${e.message}`;
+    }
     return [
       {
         role: "user",
         content: [
           {
             type: "text",
-            text: `Please analyze this codebase and create a ${PROJECT_FILE} file containing:
+            text: `${harnessResult}
+
+---
+
+Now please analyze this codebase and create a ${PROJECT_FILE} file containing:
 1. Build/lint/test commands - especially for running a single test
 2. Code style guidelines including imports, formatting, types, naming conventions, error handling, etc.
 
 The file you create will be given to agentic coding agents (such as yourself) that operate in this repository. Make it about 20 lines long.
 If there's already a ${PROJECT_FILE}, improve it.
-If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (in .github/copilot-instructions.md), make sure to include them.`
+If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (in .github/copilot-instructions.md), make sure to include them.
+Also review the .danya/rules/ files and customize them based on what you learn about this codebase.`
           }
         ]
       }
@@ -10740,8 +12008,8 @@ function getReplStaticPrefixLength(orderedMessages, allMessages, unresolvedToolU
 
 // src/commands/messages-debug.ts
 init_log();
-import { existsSync as existsSync9, readdirSync as readdirSync2, readFileSync as readFileSync6, statSync as statSync9 } from "fs";
-import { join as join7 } from "path";
+import { existsSync as existsSync14, readdirSync as readdirSync4, readFileSync as readFileSync8, statSync as statSync11 } from "fs";
+import { join as join12 } from "path";
 function isDebugMode() {
   return process.argv.includes("--debug") || process.argv.includes("--debug-verbose");
 }
@@ -10772,15 +12040,15 @@ function getProgressText(message) {
 }
 function getLatestMessagesLogFile() {
   const dir = CACHE_PATHS.messages();
-  if (!existsSync9(dir)) return null;
-  const files = readdirSync2(dir).filter((f) => f.endsWith(".json"));
+  if (!existsSync14(dir)) return null;
+  const files = readdirSync4(dir).filter((f) => f.endsWith(".json"));
   if (files.length === 0) return null;
   let best = null;
   for (const file of files) {
-    const fullPath = join7(dir, file);
+    const fullPath = join12(dir, file);
     let mtimeMs = 0;
     try {
-      mtimeMs = statSync9(fullPath).mtimeMs;
+      mtimeMs = statSync11(fullPath).mtimeMs;
     } catch {
       continue;
     }
@@ -10891,9 +12159,9 @@ var command3 = {
     );
     const { toolUseIDs, duplicates, byID } = summarizeToolUses(normalized);
     const latestLog = getLatestMessagesLogFile();
-    const latestLogContent = latestLog && existsSync9(latestLog.path) ? (() => {
+    const latestLogContent = latestLog && existsSync14(latestLog.path) ? (() => {
       try {
-        return JSON.parse(readFileSync6(latestLog.path, "utf8"));
+        return JSON.parse(readFileSync8(latestLog.path, "utf8"));
       } catch {
         return null;
       }
@@ -11172,7 +12440,7 @@ async function createAndStoreApiKey(accessToken) {
       }
       saveGlobalConfig(config2);
       try {
-        const { resetAnthropicClient } = await import("./llm-IFU62ZT4.js");
+        const { resetAnthropicClient } = await import("./llm-QWCVITWY.js");
         resetAnthropicClient();
       } catch {
       }
@@ -15523,7 +16791,7 @@ async function refreshPluginRuntimeFromInstalls() {
   const existingRoots = getSessionPlugins().map((p) => p.rootDir);
   const dirs = Array.from(/* @__PURE__ */ new Set([...existingRoots, ...installedRoots]));
   if (dirs.length === 0) return [];
-  const { configureSessionPlugins } = await import("./pluginRuntime-IG2H3W7C.js");
+  const { configureSessionPlugins } = await import("./pluginRuntime-PNCKBJR2.js");
   const { errors } = await configureSessionPlugins({ pluginDirs: dirs });
   return errors;
 }
@@ -16879,6 +18147,66 @@ var parallel_execute_default = {
     return [{ role: "user", content: [{ type: "text", text: buildParallelExecutePrompt(content, mode, mode === "execute" ? content : void 0) }] }];
   }
 };
+
+// src/commands/fix-harness.ts
+var fixHarnessCommand = {
+  name: "fix-harness",
+  description: "Update harness rules after an error pattern is found",
+  isEnabled: true,
+  isHidden: false,
+  type: "prompt",
+  progressMessage: "Analyzing error and updating harness rules...",
+  argDescription: "[error-description]",
+  async getPromptForCommand(args) {
+    return [
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: buildFixHarnessPrompt(args)
+          }
+        ]
+      }
+    ];
+  }
+};
+function buildFixHarnessPrompt(errorDescription) {
+  return `You are performing harness self-evolution. An error pattern was discovered during development.
+
+Error description: ${errorDescription || "(Analyze recent errors in this session)"}
+
+## Process
+
+1. **Identify the error pattern**: What went wrong? What type of error is it?
+
+2. **Route to correct rule file**:
+   - Forbidden zone violation \u2192 .danya/rules/constitution.md
+   - Coding principle violation \u2192 .danya/rules/golden-principles.md
+   - Known pitfall re-occurrence \u2192 .danya/rules/known-pitfalls.md
+   - Architecture boundary violation \u2192 .danya/rules/architecture-boundaries.md
+   - Style issue \u2192 engine-specific style rule file
+
+3. **Add a concise rule**:
+   - \u274C What went wrong (with example)
+   - \u2705 Correct approach (with example)
+
+4. **Check constraints**:
+   - Is this error pattern already captured in rules? If yes, skip.
+   - Total rule file lines must stay under 550. If exceeded, consolidate.
+   - If mechanically checkable, note it for /verify checks.
+
+5. **Write the update**: Edit the appropriate rule file.
+
+6. **Report**: State which file was updated and what rule was added.
+
+## Important
+- Only add NEW patterns not already captured
+- Keep rules minimal: one error = one rule
+- Include correct-usage example, not just prohibition
+- Do NOT modify code files \u2014 only update .danya/rules/`;
+}
+var fix_harness_default = fixHarnessCommand;
 
 // src/commands/rename.ts
 var rename = {
@@ -18523,7 +19851,7 @@ import * as React89 from "react";
 // src/ui/components/permissions/file-edit-permission-request/FileEditPermissionRequest.tsx
 import chalk7 from "chalk";
 import { Box as Box55, Text as Text60, useInput as useInput19 } from "ink";
-import { basename as basename2, dirname as dirname6, extname as extname7 } from "path";
+import { basename as basename5, dirname as dirname7, extname as extname8 } from "path";
 import React74, { useCallback as useCallback8, useMemo as useMemo13 } from "react";
 
 // src/ui/hooks/usePermissionRequestLogging.ts
@@ -18603,11 +19931,11 @@ function PermissionRequestTitle({
 
 // src/ui/components/permissions/file-edit-permission-request/FileEditToolDiff.tsx
 import * as React73 from "react";
-import { existsSync as existsSync10, readFileSync as readFileSync7 } from "fs";
+import { existsSync as existsSync15, readFileSync as readFileSync9 } from "fs";
 import { useMemo as useMemo12 } from "react";
 import { Box as Box54, Text as Text59 } from "ink";
 init_state();
-import { relative as relative11 } from "path";
+import { relative as relative13 } from "path";
 function FileEditToolDiff({
   file_path,
   new_string,
@@ -18617,7 +19945,7 @@ function FileEditToolDiff({
   width
 }) {
   const file = useMemo12(
-    () => existsSync10(file_path) ? readFileSync7(file_path, "utf8") : "",
+    () => existsSync15(file_path) ? readFileSync9(file_path, "utf8") : "",
     [file_path]
   );
   const patch = useMemo12(
@@ -18637,7 +19965,7 @@ function FileEditToolDiff({
       flexDirection: "column",
       paddingX: 1
     },
-    /* @__PURE__ */ React73.createElement(Box54, { paddingBottom: 1 }, /* @__PURE__ */ React73.createElement(Text59, { bold: true }, verbose ? file_path : relative11(getCwd(), file_path))),
+    /* @__PURE__ */ React73.createElement(Box54, { paddingBottom: 1 }, /* @__PURE__ */ React73.createElement(Text59, { bold: true }, verbose ? file_path : relative13(getCwd(), file_path))),
     intersperse(
       patch.map((_) => /* @__PURE__ */ React73.createElement(
         StructuredDiff,
@@ -18694,8 +20022,8 @@ function getPermissionModeCycleShortcut() {
 
 // src/ui/components/permissions/file-edit-permission-request/FileEditPermissionRequest.tsx
 function getOptions(args) {
-  const dirPath = dirname6(args.path);
-  const dirName = basename2(dirPath) || "this directory";
+  const dirPath = dirname7(args.path);
+  const dirName = basename5(dirPath) || "this directory";
   const options = [
     {
       label: "Yes",
@@ -18726,7 +20054,7 @@ function FileEditPermissionRequest({
   const modeCycleShortcut = useMemo13(() => getPermissionModeCycleShortcut(), []);
   const hasSessionSuggestion = (toolUseConfirm.suggestions?.length ?? 0) > 0;
   const isInWorkingDir = isPathInWorkingDirectories(
-    dirname6(file_path),
+    dirname7(file_path),
     toolPermissionContext
   );
   const unaryEvent = useMemo13(
@@ -18836,7 +20164,7 @@ function FileEditPermissionRequest({
         width: columns - 12
       }
     ),
-    /* @__PURE__ */ React74.createElement(Box55, { flexDirection: "column" }, /* @__PURE__ */ React74.createElement(Text60, null, "Do you want to make this edit to", " ", /* @__PURE__ */ React74.createElement(Text60, { bold: true }, basename2(file_path)), "?"), /* @__PURE__ */ React74.createElement(
+    /* @__PURE__ */ React74.createElement(Box55, { flexDirection: "column" }, /* @__PURE__ */ React74.createElement(Text60, null, "Do you want to make this edit to", " ", /* @__PURE__ */ React74.createElement(Text60, { bold: true }, basename5(file_path)), "?"), /* @__PURE__ */ React74.createElement(
       Select,
       {
         options: getOptions({
@@ -18851,7 +20179,7 @@ function FileEditPermissionRequest({
   );
 }
 async function extractLanguageName(file_path) {
-  const ext = extname7(file_path);
+  const ext = extname8(file_path);
   if (!ext) {
     return "unknown";
   }
@@ -19217,31 +20545,31 @@ function useNotifyAfterTimeout(message, timeout = DEFAULT_INTERACTION_THRESHOLD_
 // src/ui/components/permissions/file-write-permission-request/FileWritePermissionRequest.tsx
 import { Box as Box59, Text as Text64, useInput as useInput20 } from "ink";
 import React78, { useCallback as useCallback9, useMemo as useMemo17 } from "react";
-import { basename as basename3, dirname as dirname7, extname as extname9 } from "path";
+import { basename as basename6, dirname as dirname8, extname as extname10 } from "path";
 init_env();
-import { existsSync as existsSync12 } from "fs";
+import { existsSync as existsSync17 } from "fs";
 import chalk10 from "chalk";
 
 // src/ui/components/permissions/file-write-permission-request/FileWriteToolDiff.tsx
 import * as React77 from "react";
-import { existsSync as existsSync11, readFileSync as readFileSync8 } from "fs";
+import { existsSync as existsSync16, readFileSync as readFileSync10 } from "fs";
 import { useMemo as useMemo16 } from "react";
 import { Box as Box58, Text as Text63 } from "ink";
 init_state();
-import { extname as extname8, relative as relative12 } from "path";
+import { extname as extname9, relative as relative14 } from "path";
 function FileWriteToolDiff({
   file_path,
   content,
   verbose,
   width
 }) {
-  const fileExists = useMemo16(() => existsSync11(file_path), [file_path]);
+  const fileExists = useMemo16(() => existsSync16(file_path), [file_path]);
   const oldContent = useMemo16(() => {
     if (!fileExists) {
       return "";
     }
     const enc = detectFileEncoding(file_path);
-    return readFileSync8(file_path, enc);
+    return readFileSync10(file_path, enc);
   }, [file_path, fileExists]);
   const hunks = useMemo16(() => {
     if (!fileExists) {
@@ -19262,7 +20590,7 @@ function FileWriteToolDiff({
       flexDirection: "column",
       paddingX: 1
     },
-    /* @__PURE__ */ React77.createElement(Box58, { paddingBottom: 1 }, /* @__PURE__ */ React77.createElement(Text63, { bold: true }, verbose ? file_path : relative12(getCwd(), file_path))),
+    /* @__PURE__ */ React77.createElement(Box58, { paddingBottom: 1 }, /* @__PURE__ */ React77.createElement(Text63, { bold: true }, verbose ? file_path : relative14(getCwd(), file_path))),
     hunks ? intersperse(
       hunks.map((_) => /* @__PURE__ */ React77.createElement(
         StructuredDiff,
@@ -19278,7 +20606,7 @@ function FileWriteToolDiff({
       HighlightedCode,
       {
         code: content || "(No content)",
-        language: extname8(file_path).slice(1)
+        language: extname9(file_path).slice(1)
       }
     )
   );
@@ -19295,18 +20623,18 @@ function FileWritePermissionRequest({
   const modeCycleShortcut = useMemo17(() => getPermissionModeCycleShortcut(), []);
   const hasSessionSuggestion = (toolUseConfirm.suggestions?.length ?? 0) > 0;
   const isInWorkingDir = isPathInWorkingDirectories(
-    dirname7(file_path),
+    dirname8(file_path),
     toolPermissionContext
   );
   const sessionLabel = useMemo17(() => {
-    const dirPath = dirname7(file_path);
-    const dirName = basename3(dirPath) || "this directory";
+    const dirPath = dirname8(file_path);
+    const dirName = basename6(dirPath) || "this directory";
     const shortcutHint = chalk10.bold.hex(getTheme().warning)(
       `(${modeCycleShortcut.displayText})`
     );
     return isInWorkingDir ? `Yes, allow all edits during this session ${shortcutHint}` : `Yes, allow all edits in ${chalk10.bold(`${dirName}/`)} during this session ${shortcutHint}`;
   }, [file_path, isInWorkingDir, modeCycleShortcut.displayText]);
-  const fileExists = useMemo17(() => existsSync12(file_path), [file_path]);
+  const fileExists = useMemo17(() => existsSync17(file_path), [file_path]);
   const unaryEvent = useMemo17(
     () => ({
       completion_type: "write_file_single",
@@ -19414,7 +20742,7 @@ function FileWritePermissionRequest({
         width: columns - 12
       }
     )),
-    /* @__PURE__ */ React78.createElement(Box59, { flexDirection: "column" }, /* @__PURE__ */ React78.createElement(Text64, null, "Do you want to ", fileExists ? "make this edit to" : "create", " ", /* @__PURE__ */ React78.createElement(Text64, { bold: true }, basename3(file_path)), "?"), /* @__PURE__ */ React78.createElement(
+    /* @__PURE__ */ React78.createElement(Box59, { flexDirection: "column" }, /* @__PURE__ */ React78.createElement(Text64, null, "Do you want to ", fileExists ? "make this edit to" : "create", " ", /* @__PURE__ */ React78.createElement(Text64, { bold: true }, basename6(file_path)), "?"), /* @__PURE__ */ React78.createElement(
       Select,
       {
         options: [
@@ -19439,7 +20767,7 @@ function FileWritePermissionRequest({
   );
 }
 async function extractLanguageName2(file_path) {
-  const ext = extname9(file_path);
+  const ext = extname10(file_path);
   if (!ext) {
     return "unknown";
   }
@@ -19453,8 +20781,8 @@ import React79, { useCallback as useCallback10, useMemo as useMemo18 } from "rea
 init_env();
 import chalk11 from "chalk";
 init_state();
-import { basename as basename4, dirname as dirname8 } from "path";
-import { statSync as statSync10 } from "fs";
+import { basename as basename7, dirname as dirname9 } from "path";
+import { statSync as statSync12 } from "fs";
 function pathArgNameForToolUse(toolUseConfirm) {
   switch (toolUseConfirm.tool) {
     case FileWriteTool:
@@ -19483,11 +20811,11 @@ function isMultiFile(toolUseConfirm) {
 }
 function pathToPermissionDirectory2(path5) {
   try {
-    const stats = statSync10(path5);
+    const stats = statSync12(path5);
     if (stats.isDirectory()) return path5;
   } catch {
   }
-  return dirname8(path5);
+  return dirname9(path5);
 }
 function pathFromToolUse(toolUseConfirm) {
   const pathArgName = pathArgNameForToolUse(toolUseConfirm);
@@ -19530,7 +20858,7 @@ function FilesystemPermissionRequest({
 function getDontAskAgainOptions(toolUseConfirm, path5, modeCycleShortcut, isInWorkingDir, hasSessionSuggestion) {
   if (!hasSessionSuggestion) return [];
   const permissionDirPath = pathToPermissionDirectory2(path5);
-  const permissionDirName = basename4(permissionDirPath) || "this directory";
+  const permissionDirName = basename7(permissionDirPath) || "this directory";
   if (toolUseConfirm.tool.isReadOnly(toolUseConfirm.input)) {
     const label2 = isInWorkingDir ? "Yes, during this session" : `Yes, allow reading from ${chalk11.bold(`${permissionDirName}/`)} during this session`;
     return [{ label: label2, value: "yes-session" }];
@@ -20565,9 +21893,9 @@ init_planMode();
 
 // src/utils/system/externalEditor.ts
 import { spawn, spawnSync } from "child_process";
-import { mkdtempSync, readFileSync as readFileSync9, rmSync, writeFileSync as writeFileSync4 } from "fs";
+import { mkdtempSync, readFileSync as readFileSync11, rmSync, writeFileSync as writeFileSync7 } from "fs";
 import { tmpdir } from "os";
-import { join as join8 } from "path";
+import { join as join13 } from "path";
 var isWindows = process.platform === "win32";
 function isCommandAvailable(command4) {
   const checker = isWindows ? "where" : "which";
@@ -20643,9 +21971,9 @@ async function launchExternalEditor(initialText) {
       )
     };
   }
-  const dir = mkdtempSync(join8(tmpdir(), "kode-edit-"));
-  const filePath = join8(dir, "message.txt");
-  writeFileSync4(filePath, initialText, "utf-8");
+  const dir = mkdtempSync(join13(tmpdir(), "kode-edit-"));
+  const filePath = join13(dir, "message.txt");
+  writeFileSync7(filePath, initialText, "utf-8");
   const wasRaw = Boolean(process.stdin.isTTY && process.stdin.isRaw);
   if (process.stdin.isTTY) {
     process.stdin.pause();
@@ -20687,7 +22015,7 @@ async function launchExternalEditor(initialText) {
   }
   restoreStdinState(wasRaw);
   try {
-    const edited = normalizeNewlines(readFileSync9(filePath, "utf-8"));
+    const edited = normalizeNewlines(readFileSync11(filePath, "utf-8"));
     rmSync(dir, { recursive: true, force: true });
     return { text: edited, editorLabel: editorCommand.displayName };
   } catch (error) {
@@ -20752,7 +22080,7 @@ async function launchExternalEditorForFilePath(filePath) {
 }
 
 // src/ui/components/permissions/plan-mode-permission-request/ExitPlanModePermissionRequest.tsx
-import { writeFileSync as writeFileSync5 } from "fs";
+import { writeFileSync as writeFileSync8 } from "fs";
 function getExitPlanModeOptions(args) {
   const options = [];
   options.push(
@@ -20838,7 +22166,7 @@ function ExitPlanModePermissionRequest({
       if (!planExists) {
         const initial = planText === planPlaceholder() ? "# Plan\n" : planText;
         try {
-          writeFileSync5(planFilePath, initial, "utf-8");
+          writeFileSync8(planFilePath, initial, "utf-8");
         } catch {
           const edited = await launchExternalEditor(initial);
           if (edited.text !== null) {
@@ -21708,8 +23036,8 @@ function getCompletionContext(args) {
 }
 
 // src/utils/completion/fileSuggestions.ts
-import { existsSync as existsSync13, readdirSync as readdirSync3, statSync as statSync11 } from "fs";
-import { basename as basename5, dirname as dirname9, join as join9, resolve as resolve9 } from "path";
+import { existsSync as existsSync18, readdirSync as readdirSync5, statSync as statSync13 } from "fs";
+import { basename as basename8, dirname as dirname10, join as join14, resolve as resolve9 } from "path";
 function generateFileSuggestions(args) {
   const { prefix, cwd: cwd2 } = args;
   try {
@@ -21725,35 +23053,35 @@ function generateFileSuggestions(args) {
       searchPath = resolve9(cwd2, userPath);
     }
     const endsWithSlash = userPath.endsWith("/");
-    const searchStat = existsSync13(searchPath) ? statSync11(searchPath) : null;
+    const searchStat = existsSync18(searchPath) ? statSync13(searchPath) : null;
     let searchDir;
     let nameFilter;
     if (endsWithSlash || searchStat?.isDirectory()) {
       searchDir = searchPath;
       nameFilter = "";
     } else {
-      searchDir = dirname9(searchPath);
-      nameFilter = basename5(searchPath);
+      searchDir = dirname10(searchPath);
+      nameFilter = basename8(searchPath);
     }
-    if (!existsSync13(searchDir)) return [];
+    if (!existsSync18(searchDir)) return [];
     const showHidden = nameFilter.startsWith(".") || userPath.includes("/.");
-    const entries = readdirSync3(searchDir).filter((entry) => {
+    const entries = readdirSync5(searchDir).filter((entry) => {
       if (!showHidden && entry.startsWith(".")) return false;
       if (nameFilter && !entry.toLowerCase().startsWith(nameFilter.toLowerCase()))
         return false;
       return true;
     }).sort((a, b) => {
-      const aPath = join9(searchDir, a);
-      const bPath = join9(searchDir, b);
-      const aIsDir = statSync11(aPath).isDirectory();
-      const bIsDir = statSync11(bPath).isDirectory();
+      const aPath = join14(searchDir, a);
+      const bPath = join14(searchDir, b);
+      const aIsDir = statSync13(aPath).isDirectory();
+      const bIsDir = statSync13(bPath).isDirectory();
       if (aIsDir && !bIsDir) return -1;
       if (!aIsDir && bIsDir) return 1;
       return a.toLowerCase().localeCompare(b.toLowerCase());
     }).slice(0, 25);
     return entries.map((entry) => {
-      const entryPath = join9(searchDir, entry);
-      const isDir = statSync11(entryPath).isDirectory();
+      const entryPath = join14(searchDir, entry);
+      const isDir = statSync13(entryPath).isDirectory();
       const icon = isDir ? "\u{1F4C1}" : "\u{1F4C4}";
       let value;
       if (userPath.includes("/")) {
@@ -23086,19 +24414,19 @@ function useUnifiedCompletion({
     if (systemCommands.length > 0 || isLoadingCommands) return;
     setIsLoadingCommands(true);
     try {
-      const { readdirSync: readdirSync4, statSync: statSync13 } = await import("fs");
+      const { readdirSync: readdirSync6, statSync: statSync15 } = await import("fs");
       const pathDirs = (process.env.PATH || "").split(":").filter(Boolean);
       const commandSet = /* @__PURE__ */ new Set();
       const essentialCommands = getEssentialCommands();
       essentialCommands.forEach((cmd) => commandSet.add(cmd));
       for (const dir of pathDirs) {
         try {
-          if (readdirSync4 && statSync13) {
-            const entries = readdirSync4(dir);
+          if (readdirSync6 && statSync15) {
+            const entries = readdirSync6(dir);
             for (const entry of entries) {
               try {
                 const fullPath = `${dir}/${entry}`;
-                const stats = statSync13(fullPath);
+                const stats = statSync15(fullPath);
                 if (stats.isFile() && (stats.mode & 73) !== 0) {
                   commandSet.add(entry);
                 }
@@ -23632,17 +24960,17 @@ function TokenWarning({ tokenUsage }) {
 
 // src/utils/commands/hashCommand.ts
 init_log();
-import { join as join10 } from "path";
-import { readFileSync as readFileSync10, writeFileSync as writeFileSync6 } from "fs";
+import { join as join15 } from "path";
+import { readFileSync as readFileSync12, writeFileSync as writeFileSync9 } from "fs";
 function handleHashCommand(interpreted) {
   try {
     const cwd2 = process.cwd();
-    const agentsPath = join10(cwd2, "AGENTS.md");
-    const legacyPath = join10(cwd2, "CLAUDE.md");
+    const agentsPath = join15(cwd2, "AGENTS.md");
+    const legacyPath = join15(cwd2, "CLAUDE.md");
     const filesToUpdate = [];
     filesToUpdate.push({ path: agentsPath, name: "AGENTS.md" });
     try {
-      readFileSync10(legacyPath, "utf-8");
+      readFileSync12(legacyPath, "utf-8");
       filesToUpdate.push({ path: legacyPath, name: "CLAUDE.md" });
     } catch {
     }
@@ -23657,12 +24985,12 @@ _Added on ${now.toLocaleString()} ${timezone}_`;
       try {
         let existingContent = "";
         try {
-          existingContent = readFileSync10(file.path, "utf-8").trim();
+          existingContent = readFileSync12(file.path, "utf-8").trim();
         } catch {
         }
         const separator = existingContent ? "\n\n" : "";
         const newContent = `${existingContent}${separator}${interpreted}${timestamp}`;
-        writeFileSync6(file.path, newContent, "utf-8");
+        writeFileSync9(file.path, newContent, "utf-8");
         updatedFiles.push(file.name);
       } catch (error) {
         logError(error);
@@ -23862,7 +25190,7 @@ function useStatusLine() {
 // src/ui/components/PromptInput.tsx
 async function interpretHashCommand(input) {
   try {
-    const { queryQuick: queryQuick2 } = await import("./llm-IFU62ZT4.js");
+    const { queryQuick: queryQuick2 } = await import("./llm-QWCVITWY.js");
     const systemPrompt = [
       "You're helping the user structure notes that will be added to their KODING.md file.",
       "Format the user's input into a well-structured note that will be useful for later reference.",
@@ -26911,7 +28239,7 @@ import React102, { useCallback as useCallback17, useEffect as useEffect26, useMe
 import { Box as Box76, Text as Text80, useInput as useInput30 } from "ink";
 import figures8 from "figures";
 import chalk15 from "chalk";
-import { join as join12 } from "path";
+import { join as join17 } from "path";
 import { spawn as spawn2 } from "child_process";
 
 // src/commands/agents/tooling.ts
@@ -26953,13 +28281,13 @@ async function getAvailableTools() {
 // src/commands/agents/storage.ts
 init_state();
 import {
-  existsSync as existsSync14,
-  mkdirSync as mkdirSync5,
+  existsSync as existsSync19,
+  mkdirSync as mkdirSync8,
   renameSync as renameSync2,
   unlinkSync as unlinkSync2,
-  writeFileSync as writeFileSync7
+  writeFileSync as writeFileSync10
 } from "fs";
-import { join as join11 } from "path";
+import { join as join16 } from "path";
 import { homedir as homedir7 } from "os";
 init_log();
 
@@ -26967,7 +28295,7 @@ init_log();
 import { randomUUID as randomUUID5 } from "crypto";
 init_log();
 async function generateAgentWithClaude(prompt) {
-  const { queryModel } = await import("./llm-IFU62ZT4.js");
+  const { queryModel } = await import("./llm-QWCVITWY.js");
   const systemPrompt = `You are an expert at creating AI agent configurations. Based on the user's description, generate a specialized agent configuration.
 
 Return your response as a JSON object with exactly these fields:
@@ -27151,26 +28479,26 @@ var LEGACY_FOLDER = ".kode";
 var AGENTS_DIR = "agents";
 function getAgentDirectory(location) {
   if (location === "user") {
-    return join11(homedir7(), PRIMARY_FOLDER, AGENTS_DIR);
+    return join16(homedir7(), PRIMARY_FOLDER, AGENTS_DIR);
   }
-  return join11(getCwd(), PRIMARY_FOLDER, AGENTS_DIR);
+  return join16(getCwd(), PRIMARY_FOLDER, AGENTS_DIR);
 }
 function getLegacyAgentDirectory(location) {
   if (location === "user") {
-    return join11(homedir7(), LEGACY_FOLDER, AGENTS_DIR);
+    return join16(homedir7(), LEGACY_FOLDER, AGENTS_DIR);
   }
-  return join11(getCwd(), LEGACY_FOLDER, AGENTS_DIR);
+  return join16(getCwd(), LEGACY_FOLDER, AGENTS_DIR);
 }
 function getPrimaryAgentFilePath(location, agentType) {
-  return join11(getAgentDirectory(location), `${agentType}.md`);
+  return join16(getAgentDirectory(location), `${agentType}.md`);
 }
 function getLegacyAgentFilePath(location, agentType) {
-  return join11(getLegacyAgentDirectory(location), `${agentType}.md`);
+  return join16(getLegacyAgentDirectory(location), `${agentType}.md`);
 }
 function ensureDirectoryExists(location) {
   const dir = getAgentDirectory(location);
-  if (!existsSync14(dir)) {
-    mkdirSync5(dir, { recursive: true });
+  if (!existsSync19(dir)) {
+    mkdirSync8(dir, { recursive: true });
   }
   return dir;
 }
@@ -27178,7 +28506,7 @@ async function saveAgent(location, agentType, description2, tools, systemPrompt,
   ensureDirectoryExists(location);
   const filePath = getPrimaryAgentFilePath(location, agentType);
   const legacyPath = getLegacyAgentFilePath(location, agentType);
-  if (throwIfExists && (existsSync14(filePath) || existsSync14(legacyPath))) {
+  if (throwIfExists && (existsSync19(filePath) || existsSync19(legacyPath))) {
     throw new Error(`Agent file already exists: ${filePath}`);
   }
   const tempFile = `${filePath}.tmp.${Date.now()}.${Math.random().toString(36).substr(2, 9)}`;
@@ -27192,8 +28520,8 @@ async function saveAgent(location, agentType, description2, tools, systemPrompt,
     color
   );
   try {
-    writeFileSync7(tempFile, content, { encoding: "utf-8", flag: "wx" });
-    if (throwIfExists && (existsSync14(filePath) || existsSync14(legacyPath))) {
+    writeFileSync10(tempFile, content, { encoding: "utf-8", flag: "wx" });
+    if (throwIfExists && (existsSync19(filePath) || existsSync19(legacyPath))) {
       try {
         unlinkSync2(tempFile);
       } catch {
@@ -27203,7 +28531,7 @@ async function saveAgent(location, agentType, description2, tools, systemPrompt,
     renameSync2(tempFile, filePath);
   } catch (error) {
     try {
-      if (existsSync14(tempFile)) {
+      if (existsSync19(tempFile)) {
         unlinkSync2(tempFile);
       }
     } catch (cleanupError) {
@@ -27231,9 +28559,9 @@ async function updateAgent(agent, description2, tools, systemPrompt, color, mode
   const location = agent.location;
   const primaryPath = getPrimaryAgentFilePath(location, agent.agentType);
   const legacyPath = getLegacyAgentFilePath(location, agent.agentType);
-  const filePath = existsSync14(primaryPath) ? primaryPath : existsSync14(legacyPath) ? legacyPath : primaryPath;
+  const filePath = existsSync19(primaryPath) ? primaryPath : existsSync19(legacyPath) ? legacyPath : primaryPath;
   ensureDirectoryExists(location);
-  writeFileSync7(filePath, content, { encoding: "utf-8", flag: "w" });
+  writeFileSync10(filePath, content, { encoding: "utf-8", flag: "w" });
 }
 async function deleteAgent(agent) {
   if (agent.location === "built-in" || agent.location === "plugin") {
@@ -27242,10 +28570,10 @@ async function deleteAgent(agent) {
   const location = agent.location;
   const primaryPath = getPrimaryAgentFilePath(location, agent.agentType);
   const legacyPath = getLegacyAgentFilePath(location, agent.agentType);
-  if (existsSync14(primaryPath)) {
+  if (existsSync19(primaryPath)) {
     unlinkSync2(primaryPath);
   }
-  if (existsSync14(legacyPath)) {
+  if (existsSync19(legacyPath)) {
     unlinkSync2(legacyPath);
   }
 }
@@ -28261,8 +29589,8 @@ function ViewAgent(props) {
     if (props.agent.source === "plugin") return `Plugin: ${props.agent.baseDir ?? "Unknown"}`;
     const baseDir = props.agent.baseDir;
     const file = `${props.agent.filename ?? props.agent.agentType}.md`;
-    if (props.agent.source === "projectSettings") return join12(".claude", "agents", file);
-    if (baseDir) return join12(baseDir, file);
+    if (props.agent.source === "projectSettings") return join17(".claude", "agents", file);
+    if (baseDir) return join17(baseDir, file);
     return props.agent.source;
   })();
   const toolsSummary = () => {
@@ -28610,6 +29938,7 @@ var COMMANDS = memoize3(() => [
   auto_work_default,
   auto_bugfix_default,
   parallel_execute_default,
+  fix_harness_default,
   todos_default,
   ...isAnthropicAuthEnabled() ? [logout_default, login_default()] : [],
   ...INTERNAL_ONLY_COMMANDS
@@ -30229,8 +31558,8 @@ var BashTool = {
         const targetDir = parts[1].replace(/^['"]|['"]$/g, "");
         const fullTargetDir = isAbsolute10(targetDir) ? targetDir : resolve10(getCwd(), targetDir);
         if (!isInDirectory(
-          relative13(getOriginalCwd(), fullTargetDir),
-          relative13(getCwd(), getOriginalCwd())
+          relative15(getOriginalCwd(), fullTargetDir),
+          relative15(getCwd(), getOriginalCwd())
         )) {
           return {
             result: false,
@@ -30636,7 +31965,7 @@ ${footerParts.join(" ")}`;
               for (const filePath of filePaths) {
                 const fullFilePath = isAbsolute10(filePath) ? filePath : resolve10(getCwd(), filePath);
                 try {
-                  readFileTimestamps[fullFilePath] = statSync12(fullFilePath).mtimeMs;
+                  readFileTimestamps[fullFilePath] = statSync14(fullFilePath).mtimeMs;
                 } catch (e) {
                   logError(e);
                 }
@@ -31051,8 +32380,25 @@ Game project changes must pass through verification layers before being committe
 ## Harness Self-Evolution
 When your changes cause an error and you fix it:
 1. Analyze the root cause
-2. Determine which rule file should be updated to prevent the same class of error
-3. Add a rule with the shortest possible statement + a correct-usage example`;
+2. Determine which rule file should be updated (.danya/rules/) to prevent the same class of error
+3. Route to the correct file:
+   - Forbidden zone violation \u2192 constitution.md
+   - Coding principle violation \u2192 golden-principles.md
+   - Known pitfall \u2192 known-pitfalls.md
+   - Architecture boundary \u2192 architecture-boundaries.md
+4. Add a rule: \u274C what went wrong + \u2705 correct approach
+5. Keep total lines per rule file under 550
+The system will prompt you when it detects an error-then-fix pattern. Cooperate by writing the rule update.
+You can also manually run /fix-harness at any time.
+
+## Subagent Dispatch
+Use subagents to avoid polluting the main context with large search/analysis results:
+- Searching 5+ files \u2192 dispatch to subagent, get back a file list
+- Analyzing large compilation output \u2192 dispatch to subagent, get back a summary
+- Exploring unfamiliar codebase area \u2192 dispatch to subagent, get back structure overview
+- Checking all event subscriptions/references \u2192 dispatch to subagent, get back unmatched pairs
+Rule of thumb: if the task needs 5+ tool calls and you only need the final result, use a subagent.
+Do NOT use subagents for: single file edits, single command execution, reading 2-3 files.`;
 }
 function getExecutingWithCareSection() {
   return `# Executing Actions with Care
