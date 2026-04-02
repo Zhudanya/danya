@@ -7,8 +7,8 @@
  * Lifecycle: create → agent executes in worktree → verify → merge/cleanup
  */
 
-import { execSync } from 'child_process'
-import { existsSync, mkdirSync, rmSync } from 'fs'
+import { execFileSync } from 'child_process'
+import { existsSync, mkdirSync, rmSync, readFileSync, writeFileSync, statSync } from 'fs'
 import { join, resolve } from 'path'
 
 export type WorktreeInfo = {
@@ -20,6 +20,24 @@ export type WorktreeInfo = {
 }
 
 const WORKTREE_DIR = '.worktrees'
+const SLUG_PATTERN = /^[a-zA-Z0-9_-]+$/
+const STALE_LOCK_MS = 60000 // 60 seconds
+
+/**
+ * Validate slug to prevent command injection.
+ */
+function validateSlug(slug: string): void {
+  if (!SLUG_PATTERN.test(slug)) {
+    throw new Error(`Invalid worktree slug: "${slug}". Only alphanumeric, hyphens, and underscores allowed.`)
+  }
+}
+
+/**
+ * Cross-platform sleep (works on Windows too).
+ */
+function sleepMs(ms: number): void {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms)
+}
 
 /**
  * Create an isolated git worktree for an agent.
@@ -29,6 +47,8 @@ export function createAgentWorktree(
   slug: string,
   projectRoot?: string,
 ): WorktreeInfo {
+  validateSlug(slug)
+
   const root = projectRoot || process.cwd()
   const worktreeBase = join(root, WORKTREE_DIR)
   mkdirSync(worktreeBase, { recursive: true })
@@ -37,10 +57,10 @@ export function createAgentWorktree(
   const branch = `wt/${slug}`
 
   // Get current HEAD commit for later comparison
-  const baseCommit = execSync('git rev-parse HEAD', { cwd: root, encoding: 'utf-8' }).trim()
+  const baseCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf-8' }).trim()
 
   // Create worktree with new branch
-  execSync(`git worktree add -b "${branch}" "${worktreePath}" HEAD`, {
+  execFileSync('git', ['worktree', 'add', '-b', branch, worktreePath, 'HEAD'], {
     cwd: root,
     stdio: 'pipe',
   })
@@ -56,23 +76,23 @@ export function createAgentWorktree(
 
 /**
  * Check if a worktree has any changes compared to its base commit.
+ * Returns { hasChanges, error } — error is set if detection failed.
  */
-export function worktreeHasChanges(info: WorktreeInfo): boolean {
+export function worktreeHasChanges(info: WorktreeInfo): { hasChanges: boolean; error?: string } {
   try {
-    const diff = execSync(`git diff "${info.baseCommit}" HEAD --stat`, {
+    const diff = execFileSync('git', ['diff', info.baseCommit, 'HEAD', '--stat'], {
       cwd: info.path,
       encoding: 'utf-8',
     }).trim()
-    return diff.length > 0
-  } catch {
-    return false
+    return { hasChanges: diff.length > 0 }
+  } catch (e: any) {
+    return { hasChanges: false, error: e.message || 'Failed to check worktree changes' }
   }
 }
 
 /**
  * Merge a worktree's changes back to the main branch.
- * Uses a lock file to prevent concurrent merges.
- * Returns true if merge succeeded.
+ * Uses a lock directory to prevent concurrent merges.
  */
 export function mergeWorktree(
   info: WorktreeInfo,
@@ -80,18 +100,36 @@ export function mergeWorktree(
 ): { success: boolean; error?: string } {
   const root = projectRoot || process.cwd()
   const lockDir = join(root, WORKTREE_DIR, '.merge-lock')
+  const lockPidFile = join(lockDir, 'pid')
 
-  // Acquire lock (atomic mkdir)
+  // Check if branch exists before attempting merge
+  try {
+    execFileSync('git', ['rev-parse', '--verify', info.branch], { cwd: root, stdio: 'pipe' })
+  } catch {
+    return { success: false, error: `Branch "${info.branch}" does not exist` }
+  }
+
+  // Acquire lock (atomic mkdir) with stale lock detection
   let lockAcquired = false
   const maxWait = 30000
   const start = Date.now()
   while (!lockAcquired && Date.now() - start < maxWait) {
     try {
       mkdirSync(lockDir)
+      writeFileSync(lockPidFile, `${process.pid}:${Date.now()}`)
       lockAcquired = true
     } catch {
-      // Lock held by another merge, wait
-      execSync('sleep 0.5')
+      // Lock exists — check if stale
+      try {
+        const lockContent = readFileSync(lockPidFile, 'utf-8')
+        const lockTime = parseInt(lockContent.split(':')[1] || '0')
+        if (Date.now() - lockTime > STALE_LOCK_MS) {
+          // Stale lock — force remove
+          rmSync(lockDir, { recursive: true })
+          continue
+        }
+      } catch { /* lock file unreadable, wait */ }
+      sleepMs(500)
     }
   }
 
@@ -100,17 +138,19 @@ export function mergeWorktree(
   }
 
   try {
-    execSync(`git merge "${info.branch}" --no-edit`, {
+    execFileSync('git', ['merge', info.branch, '--no-edit'], {
       cwd: root,
       stdio: 'pipe',
     })
     return { success: true }
   } catch (e: any) {
-    // Merge conflict — abort
+    // Merge failed — abort and report actual error
     try {
-      execSync('git merge --abort', { cwd: root, stdio: 'pipe' })
+      execFileSync('git', ['merge', '--abort'], { cwd: root, stdio: 'pipe' })
     } catch { /* already clean */ }
-    return { success: false, error: 'Merge conflict' }
+    const stderr = e.stderr?.toString() || ''
+    const errorMsg = stderr.includes('CONFLICT') ? 'Merge conflict' : (stderr.slice(0, 200) || 'Merge failed')
+    return { success: false, error: errorMsg }
   } finally {
     // Release lock
     try { rmSync(lockDir, { recursive: true }) } catch { /* ok */ }
@@ -127,22 +167,29 @@ export function cleanupWorktree(
   options: { keepIfChanged?: boolean } = {},
 ): { cleaned: boolean; preserved: boolean } {
   const root = projectRoot || process.cwd()
-  const hasChanges = worktreeHasChanges(info)
+  const { hasChanges, error } = worktreeHasChanges(info)
+
+  // If detection failed, preserve by default to avoid data loss
+  if (error && options.keepIfChanged) {
+    try {
+      execFileSync('git', ['worktree', 'remove', info.path, '--force'], { cwd: root, stdio: 'pipe' })
+    } catch { /* may already be removed */ }
+    return { cleaned: false, preserved: true }
+  }
 
   if (hasChanges && options.keepIfChanged) {
-    // Remove worktree but keep branch for manual inspection
     try {
-      execSync(`git worktree remove "${info.path}" --force`, { cwd: root, stdio: 'pipe' })
+      execFileSync('git', ['worktree', 'remove', info.path, '--force'], { cwd: root, stdio: 'pipe' })
     } catch { /* may already be removed */ }
     return { cleaned: false, preserved: true }
   }
 
   // Full cleanup: remove worktree + branch
   try {
-    execSync(`git worktree remove "${info.path}" --force`, { cwd: root, stdio: 'pipe' })
+    execFileSync('git', ['worktree', 'remove', info.path, '--force'], { cwd: root, stdio: 'pipe' })
   } catch { /* ok */ }
   try {
-    execSync(`git branch -D "${info.branch}"`, { cwd: root, stdio: 'pipe' })
+    execFileSync('git', ['branch', '-D', info.branch], { cwd: root, stdio: 'pipe' })
   } catch { /* ok */ }
 
   return { cleaned: true, preserved: false }
@@ -154,7 +201,7 @@ export function cleanupWorktree(
 export function listWorktrees(projectRoot?: string): string[] {
   const root = projectRoot || process.cwd()
   try {
-    const output = execSync('git worktree list --porcelain', { cwd: root, encoding: 'utf-8' })
+    const output = execFileSync('git', ['worktree', 'list', '--porcelain'], { cwd: root, encoding: 'utf-8' })
     return output
       .split('\n')
       .filter(line => line.startsWith('worktree '))

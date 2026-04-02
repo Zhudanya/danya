@@ -70,7 +70,7 @@ import {
   runStopHooks,
   runUserPromptSubmitHooks,
   updateHookTranscriptForMessages
-} from "./chunk-XLSEUN5N.js";
+} from "./chunk-TXVOE4TT.js";
 import {
   getDanyaAgentSessionId,
   init_kodeAgentSessionId,
@@ -96,7 +96,7 @@ import {
   queryLLM,
   queryQuick,
   verifyApiKey
-} from "./chunk-GW46LCO4.js";
+} from "./chunk-6A7RCCAT.js";
 import {
   init_ripgrep,
   listAllContentFiles,
@@ -184,7 +184,7 @@ import {
   processUserInput,
   reorderMessages,
   stripSystemMessages
-} from "./chunk-ZR5WPEB5.js";
+} from "./chunk-7HU2KBG7.js";
 import {
   ModelManager,
   getModelManager,
@@ -494,7 +494,7 @@ var init_commands = __esm({
     getCommandPrefix = memoize(
       async (command4, abortSignal) => {
         const { systemPrompt, userPrompt } = buildBashCommandPrefixDetectionPrompt(command4);
-        const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-ZLIMVX6I.js");
+        const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-YRV4R3F4.js");
         const response = await queryQuick2({
           systemPrompt,
           userPrompt,
@@ -4573,7 +4573,7 @@ function formatParseError(error) {
   return error instanceof Error ? error.message : String(error);
 }
 async function defaultGateQuery(args) {
-  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-ZLIMVX6I.js");
+  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-YRV4R3F4.js");
   const messages = [
     {
       type: "user",
@@ -13822,7 +13822,7 @@ async function createAndStoreApiKey(accessToken) {
       }
       saveGlobalConfig(config2);
       try {
-        const { resetAnthropicClient } = await import("./llm-ZLIMVX6I.js");
+        const { resetAnthropicClient } = await import("./llm-YRV4R3F4.js");
         resetAnthropicClient();
       } catch {
       }
@@ -18510,7 +18510,7 @@ async function refreshPluginRuntimeFromInstalls() {
   const existingRoots = getSessionPlugins().map((p) => p.rootDir);
   const dirs = Array.from(/* @__PURE__ */ new Set([...existingRoots, ...installedRoots]));
   if (dirs.length === 0) return [];
-  const { configureSessionPlugins } = await import("./pluginRuntime-FQDEK6HV.js");
+  const { configureSessionPlugins } = await import("./pluginRuntime-HZ2PYDXQ.js");
   const { errors } = await configureSessionPlugins({ pluginDirs: dirs });
   return errors;
 }
@@ -20316,6 +20316,7 @@ var init_enter_worktree = __esm({
       },
       async getPromptForCommand(args) {
         const name2 = args.trim() || `wt-${Date.now().toString(36)}`;
+        const safeName = name2.replace(/[^a-zA-Z0-9_-]/g, "-");
         return [
           {
             role: "user",
@@ -20324,23 +20325,18 @@ var init_enter_worktree = __esm({
                 type: "text",
                 text: `Create a git worktree for isolated work.
 
-Execute the following steps:
-1. Run this code to create the worktree:
-\`\`\`typescript
-import { createAgentWorktree } from '../../utils/git/worktree'
-const info = createAgentWorktree('${name2}')
-\`\`\`
-
-Or use bash:
+Execute these bash commands:
 \`\`\`bash
 mkdir -p .worktrees
-git worktree add -b "wt/${name2}" ".worktrees/${name2}" HEAD
-cd .worktrees/${name2}
+git worktree add -b "wt/${safeName}" ".worktrees/${safeName}" HEAD
+cd .worktrees/${safeName}
 \`\`\`
 
-2. After creating, change your working directory to the worktree path.
-3. All subsequent file edits will happen in the worktree (isolated from main branch).
-4. When done, use /exit-worktree to merge back or discard.
+After creating:
+1. Change your working directory to \`.worktrees/${safeName}\`
+2. All subsequent file edits will happen in the worktree (isolated from main branch)
+3. The main branch is NOT affected by any changes you make here
+4. When done, use \`/exit-worktree merge\` to merge back, or \`/exit-worktree discard\` to throw away changes
 
 Report the worktree path and branch name.`
               }
@@ -27954,7 +27950,7 @@ import * as React93 from "react";
 import { memo, useCallback as useCallback13, useEffect as useEffect22, useMemo as useMemo23, useState as useState24 } from "react";
 async function interpretHashCommand(input) {
   try {
-    const { queryQuick: queryQuick2 } = await import("./llm-ZLIMVX6I.js");
+    const { queryQuick: queryQuick2 } = await import("./llm-YRV4R3F4.js");
     const systemPrompt = [
       "You're helping the user structure notes that will be added to their KODING.md file.",
       "Format the user's input into a well-structured note that will be useful for later reference.",
@@ -30902,7 +30898,7 @@ function REPL({
       setMessageQueue((q) => q.slice(1));
       (async () => {
         try {
-          const { createUserMessage: createUserMessage2 } = await import("./messages-JDD3VBHC.js");
+          const { createUserMessage: createUserMessage2 } = await import("./messages-OWJIGMY4.js");
           const userMsg = createUserMessage2(nextMessage);
           setIsLoading(true);
           await onQuery([userMsg]);
@@ -31456,7 +31452,7 @@ var init_tooling = __esm({
 // src/commands/agents/generation.ts
 import { randomUUID as randomUUID5 } from "crypto";
 async function generateAgentWithClaude(prompt) {
-  const { queryModel } = await import("./llm-ZLIMVX6I.js");
+  const { queryModel } = await import("./llm-YRV4R3F4.js");
   const systemPrompt = `You are an expert at creating AI agent configurations. Based on the user's description, generate a specialized agent configuration.
 
 Return your response as a JSON object with exactly these fields:

@@ -6,7 +6,7 @@ import {
 
 // src/services/ai/llmLazy.ts
 async function queryLLM(messages, systemPrompt, maxThinkingTokens, tools, signal, options) {
-  const { queryLLM: inner } = await import("./llm-ZLIMVX6I.js");
+  const { queryLLM: inner } = await import("./llm-YRV4R3F4.js");
   return inner(
     messages,
     systemPrompt,
@@ -17,15 +17,15 @@ async function queryLLM(messages, systemPrompt, maxThinkingTokens, tools, signal
   );
 }
 async function queryQuick(args) {
-  const { queryQuick: inner } = await import("./llm-ZLIMVX6I.js");
+  const { queryQuick: inner } = await import("./llm-YRV4R3F4.js");
   return inner(args);
 }
 async function verifyApiKey(apiKey, baseURL, provider) {
-  const { verifyApiKey: inner } = await import("./llm-ZLIMVX6I.js");
+  const { verifyApiKey: inner } = await import("./llm-YRV4R3F4.js");
   return inner(apiKey, baseURL, provider);
 }
 async function fetchAnthropicModels(apiKey, baseURL) {
-  const { fetchAnthropicModels: inner } = await import("./llm-ZLIMVX6I.js");
+  const { fetchAnthropicModels: inner } = await import("./llm-YRV4R3F4.js");
   return inner(apiKey, baseURL);
 }
 var init_llmLazy = __esm({

@@ -18,6 +18,9 @@ const enterWorktreeCommand: Command = {
   async getPromptForCommand(args: string) {
     const name = args.trim() || `wt-${Date.now().toString(36)}`
 
+    // Validate name: only safe characters
+    const safeName = name.replace(/[^a-zA-Z0-9_-]/g, '-')
+
     return [
       {
         role: 'user' as const,
@@ -26,23 +29,18 @@ const enterWorktreeCommand: Command = {
             type: 'text' as const,
             text: `Create a git worktree for isolated work.
 
-Execute the following steps:
-1. Run this code to create the worktree:
-\`\`\`typescript
-import { createAgentWorktree } from '../../utils/git/worktree'
-const info = createAgentWorktree('${name}')
-\`\`\`
-
-Or use bash:
+Execute these bash commands:
 \`\`\`bash
 mkdir -p .worktrees
-git worktree add -b "wt/${name}" ".worktrees/${name}" HEAD
-cd .worktrees/${name}
+git worktree add -b "wt/${safeName}" ".worktrees/${safeName}" HEAD
+cd .worktrees/${safeName}
 \`\`\`
 
-2. After creating, change your working directory to the worktree path.
-3. All subsequent file edits will happen in the worktree (isolated from main branch).
-4. When done, use /exit-worktree to merge back or discard.
+After creating:
+1. Change your working directory to \`.worktrees/${safeName}\`
+2. All subsequent file edits will happen in the worktree (isolated from main branch)
+3. The main branch is NOT affected by any changes you make here
+4. When done, use \`/exit-worktree merge\` to merge back, or \`/exit-worktree discard\` to throw away changes
 
 Report the worktree path and branch name.`,
           },
