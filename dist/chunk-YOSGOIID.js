@@ -3,7 +3,7 @@ const require = __kodeCreateRequire(import.meta.url);
 
 // src/services/ai/llmLazy.ts
 async function queryLLM(messages, systemPrompt, maxThinkingTokens, tools, signal, options) {
-  const { queryLLM: inner } = await import("./llm-7GYSEKZV.js");
+  const { queryLLM: inner } = await import("./llm-IBKHGII5.js");
   return inner(
     messages,
     systemPrompt,
@@ -14,15 +14,15 @@ async function queryLLM(messages, systemPrompt, maxThinkingTokens, tools, signal
   );
 }
 async function queryQuick(args) {
-  const { queryQuick: inner } = await import("./llm-7GYSEKZV.js");
+  const { queryQuick: inner } = await import("./llm-IBKHGII5.js");
   return inner(args);
 }
 async function verifyApiKey(apiKey, baseURL, provider) {
-  const { verifyApiKey: inner } = await import("./llm-7GYSEKZV.js");
+  const { verifyApiKey: inner } = await import("./llm-IBKHGII5.js");
   return inner(apiKey, baseURL, provider);
 }
 async function fetchAnthropicModels(apiKey, baseURL) {
-  const { fetchAnthropicModels: inner } = await import("./llm-7GYSEKZV.js");
+  const { fetchAnthropicModels: inner } = await import("./llm-IBKHGII5.js");
   return inner(apiKey, baseURL);
 }
 

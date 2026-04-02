@@ -2763,6 +2763,80 @@ async function parseArgs(
       process.exit(0)
     })
 
+  // ── Danya Tools CLI Subcommands ──────────────────
+
+  program
+    .command('auto-work <requirement>')
+    .description('Shell-enforced full-auto pipeline (each stage = independent danya -p)')
+    .option('--model <model>', 'Model to use', 'sonnet')
+    .option('--max-turns <n>', 'Max turns per stage', '30')
+    .action(async (requirement, opts) => {
+      const { execSync } = await import('child_process')
+      const scriptPath = join(cwd(), '.danya', 'scripts', 'auto-work-loop.sh')
+      const env = { ...process.env, MODEL: opts.model, MAX_TURNS: opts.maxTurns }
+      try {
+        execSync(`bash "${scriptPath}" "${requirement}"`, { stdio: 'inherit', env, cwd: cwd() })
+      } catch (e: any) {
+        process.exit(e.status || 1)
+      }
+    })
+
+  program
+    .command('parallel <tasks-dir>')
+    .description('Wave-based parallel execution (each task in independent worktree)')
+    .action(async (tasksDir) => {
+      const { execSync } = await import('child_process')
+      const scriptPath = join(cwd(), '.danya', 'scripts', 'parallel-wave.sh')
+      try {
+        execSync(`bash "${scriptPath}" "${tasksDir}"`, { stdio: 'inherit', cwd: cwd() })
+      } catch (e: any) {
+        process.exit(e.status || 1)
+      }
+    })
+
+  program
+    .command('red-blue [scope]')
+    .description('Adversarial red-blue testing loop')
+    .option('-n, --rounds <n>', 'Max rounds', '5')
+    .option('--model <model>', 'Model to use', 'sonnet')
+    .action(async (scope, opts) => {
+      const { execSync } = await import('child_process')
+      const scriptPath = join(cwd(), '.danya', 'scripts', 'red-blue-loop.sh')
+      const env = { ...process.env, MODEL: opts.model, MAX_ROUNDS: opts.rounds }
+      try {
+        execSync(`bash "${scriptPath}" "${scope || '.'}"`, { stdio: 'inherit', env, cwd: cwd() })
+      } catch (e: any) {
+        process.exit(e.status || 1)
+      }
+    })
+
+  program
+    .command('orchestrate <task-file>')
+    .description('Auto-research iteration loop (AI codes → verify → commit/revert)')
+    .option('-n, --iterations <n>', 'Max iterations', '20')
+    .option('--model <model>', 'Model to use', 'sonnet')
+    .action(async (taskFile, opts) => {
+      const { execSync } = await import('child_process')
+      const scriptPath = join(cwd(), '.danya', 'scripts', 'orchestrator.sh')
+      const env = { ...process.env, MODEL: opts.model, MAX_ITERATIONS: opts.iterations }
+      try {
+        execSync(`bash "${scriptPath}" "${taskFile}"`, { stdio: 'inherit', env, cwd: cwd() })
+      } catch (e: any) {
+        process.exit(e.status || 1)
+      }
+    })
+
+  program
+    .command('check-env')
+    .description('Validate environment dependencies for Danya tools')
+    .action(async () => {
+      const { execSync } = await import('child_process')
+      const scriptPath = join(cwd(), '.danya', 'scripts', 'check-env.sh')
+      try {
+        execSync(`bash "${scriptPath}"`, { stdio: 'inherit', cwd: cwd() })
+      } catch { /* check-env reports its own errors */ }
+    })
+
   await program.parseAsync(process.argv)
   return program
 }

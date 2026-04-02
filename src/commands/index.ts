@@ -27,6 +27,9 @@ import autoWork from './auto-work'
 import autoBugfix from './auto-bugfix'
 import parallelExecute from './parallel-execute'
 import fixHarness from './fix-harness'
+import orchestrate from './orchestrate'
+import redBlue from './red-blue'
+import monitor from './monitor'
 import rename from './rename'
 import statusline from './statusline'
 import tag from './tag'
@@ -121,6 +124,9 @@ const COMMANDS = memoize((): Command[] => [
   autoBugfix,
   parallelExecute,
   fixHarness,
+  orchestrate,
+  redBlue,
+  monitor,
   todos,
   ...(isAnthropicAuthEnabled() ? [logout, login()] : []),
   ...INTERNAL_ONLY_COMMANDS,

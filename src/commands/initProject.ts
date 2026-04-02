@@ -186,6 +186,10 @@ function generateSettings(): object {
       PostToolUse: [
         { matcher: 'Bash', hooks: [{ type: 'command', command: 'bash .danya/hooks/harness-evolution.sh', timeout: 5000 }] },
         { matcher: 'Bash', commandPattern: 'git\\s+commit', hooks: [{ type: 'command', command: 'bash .danya/hooks/post-commit.sh', timeout: 5000 }] },
+        { matcher: '*', hooks: [{ type: 'command', command: 'python3 .danya/monitor/log-tool-use.py', timeout: 3000 }] },
+      ],
+      Stop: [
+        { matcher: '*', hooks: [{ type: 'command', command: 'python3 .danya/monitor/log-session-end.py', timeout: 3000 }] },
       ],
     },
   }

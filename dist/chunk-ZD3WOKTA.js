@@ -58,7 +58,7 @@ import {
   runStopHooks,
   runUserPromptSubmitHooks,
   updateHookTranscriptForMessages
-} from "./chunk-MZCZVIZO.js";
+} from "./chunk-TNCJ6TRC.js";
 import {
   getDanyaAgentSessionId,
   setDanyaAgentSessionId
@@ -80,7 +80,7 @@ import {
   queryLLM,
   queryQuick,
   verifyApiKey
-} from "./chunk-C6ND43BL.js";
+} from "./chunk-YOSGOIID.js";
 import {
   listAllContentFiles,
   ripGrep
@@ -154,7 +154,7 @@ import {
   processUserInput,
   reorderMessages,
   stripSystemMessages
-} from "./chunk-N3JEQKJM.js";
+} from "./chunk-SRXZ3EYU.js";
 import {
   ModelManager,
   getModelManager,
@@ -250,8 +250,7 @@ import {
 } from "./chunk-LWXT5RGE.js";
 import {
   __esm,
-  __export,
-  __toCommonJS
+  __export
 } from "./chunk-M3TKNAUR.js";
 
 // src/engine/detect.ts
@@ -384,351 +383,6 @@ function detectWorkspace(rootPath) {
 }
 var init_detect = __esm({
   "src/engine/detect.ts"() {
-  }
-});
-
-// src/templates/bundles/common.ts
-var common_exports = {};
-__export(common_exports, {
-  CMD_AUTO_BUGFIX: () => CMD_AUTO_BUGFIX,
-  CMD_AUTO_WORK: () => CMD_AUTO_WORK,
-  CMD_FIX_HARNESS: () => CMD_FIX_HARNESS,
-  CMD_PARALLEL_EXECUTE: () => CMD_PARALLEL_EXECUTE,
-  CMD_PLAN: () => CMD_PLAN,
-  CMD_REVIEW: () => CMD_REVIEW,
-  CMD_VERIFY: () => CMD_VERIFY,
-  HOOK_CONSTITUTION_GUARD: () => HOOK_CONSTITUTION_GUARD,
-  HOOK_HARNESS_EVOLUTION: () => HOOK_HARNESS_EVOLUTION,
-  HOOK_POST_COMMIT: () => HOOK_POST_COMMIT,
-  HOOK_PRE_COMMIT: () => HOOK_PRE_COMMIT,
-  HOOK_PUSH_GATE: () => HOOK_PUSH_GATE,
-  MEMORY_INDEX: () => MEMORY_INDEX,
-  RULE_ARCHITECTURE_BOUNDARIES: () => RULE_ARCHITECTURE_BOUNDARIES,
-  RULE_KNOWN_PITFALLS: () => RULE_KNOWN_PITFALLS
-});
-var CMD_AUTO_WORK, CMD_AUTO_BUGFIX, CMD_REVIEW, CMD_FIX_HARNESS, CMD_PLAN, CMD_VERIFY, CMD_PARALLEL_EXECUTE, RULE_KNOWN_PITFALLS, RULE_ARCHITECTURE_BOUNDARIES, MEMORY_INDEX, HOOK_CONSTITUTION_GUARD, HOOK_PRE_COMMIT, HOOK_POST_COMMIT, HOOK_PUSH_GATE, HOOK_HARNESS_EVOLUTION;
-var init_common = __esm({
-  "src/templates/bundles/common.ts"() {
-    CMD_AUTO_WORK = `# /auto-work <requirement>
-
-Full-auto development pipeline. Walks through the entire cycle without manual intervention.
-
-## Stages
-
-### Stage 0: Classify
-Determine requirement type: bug | feature | refactor
-
-### Stage 1: Plan
-- List all files to modify with 1-line intent per file
-- If >3 tasks and parallelizable \u2192 switch to parallel mode
-
-### Stage 2: Code
-- Modify files per plan
-- After each file \u2192 compile check immediately (fail-fast)
-- After all: run /verify
-- Verify fail \u2192 fix (max 3 rounds), else abort
-
-### Stage 3: Review
-- Run /review (100-point scoring)
-- CRITICAL \u2192 fail; <80 \u2192 fail
-- Quality ratchet: score must not drop
-- Pass \u2192 write push-approved marker
-
-### Stage 4: Commit
-- git add + git commit
-- Pre-commit hook runs lint + test
-- Fail \u2192 fix and retry (max 2 times)
-
-### Stage 5: Knowledge Deposit
-- Feature \u2192 Docs/Version/<version>/<feature>/summary.md
-- Bug \u2192 Docs/Bugs/<version>/<bug-name>.md
-- New module \u2192 Docs/Engine/Business/<module>/
-
-### Stage 6: Harness Self-Evolution
-- Check for errors fixed in Stages 2-3
-- If found \u2192 update .danya/rules/ to prevent recurrence
-
-## Termination Conditions
-- Verify fail after 3 rounds (Stage 2)
-- Review score <80 after 3 rounds (Stage 3)
-- Commit fail after 2 attempts (Stage 4)
-
-## Important
-- Do NOT push. Push is manual after human review.
-- Do NOT skip stages. Each stage must complete before next.
-`;
-    CMD_AUTO_BUGFIX = `# /auto-bugfix <bug-description>
-
-Autonomous bug-fix pipeline. Must reproduce before fixing.
-
-## Flow
-
-### Step 1: Reproduce
-- Analyze bug description
-- Find reproduction steps
-- Verify the bug exists (compile, run test, check logs)
-- If NOT reproducible \u2192 report and STOP
-
-### Step 2: Root Cause Analysis
-- Trace from symptom to root cause
-- Do NOT guess. Read code, check logs, add debug output if needed.
-
-### Step 3: Fix (max 5 rounds)
-- Modify code to fix root cause
-- Run /verify after each fix attempt
-- If verify fails \u2192 analyze why and try again
-- If 5 rounds exhausted \u2192 report failure
-
-### Step 4: Review + Commit
-- Run /review (must pass \u226580, no CRITICAL)
-- git commit with descriptive message
-
-### Step 5: Knowledge Deposit
-- Write to Docs/Bugs/<version>/<bug-name>.md
-- Include: reproduction steps, root cause, fix, lessons learned
-
-### Step 6: Harness Evolution
-- If this bug type isn't in known-pitfalls.md \u2192 add it
-`;
-    CMD_REVIEW = `# /review
-
-Score-based code review. Quantitative, not subjective.
-
-## Pre-check
-Run /verify first. If verify fails, fix before reviewing.
-
-## Scoring System
-- Initial score: 100
-- CRITICAL: -30 each (any CRITICAL = automatic FAIL)
-- HIGH: -10 each
-- MEDIUM: -3 each
-- Pass threshold: \u226580 AND no CRITICAL
-
-## Check Categories
-
-### 1. Architecture Compliance (mechanical + AI)
-- Forbidden file edits (constitution)?
-- Cross-layer imports?
-- Package boundary violations?
-
-### 2. Coding Standards (mechanical + AI)
-- Engine-specific style violations?
-- Error handling patterns?
-- Naming conventions?
-
-### 3. Logic Review (AI only)
-- Intent clarity
-- Error propagation
-- Concurrency safety
-- Edge cases
-- Dead code
-
-### 4. Harness Completeness
-- Were errors fixed during development?
-- Did rules get updated to match?
-
-## Quality Ratchet
-Score must not drop compared to previous review. If it drops, the fix introduced regressions.
-
-## Output
-On PASS: write .danya/push-approved marker (one-time use).
-On FAIL: list all issues with severity, do NOT write marker.
-`;
-    CMD_FIX_HARNESS = `# /fix-harness [error-description]
-
-Update harness rules after discovering an error pattern.
-
-## Process
-
-1. Analyze the error that occurred
-2. Route to the correct rule file:
-   - Forbidden zone violation \u2192 constitution.md
-   - Coding principle violation \u2192 golden-principles.md
-   - Known pitfall re-occurrence \u2192 known-pitfalls.md
-   - Architecture boundary violation \u2192 architecture-boundaries.md
-   - Style issue \u2192 engine-style rule file
-3. Add a concise rule:
-   - \u274C What went wrong (with example)
-   - \u2705 Correct approach (with example)
-4. If mechanically checkable \u2192 add to /verify checks
-5. Check total rule file lines < 550 (if exceeded, consolidate)
-
-## Important
-- Only add NEW patterns not already captured
-- Keep rules minimal: one error = one rule
-- Include correct-usage example, not just prohibition
-`;
-    CMD_PLAN = `# /plan <requirement>
-
-Analyze requirement and create a development plan.
-
-## Output Format
-
-### 1. Requirement Analysis
-- What needs to change and why
-- Scope assessment
-
-### 2. File Checklist
-For each file to modify:
-- File path
-- 1-line description of changes
-- Risk level (low/medium/high)
-
-### 3. Execution Order
-- Dependencies between changes
-- Which files can be modified in parallel
-- Which must be sequential
-
-### 4. Verification Strategy
-- How to verify each change works
-- Integration test approach
-
-## Rules
-- Read existing code before planning changes
-- Check architecture boundaries before proposing cross-layer changes
-- Flag any forbidden zone files that would need regeneration
-`;
-    CMD_VERIFY = `# /verify [level]
-
-Mechanical verification checks. Levels: quick | build | full
-
-## quick (default)
-- Lint check
-- Syntax check (engine-specific)
-
-## build
-- Everything in quick
-- Full compilation/build
-
-## full
-- Everything in build
-- Run tests
-- Architecture boundary check
-
-## Important
-- Run this BEFORE /review
-- If verify fails, fix issues before reviewing
-- Exit with clear pass/fail and error details
-`;
-    CMD_PARALLEL_EXECUTE = `# /parallel-execute <mode> <description>
-
-Wave-based parallel task execution.
-
-## Modes
-- prepare: Decompose task into sub-tasks with dependency declarations
-- execute: Run prepared tasks in parallel waves
-
-## Prepare Mode
-Create task files in .danya/exec-plans/active/:
-- task-01.md, task-02.md, etc.
-- Each has YAML frontmatter with \`depends: []\` field
-- Tasks with no dependencies \u2192 Wave 1
-- Tasks depending on Wave 1 \u2192 Wave 2, etc.
-
-## Execute Mode
-- Parse dependency DAG \u2192 compute waves
-- Wave 1: run all independent tasks in parallel (separate worktrees)
-- Collect results, merge successful tasks
-- Wave 2: run next batch
-- Continue until all waves complete
-- Run /verify full on integrated code
-
-## Rules
-- Each task must be atomic (can succeed/fail independently)
-- Failed task \u2192 rollback its worktree, don't affect others
-- Cyclic dependencies \u2192 error, re-decompose
-`;
-    RULE_KNOWN_PITFALLS = `# Known Pitfalls
-
-Real errors encountered during development. Each entry prevents the same mistake.
-
-_This file grows through harness self-evolution. Start empty, fill as errors occur._
-`;
-    RULE_ARCHITECTURE_BOUNDARIES = `# Architecture Boundaries
-
-Dependency direction rules. Higher layers can import lower layers, not vice versa.
-
-## General Principle
-- One-way dependencies: lower layers must NOT reference higher layers
-- Cross-module communication through events/interfaces, not direct references
-
-_Customize with your project's actual layer structure._
-`;
-    MEMORY_INDEX = `# Project Memory
-
-Persistent domain knowledge. Updated as the agent learns about this project.
-
-_Memory files are auto-loaded each session and survive context compression._
-`;
-    HOOK_CONSTITUTION_GUARD = `#!/bin/bash
-# Gate 0: GUARD \u2014 forbidden zone check. Exit 2 = block.
-INPUT=$(cat)
-FILE_PATH=$(echo "$INPUT" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
-[ -z "$FILE_PATH" ] && exit 0
-FILE_PATH=$(echo "$FILE_PATH" | sed 's/\\\\\\\\/\\//g')
-RULES=".danya/guard-rules.json"
-[ ! -f "$RULES" ] && exit 0
-while IFS= read -r p; do
-  p=$(echo "$p" | tr -d '"' | tr -d ' ')
-  [ -z "$p" ] && continue
-  if echo "$FILE_PATH" | grep -qE "$p" 2>/dev/null; then
-    echo "{\\"systemMessage\\":\\"\u274C GUARD: $FILE_PATH is in forbidden zone ($p). Edit the source data and regenerate instead.\\"}"
-    exit 2
-  fi
-done < <(grep '"pattern"' "$RULES" | sed 's/.*"pattern"\\s*:\\s*"//;s/".*//')
-exit 0
-`;
-    HOOK_PRE_COMMIT = `#!/bin/bash
-# Gate 3: COMMIT \u2014 pre-commit lint + test. Exit 2 = block.
-INPUT=$(cat)
-CMD=$(echo "$INPUT" | sed -n 's/.*"command"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
-echo "$CMD" | grep -qE 'git\\s+commit' || exit 0
-if [ -f "Makefile" ]; then
-  make lint > /tmp/danya-lint.log 2>&1 || { echo "\u274C Lint failed" >&2; tail -10 /tmp/danya-lint.log >&2; exit 2; }
-  make test > /tmp/danya-test.log 2>&1 || { echo "\u274C Tests failed" >&2; tail -10 /tmp/danya-test.log >&2; exit 2; }
-fi
-exit 0
-`;
-    HOOK_POST_COMMIT = `#!/bin/bash
-# Gate 4: Post-commit review reminder. Always exit 0.
-echo '{"systemMessage":"\u2705 Commit done. Run /review before push (score \u226580, no CRITICAL)."}'
-exit 0
-`;
-    HOOK_PUSH_GATE = `#!/bin/bash
-# Gate 5: PUSH \u2014 check push-approved marker. Exit 2 = block.
-INPUT=$(cat)
-CMD=$(echo "$INPUT" | sed -n 's/.*"command"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
-echo "$CMD" | grep -qE 'git[[:space:]]+push' || exit 0
-MARKER=".danya/push-approved"
-[ ! -f "$MARKER" ] && { echo "\u274C PUSH BLOCKED: run /review first" >&2; exit 2; }
-rm -f "$MARKER"
-exit 0
-`;
-    HOOK_HARNESS_EVOLUTION = `#!/bin/bash
-# PostToolUse: detect error-then-fix pattern for harness self-evolution.
-# Reads tool result, checks if a previous error was just fixed.
-# If so, injects a system message prompting the agent to update rules.
-INPUT=$(cat)
-TOOL_NAME=$(echo "$INPUT" | sed -n 's/.*"tool_name"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
-EXIT_CODE=$(echo "$INPUT" | sed -n 's/.*"exit_code"[[:space:]]*:[[:space:]]*\\([0-9]*\\).*/\\1/p' 2>/dev/null)
-
-# Track error state using project-scoped file (stable across hook invocations)
-STATE_FILE=".danya/.error-state"
-
-case "$TOOL_NAME" in
-  Bash)
-    if [ "$EXIT_CODE" != "0" ] && [ -n "$EXIT_CODE" ]; then
-      # Error occurred \u2014 record it
-      echo "error" > "$STATE_FILE" 2>/dev/null
-    elif [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE" 2>/dev/null)" = "error" ]; then
-      # Previous error, now success \u2014 fix confirmed
-      rm -f "$STATE_FILE"
-      echo '{"systemMessage":"Error was fixed. Consider running /fix-harness to update rules and prevent this error pattern in the future."}'
-    fi
-    ;;
-esac
-exit 0
-`;
   }
 });
 
@@ -914,7 +568,7 @@ var getCommandSubcommandPrefix = memoize(
 var getCommandPrefix = memoize(
   async (command4, abortSignal) => {
     const { systemPrompt, userPrompt } = buildBashCommandPrefixDetectionPrompt(command4);
-    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-7GYSEKZV.js");
+    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-IBKHGII5.js");
     const response = await queryQuick2({
       systemPrompt,
       userPrompt,
@@ -4983,7 +4637,7 @@ function formatParseError(error) {
   return error instanceof Error ? error.message : String(error);
 }
 async function defaultGateQuery(args) {
-  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-7GYSEKZV.js");
+  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-IBKHGII5.js");
   const messages = [
     {
       type: "user",
@@ -11001,8 +10655,329 @@ function installBundle(targetDir, bundleContent, ctx, options = {}) {
   return installed;
 }
 
+// src/templates/bundles/common.ts
+var CMD_AUTO_WORK = `# /auto-work <requirement>
+
+Full-auto development pipeline. Walks through the entire cycle without manual intervention.
+
+## Stages
+
+### Stage 0: Classify
+Determine requirement type: bug | feature | refactor
+
+### Stage 1: Plan
+- List all files to modify with 1-line intent per file
+- If >3 tasks and parallelizable \u2192 switch to parallel mode
+
+### Stage 2: Code
+- Modify files per plan
+- After each file \u2192 compile check immediately (fail-fast)
+- After all: run /verify
+- Verify fail \u2192 fix (max 3 rounds), else abort
+
+### Stage 3: Review
+- Run /review (100-point scoring)
+- CRITICAL \u2192 fail; <80 \u2192 fail
+- Quality ratchet: score must not drop
+- Pass \u2192 write push-approved marker
+
+### Stage 4: Commit
+- git add + git commit
+- Pre-commit hook runs lint + test
+- Fail \u2192 fix and retry (max 2 times)
+
+### Stage 5: Knowledge Deposit
+- Feature \u2192 Docs/Version/<version>/<feature>/summary.md
+- Bug \u2192 Docs/Bugs/<version>/<bug-name>.md
+- New module \u2192 Docs/Engine/Business/<module>/
+
+### Stage 6: Harness Self-Evolution
+- Check for errors fixed in Stages 2-3
+- If found \u2192 update .danya/rules/ to prevent recurrence
+
+## Termination Conditions
+- Verify fail after 3 rounds (Stage 2)
+- Review score <80 after 3 rounds (Stage 3)
+- Commit fail after 2 attempts (Stage 4)
+
+## Important
+- Do NOT push. Push is manual after human review.
+- Do NOT skip stages. Each stage must complete before next.
+`;
+var CMD_AUTO_BUGFIX = `# /auto-bugfix <bug-description>
+
+Autonomous bug-fix pipeline. Must reproduce before fixing.
+
+## Flow
+
+### Step 1: Reproduce
+- Analyze bug description
+- Find reproduction steps
+- Verify the bug exists (compile, run test, check logs)
+- If NOT reproducible \u2192 report and STOP
+
+### Step 2: Root Cause Analysis
+- Trace from symptom to root cause
+- Do NOT guess. Read code, check logs, add debug output if needed.
+
+### Step 3: Fix (max 5 rounds)
+- Modify code to fix root cause
+- Run /verify after each fix attempt
+- If verify fails \u2192 analyze why and try again
+- If 5 rounds exhausted \u2192 report failure
+
+### Step 4: Review + Commit
+- Run /review (must pass \u226580, no CRITICAL)
+- git commit with descriptive message
+
+### Step 5: Knowledge Deposit
+- Write to Docs/Bugs/<version>/<bug-name>.md
+- Include: reproduction steps, root cause, fix, lessons learned
+
+### Step 6: Harness Evolution
+- If this bug type isn't in known-pitfalls.md \u2192 add it
+`;
+var CMD_REVIEW = `# /review
+
+Score-based code review. Quantitative, not subjective.
+
+## Pre-check
+Run /verify first. If verify fails, fix before reviewing.
+
+## Scoring System
+- Initial score: 100
+- CRITICAL: -30 each (any CRITICAL = automatic FAIL)
+- HIGH: -10 each
+- MEDIUM: -3 each
+- Pass threshold: \u226580 AND no CRITICAL
+
+## Check Categories
+
+### 1. Architecture Compliance (mechanical + AI)
+- Forbidden file edits (constitution)?
+- Cross-layer imports?
+- Package boundary violations?
+
+### 2. Coding Standards (mechanical + AI)
+- Engine-specific style violations?
+- Error handling patterns?
+- Naming conventions?
+
+### 3. Logic Review (AI only)
+- Intent clarity
+- Error propagation
+- Concurrency safety
+- Edge cases
+- Dead code
+
+### 4. Harness Completeness
+- Were errors fixed during development?
+- Did rules get updated to match?
+
+## Quality Ratchet
+Score must not drop compared to previous review. If it drops, the fix introduced regressions.
+
+## Output
+On PASS: write .danya/push-approved marker (one-time use).
+On FAIL: list all issues with severity, do NOT write marker.
+`;
+var CMD_FIX_HARNESS = `# /fix-harness [error-description]
+
+Update harness rules after discovering an error pattern.
+
+## Process
+
+1. Analyze the error that occurred
+2. Route to the correct rule file:
+   - Forbidden zone violation \u2192 constitution.md
+   - Coding principle violation \u2192 golden-principles.md
+   - Known pitfall re-occurrence \u2192 known-pitfalls.md
+   - Architecture boundary violation \u2192 architecture-boundaries.md
+   - Style issue \u2192 engine-style rule file
+3. Add a concise rule:
+   - \u274C What went wrong (with example)
+   - \u2705 Correct approach (with example)
+4. If mechanically checkable \u2192 add to /verify checks
+5. Check total rule file lines < 550 (if exceeded, consolidate)
+
+## Important
+- Only add NEW patterns not already captured
+- Keep rules minimal: one error = one rule
+- Include correct-usage example, not just prohibition
+`;
+var CMD_PLAN = `# /plan <requirement>
+
+Analyze requirement and create a development plan.
+
+## Output Format
+
+### 1. Requirement Analysis
+- What needs to change and why
+- Scope assessment
+
+### 2. File Checklist
+For each file to modify:
+- File path
+- 1-line description of changes
+- Risk level (low/medium/high)
+
+### 3. Execution Order
+- Dependencies between changes
+- Which files can be modified in parallel
+- Which must be sequential
+
+### 4. Verification Strategy
+- How to verify each change works
+- Integration test approach
+
+## Rules
+- Read existing code before planning changes
+- Check architecture boundaries before proposing cross-layer changes
+- Flag any forbidden zone files that would need regeneration
+`;
+var CMD_VERIFY = `# /verify [level]
+
+Mechanical verification checks. Levels: quick | build | full
+
+## quick (default)
+- Lint check
+- Syntax check (engine-specific)
+
+## build
+- Everything in quick
+- Full compilation/build
+
+## full
+- Everything in build
+- Run tests
+- Architecture boundary check
+
+## Important
+- Run this BEFORE /review
+- If verify fails, fix issues before reviewing
+- Exit with clear pass/fail and error details
+`;
+var CMD_PARALLEL_EXECUTE = `# /parallel-execute <mode> <description>
+
+Wave-based parallel task execution.
+
+## Modes
+- prepare: Decompose task into sub-tasks with dependency declarations
+- execute: Run prepared tasks in parallel waves
+
+## Prepare Mode
+Create task files in .danya/exec-plans/active/:
+- task-01.md, task-02.md, etc.
+- Each has YAML frontmatter with \`depends: []\` field
+- Tasks with no dependencies \u2192 Wave 1
+- Tasks depending on Wave 1 \u2192 Wave 2, etc.
+
+## Execute Mode
+- Parse dependency DAG \u2192 compute waves
+- Wave 1: run all independent tasks in parallel (separate worktrees)
+- Collect results, merge successful tasks
+- Wave 2: run next batch
+- Continue until all waves complete
+- Run /verify full on integrated code
+
+## Rules
+- Each task must be atomic (can succeed/fail independently)
+- Failed task \u2192 rollback its worktree, don't affect others
+- Cyclic dependencies \u2192 error, re-decompose
+`;
+var RULE_KNOWN_PITFALLS = `# Known Pitfalls
+
+Real errors encountered during development. Each entry prevents the same mistake.
+
+_This file grows through harness self-evolution. Start empty, fill as errors occur._
+`;
+var RULE_ARCHITECTURE_BOUNDARIES = `# Architecture Boundaries
+
+Dependency direction rules. Higher layers can import lower layers, not vice versa.
+
+## General Principle
+- One-way dependencies: lower layers must NOT reference higher layers
+- Cross-module communication through events/interfaces, not direct references
+
+_Customize with your project's actual layer structure._
+`;
+var MEMORY_INDEX = `# Project Memory
+
+Persistent domain knowledge. Updated as the agent learns about this project.
+
+_Memory files are auto-loaded each session and survive context compression._
+`;
+var HOOK_CONSTITUTION_GUARD = `#!/bin/bash
+# Gate 0: GUARD \u2014 forbidden zone check. Exit 2 = block.
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
+[ -z "$FILE_PATH" ] && exit 0
+FILE_PATH=$(echo "$FILE_PATH" | sed 's/\\\\\\\\/\\//g')
+RULES=".danya/guard-rules.json"
+[ ! -f "$RULES" ] && exit 0
+while IFS= read -r p; do
+  p=$(echo "$p" | tr -d '"' | tr -d ' ')
+  [ -z "$p" ] && continue
+  if echo "$FILE_PATH" | grep -qE "$p" 2>/dev/null; then
+    echo "{\\"systemMessage\\":\\"\u274C GUARD: $FILE_PATH is in forbidden zone ($p). Edit the source data and regenerate instead.\\"}"
+    exit 2
+  fi
+done < <(grep '"pattern"' "$RULES" | sed 's/.*"pattern"\\s*:\\s*"//;s/".*//')
+exit 0
+`;
+var HOOK_PRE_COMMIT = `#!/bin/bash
+# Gate 3: COMMIT \u2014 pre-commit lint + test. Exit 2 = block.
+INPUT=$(cat)
+CMD=$(echo "$INPUT" | sed -n 's/.*"command"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
+echo "$CMD" | grep -qE 'git\\s+commit' || exit 0
+if [ -f "Makefile" ]; then
+  make lint > /tmp/danya-lint.log 2>&1 || { echo "\u274C Lint failed" >&2; tail -10 /tmp/danya-lint.log >&2; exit 2; }
+  make test > /tmp/danya-test.log 2>&1 || { echo "\u274C Tests failed" >&2; tail -10 /tmp/danya-test.log >&2; exit 2; }
+fi
+exit 0
+`;
+var HOOK_POST_COMMIT = `#!/bin/bash
+# Gate 4: Post-commit review reminder. Always exit 0.
+echo '{"systemMessage":"\u2705 Commit done. Run /review before push (score \u226580, no CRITICAL)."}'
+exit 0
+`;
+var HOOK_PUSH_GATE = `#!/bin/bash
+# Gate 5: PUSH \u2014 check push-approved marker. Exit 2 = block.
+INPUT=$(cat)
+CMD=$(echo "$INPUT" | sed -n 's/.*"command"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
+echo "$CMD" | grep -qE 'git[[:space:]]+push' || exit 0
+MARKER=".danya/push-approved"
+[ ! -f "$MARKER" ] && { echo "\u274C PUSH BLOCKED: run /review first" >&2; exit 2; }
+rm -f "$MARKER"
+exit 0
+`;
+var HOOK_HARNESS_EVOLUTION = `#!/bin/bash
+# PostToolUse: detect error-then-fix pattern for harness self-evolution.
+# Reads tool result, checks if a previous error was just fixed.
+# If so, injects a system message prompting the agent to update rules.
+INPUT=$(cat)
+TOOL_NAME=$(echo "$INPUT" | sed -n 's/.*"tool_name"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
+EXIT_CODE=$(echo "$INPUT" | sed -n 's/.*"exit_code"[[:space:]]*:[[:space:]]*\\([0-9]*\\).*/\\1/p' 2>/dev/null)
+
+# Track error state using project-scoped file (stable across hook invocations)
+STATE_FILE=".danya/.error-state"
+
+case "$TOOL_NAME" in
+  Bash)
+    if [ "$EXIT_CODE" != "0" ] && [ -n "$EXIT_CODE" ]; then
+      # Error occurred \u2014 record it
+      echo "error" > "$STATE_FILE" 2>/dev/null
+    elif [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE" 2>/dev/null)" = "error" ]; then
+      # Previous error, now success \u2014 fix confirmed
+      rm -f "$STATE_FILE"
+      echo '{"systemMessage":"Error was fixed. Consider running /fix-harness to update rules and prevent this error pattern in the future."}'
+    fi
+    ;;
+esac
+exit 0
+`;
+
 // src/templates/bundles/unity.ts
-init_common();
 var UNITY_RULES_CONSTITUTION = `# Forbidden Zone Constitution
 
 ## Auto-Generated Code (DO NOT edit manually)
@@ -11125,7 +11100,6 @@ function getUnityBundle() {
 }
 
 // src/templates/bundles/goServer.ts
-init_common();
 var GO_RULES_CONSTITUTION = `# Forbidden Zone Constitution
 
 ## Auto-Generated Code (DO NOT edit manually)
@@ -11271,7 +11245,6 @@ function getGoServerBundle() {
 }
 
 // src/templates/bundles/unreal.ts
-init_common();
 var UE_RULES_CONSTITUTION = `# Forbidden Zone Constitution
 
 ## Auto-Generated Code
@@ -11346,7 +11319,6 @@ function getUnrealBundle() {
 }
 
 // src/templates/bundles/godot.ts
-init_common();
 var GODOT_RULES_CONSTITUTION = `# Forbidden Zone Constitution
 
 ## Auto-Generated Code
@@ -11419,7 +11391,6 @@ function getGodotBundle() {
 }
 
 // src/templates/bundles/workspace.ts
-init_common();
 var WORKSPACE_MEMORY_CROSS_PROJECT = `---
 name: cross-project-protocol
 description: Cross-project protocol and data sync rules
@@ -11471,30 +11442,709 @@ function getWorkspaceBundle() {
   };
 }
 
+// src/templates/bundles/scripts.ts
+var SCRIPT_AUTO_WORK_LOOP = `#!/bin/bash
+# auto-work-loop.sh \u2014 Shell-enforced full-auto development pipeline.
+# Each stage runs an independent danya -p call. Agent cannot skip steps.
+set -uo pipefail
+
+REQUIREMENT="\${1:?Usage: auto-work-loop.sh '<requirement>'}"
+PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+DANYA_CMD="\${DANYA_CMD:-danya}"
+MODEL="\${MODEL:-sonnet}"
+MAX_TURNS="\${MAX_TURNS:-30}"
+MAX_REVIEW_ROUNDS=3
+MAX_FIX_ROUNDS=3
+CACHE_DIR="$PROJECT_ROOT/.danya/.cache/auto-work"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+LOG_DIR="$CACHE_DIR/$TIMESTAMP"
+mkdir -p "$LOG_DIR"
+
+echo "========================================="
+echo "  Danya Auto-Work Orchestrator"
+echo "========================================="
+echo "  Requirement: $REQUIREMENT"
+echo "  Project: $PROJECT_ROOT"
+echo "  Logs: $LOG_DIR"
+echo "========================================="
+
+run_danya() {
+    local stage="$1"; local prompt="$2"; local log_file="$LOG_DIR/\${stage}.log"
+    echo ""; echo ">>> Stage: $stage"
+    $DANYA_CMD -p "$prompt" --model "$MODEL" --max-turns "$MAX_TURNS" \\
+        --allowedTools "Edit,Write,Read,Bash,Grep,Glob" > "$log_file" 2>&1
+    local ec=$?; echo "  Exit: $ec | Log: $log_file"; return $ec
+}
+
+check_build() { echo "  [CHECK] build..."; cd "$PROJECT_ROOT" && make build > "$LOG_DIR/build.log" 2>&1; }
+check_test()  { echo "  [CHECK] test...";  cd "$PROJECT_ROOT" && make test  > "$LOG_DIR/test.log"  2>&1; }
+
+# Stage 0: Classify
+echo ""; echo "=== Stage 0: Classify ==="
+TYPE=$($DANYA_CMD -p "Classify this requirement as one word: bug / feature / refactor. Requirement: $REQUIREMENT" --model haiku --max-turns 1 2>/dev/null | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
+case "$TYPE" in bug|fix) TYPE="bug";; feature|feat) TYPE="feature";; refactor) TYPE="refactor";; *) TYPE="feature";; esac
+echo "  Type: $TYPE"
+
+# Stage 0-B: Reproduce (bug only)
+if [[ "$TYPE" == "bug" ]]; then
+    echo ""; echo "=== Stage 0-B: Reproduce ==="
+    run_danya "reproduce" "Reproduce this bug without fixing it. Output reproduction report: $REQUIREMENT"
+    if grep -qi "not reproduced\\|unable to reproduce" "$LOG_DIR/reproduce.log" 2>/dev/null; then
+        echo "  [END] Bug not reproduced. Pipeline terminated."; exit 0
+    fi
+fi
+
+# Stage 1: Plan
+echo ""; echo "=== Stage 1: Plan ==="
+run_danya "plan" "Requirement: $REQUIREMENT (type: $TYPE). List all files to modify with 1-line intent each. Do NOT write code."
+
+# Stage 2: Code + Verify loop
+echo ""; echo "=== Stage 2: Code ==="
+for ((fix_round=1; fix_round<=MAX_FIX_ROUNDS; fix_round++)); do
+    echo "--- Code round $fix_round/$MAX_FIX_ROUNDS ---"
+    run_danya "coding-$fix_round" "Requirement: $REQUIREMENT. Execute the plan. Compile-check after each file. Follow .danya/rules/."
+    if check_build && check_test; then echo "  [PASS]"; break
+    else
+        echo "  [FAIL]"
+        [[ $fix_round -ge $MAX_FIX_ROUNDS ]] && { echo "  [END] $MAX_FIX_ROUNDS rounds failed."; exit 1; }
+    fi
+done
+
+# Stage 3: Review loop
+echo ""; echo "=== Stage 3: Review ==="
+best_score=0
+for ((rr=1; rr<=MAX_REVIEW_ROUNDS; rr++)); do
+    echo "--- Review round $rr/$MAX_REVIEW_ROUNDS ---"
+    run_danya "review-$rr" "Run /review. Output score as: REVIEW_SCORE: <number>"
+    score=$(grep -oP 'REVIEW_SCORE:\\s*\\K[0-9]+' "$LOG_DIR/review-$rr.log" 2>/dev/null || echo "0")
+    echo "  Score: $score (baseline: $best_score)"
+    [[ "$score" -lt "$best_score" ]] && { echo "  [ROLLBACK] Score dropped"; git checkout . 2>/dev/null; continue; }
+    best_score=$score
+    [[ "$score" -ge 80 ]] && { echo "  [PASS] $score/100"; break; }
+    [[ $rr -ge $MAX_REVIEW_ROUNDS ]] && { echo "  [END] Score < 80 after $MAX_REVIEW_ROUNDS rounds."; exit 1; }
+    run_danya "fix-review-$rr" "Review failed ($score/100). Fix all CRITICAL and HIGH issues."
+done
+
+# Stage 4: Commit
+echo ""; echo "=== Stage 4: Commit ==="
+run_danya "commit" "Generate commit message and commit. Format: <type>(scope) description" || true
+
+# Stage 5: Knowledge Deposit
+echo ""; echo "=== Stage 5: Knowledge Deposit ==="
+run_danya "docs" "Document this work in Docs/ (feature\u2192Version/, bug\u2192Bugs/). Only write docs, no code changes." || true
+
+# Stage 6: Harness Evolution
+echo ""; echo "=== Stage 6: Harness Evolution ==="
+run_danya "harness" "Check if any compile/lint/review errors were fixed. If so, update .danya/rules/ via /fix-harness. If none, output 'No harness update needed'." || true
+
+echo ""
+echo "========================================="
+echo "  Auto-Work Complete"
+echo "  Score: $best_score/100 | Type: $TYPE"
+echo "  Logs: $LOG_DIR"
+echo "========================================="
+`;
+var SCRIPT_PARALLEL_WAVE = `#!/bin/bash
+# parallel-wave.sh \u2014 Wave-based parallel execution with independent worktrees.
+# Each task runs in its own worktree with its own danya -p instance.
+set -euo pipefail
+
+TASKS_DIR="\${1:?Usage: parallel-wave.sh <tasks-dir>}"
+PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+WORKTREE_BASE="$PROJECT_ROOT/.worktrees"
+RESULTS_FILE="$TASKS_DIR/results.tsv"
+LOG_DIR="$TASKS_DIR/logs"
+DANYA_CMD="\${DANYA_CMD:-danya}"
+MODEL="\${MODEL:-sonnet}"
+mkdir -p "$WORKTREE_BASE" "$LOG_DIR"
+echo -e "task\\twave\\tstatus\\tduration\\tnotes" > "$RESULTS_FILE"
+
+# Parse tasks
+declare -A TASK_DEPS TASK_FILES TASK_STATUS
+echo "=== Parsing tasks ==="
+for f in "$TASKS_DIR"/task-*.md; do
+    [[ -f "$f" ]] || continue
+    basename=$(basename "$f" .md); task_id="\${basename#task-}"
+    deps=$(sed -n '/^---$/,/^---$/p' "$f" | grep "^depends:" | sed 's/depends: *\\[//;s/\\]//;s/,/ /g;s/"//g;s/ //g' || echo "")
+    TASK_DEPS[$task_id]="$deps"; TASK_FILES[$task_id]="$f"; TASK_STATUS[$task_id]="pending"
+    echo "  task-$task_id: depends=[\${deps:-none}]"
+done
+[[ \${#TASK_FILES[@]} -eq 0 ]] && { echo "No tasks found"; exit 0; }
+
+# Compute waves (topological sort)
+declare -a WAVES=()
+compute_waves() {
+    local -A remaining_deps status; local all_ids=("\${!TASK_FILES[@]}")
+    for id in "\${all_ids[@]}"; do remaining_deps[$id]="\${TASK_DEPS[$id]}"; status[$id]="waiting"; done
+    local wave_num=0 total_done=0 total=\${#all_ids[@]}
+    while [[ $total_done -lt $total ]]; do
+        local wave_tasks=(); wave_num=$((wave_num + 1))
+        for id in "\${all_ids[@]}"; do
+            [[ "\${status[$id]}" != "waiting" ]] && continue
+            local deps="\${remaining_deps[$id]}" all_met=true
+            if [[ -n "$deps" ]]; then
+                for dep in $deps; do [[ "\${status[$dep]:-waiting}" != "done" ]] && all_met=false && break; done
+            fi
+            $all_met && wave_tasks+=("$id")
+        done
+        [[ \${#wave_tasks[@]} -eq 0 ]] && { echo "[ERROR] Circular dependency!"; exit 1; }
+        for id in "\${wave_tasks[@]}"; do status[$id]="done"; total_done=$((total_done + 1)); done
+        WAVES+=("$(IFS=' '; echo "\${wave_tasks[*]}")"); echo "  Wave $wave_num: \${wave_tasks[*]}"
+    done
+}
+echo ""; echo "=== Computing waves ==="; compute_waves
+echo "Total: \${#WAVES[@]} wave(s), \${#TASK_FILES[@]} task(s)"
+
+# Execute task in worktree
+execute_task() {
+    local task_id="$1" wave_num="$2" task_file="\${TASK_FILES[$task_id]}"
+    local wt_path="$WORKTREE_BASE/task-\${task_id}" branch="wt/task-\${task_id}"
+    local log_file="$LOG_DIR/task-\${task_id}.log" start_time=$(date +%s)
+    echo "  [task-$task_id] Starting..."
+    git worktree add -b "$branch" "$wt_path" HEAD >> "$log_file" 2>&1 || {
+        echo -e "$task_id\\t$wave_num\\tfailed\\t0\\tworktree failed" >> "$RESULTS_FILE"; return 1; }
+    local task_content=$(sed '1,/^---$/d; /^---$/,$!d; 1d' "$task_file")
+    ( cd "$wt_path" && $DANYA_CMD -p "$task_content" --allowedTools "Edit,Write,Read,Bash,Grep,Glob" --max-turns 30 >> "$log_file" 2>&1 ) || true
+    local build_ok=false; (cd "$wt_path" && make build >> "$log_file" 2>&1) && build_ok=true
+    local duration=$(( $(date +%s) - start_time ))
+    if $build_ok; then
+        if git merge "$branch" --no-edit >> "$log_file" 2>&1; then
+            echo "  [task-$task_id] PASS (\${duration}s)"; echo -e "$task_id\\t$wave_num\\tpassed\\t$duration\\tmerged" >> "$RESULTS_FILE"
+        else
+            git merge --abort 2>/dev/null || true
+            echo "  [task-$task_id] FAIL (merge conflict)"; echo -e "$task_id\\t$wave_num\\tfailed\\t$duration\\tmerge conflict" >> "$RESULTS_FILE"
+        fi
+    else
+        echo "  [task-$task_id] FAIL (build)"; echo -e "$task_id\\t$wave_num\\tfailed\\t$duration\\tbuild failed" >> "$RESULTS_FILE"
+    fi
+    git worktree remove "$wt_path" --force 2>/dev/null || true; git branch -D "$branch" 2>/dev/null || true
+}
+
+# Execute waves
+echo ""; echo "=== Executing waves ==="
+wave_num=0
+for wave in "\${WAVES[@]}"; do
+    wave_num=$((wave_num + 1)); IFS=' ' read -ra tasks <<< "$wave"
+    echo ""; echo "--- Wave $wave_num: \${tasks[*]} ---"
+    for task_id in "\${tasks[@]}"; do
+        for dep in \${TASK_DEPS[$task_id]}; do
+            [[ "\${TASK_STATUS[$dep]}" == "failed" ]] && {
+                echo "  [task-$task_id] SKIP (dep failed)"
+                echo -e "$task_id\\t$wave_num\\tskipped\\t0\\tdep failed" >> "$RESULTS_FILE"
+                TASK_STATUS[$task_id]="failed"; }
+        done
+    done
+    pids=()
+    for task_id in "\${tasks[@]}"; do
+        [[ "\${TASK_STATUS[$task_id]}" == "failed" ]] && continue
+        execute_task "$task_id" "$wave_num" &; pids+=($!)
+    done
+    for pid in "\${pids[@]}"; do wait "$pid" 2>/dev/null || true; done
+done
+
+echo ""; echo "=== Results ==="; cat "$RESULTS_FILE"
+passed=$(grep -c "passed" "$RESULTS_FILE" 2>/dev/null || echo "0")
+failed=$(grep -c "failed" "$RESULTS_FILE" 2>/dev/null || echo "0")
+echo "Summary: $passed passed, $failed failed"
+rmdir "$WORKTREE_BASE" 2>/dev/null || true
+[[ "$failed" -gt 0 ]] && exit 1; exit 0
+`;
+var SCRIPT_RED_BLUE = `#!/bin/bash
+# red-blue-loop.sh \u2014 Adversarial: red team finds bugs, blue team fixes, loop until clean.
+set -uo pipefail
+
+SCOPE="\${1:-.}"
+PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+DANYA_CMD="\${DANYA_CMD:-danya}"
+MODEL="\${MODEL:-sonnet}"
+MAX_ROUNDS="\${MAX_ROUNDS:-5}"
+CACHE_DIR="$PROJECT_ROOT/.danya/.cache/red-blue"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+LOG_DIR="$CACHE_DIR/$TIMESTAMP"
+mkdir -p "$LOG_DIR"
+
+echo "========================================="
+echo "  Red-Blue Adversarial Loop"
+echo "  Scope: $SCOPE | Max rounds: $MAX_ROUNDS"
+echo "========================================="
+
+for ((round=1; round<=MAX_ROUNDS; round++)); do
+    echo ""; echo "=== Round $round/$MAX_ROUNDS ==="
+
+    # Red Team: find bugs
+    echo "  [RED] Analyzing..."
+    DIFF=$(cd "$PROJECT_ROOT" && git diff HEAD~1 2>/dev/null || echo "No diff available")
+    $DANYA_CMD -p "You are the RED TEAM. Read .danya/agents/red-team.md for your role.
+Analyze the code in scope: $SCOPE
+Recent changes: $DIFF
+Find all bugs. Output format: BUG-N [SEVERITY]: description" \\
+        --model "$MODEL" --max-turns 15 \\
+        --allowedTools "Read,Grep,Glob,Bash" \\
+        > "$LOG_DIR/red-$round.log" 2>&1 || true
+
+    # Count bugs
+    bug_count=$(grep -c "^BUG-" "$LOG_DIR/red-$round.log" 2>/dev/null || echo "0")
+    echo "  [RED] Found $bug_count bug(s)"
+
+    [[ "$bug_count" -eq 0 ]] && { echo "  [CLEAN] Zero bugs found. Stopping."; break; }
+
+    # Blue Team: fix bugs
+    echo "  [BLUE] Fixing..."
+    $DANYA_CMD -p "You are the BLUE TEAM. Read .danya/agents/blue-team.md for your role.
+Fix bugs from the red team report:
+$(cat "$LOG_DIR/red-$round.log")
+Priority: CRITICAL > HIGH > MEDIUM. Minimal fixes only." \\
+        --model "$MODEL" --max-turns 20 \\
+        --allowedTools "Edit,Write,Read,Bash,Grep,Glob" \\
+        > "$LOG_DIR/blue-$round.log" 2>&1 || true
+
+    # Build check
+    echo "  [CHECK] Building..."
+    if (cd "$PROJECT_ROOT" && make build > "$LOG_DIR/build-$round.log" 2>&1); then
+        echo "  [PASS] Build OK. Committing fixes."
+        (cd "$PROJECT_ROOT" && git add -A && git commit -m "<fix>(red-blue) round $round fixes" 2>/dev/null) || true
+    else
+        echo "  [FAIL] Build failed. Reverting."
+        (cd "$PROJECT_ROOT" && git checkout . 2>/dev/null) || true
+        break
+    fi
+done
+
+# Skill Extraction
+echo ""; echo "=== Skill Extraction ==="
+$DANYA_CMD -p "You are the SKILL EXTRACTOR. Read .danya/agents/skill-extractor.md for your role.
+Analyze logs in $LOG_DIR/ (red-*.log, blue-*.log).
+Extract patterns (2+ occurrences) to .danya/rules/ and .danya/memory/." \\
+    --model "$MODEL" --max-turns 10 \\
+    --allowedTools "Read,Write,Grep,Glob" \\
+    > "$LOG_DIR/skill-extract.log" 2>&1 || true
+
+echo ""; echo "=== Red-Blue Complete ==="; echo "Logs: $LOG_DIR"
+`;
+var SCRIPT_ORCHESTRATOR = `#!/bin/bash
+# orchestrator.sh \u2014 Auto-research iteration: AI codes \u2192 verify \u2192 commit/revert \xD7 N rounds.
+set -uo pipefail
+
+TASK_FILE="\${1:?Usage: orchestrator.sh <task-file.md>}"
+PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+DANYA_CMD="\${DANYA_CMD:-danya}"
+MODEL="\${MODEL:-sonnet}"
+MAX_ITERATIONS="\${MAX_ITERATIONS:-20}"
+CIRCUIT_BREAK="\${CIRCUIT_BREAK:-5}"
+CACHE_DIR="$PROJECT_ROOT/.danya/.cache/orchestrator"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+LOG_DIR="$CACHE_DIR/$TIMESTAMP"
+mkdir -p "$LOG_DIR"
+
+BASELINE_FILE="$LOG_DIR/baseline.txt"
+RESULTS_FILE="$LOG_DIR/results.tsv"
+echo "0" > "$BASELINE_FILE"
+echo -e "iter\\tscore\\tbaseline\\tstatus\\ttimestamp" > "$RESULTS_FILE"
+
+echo "========================================="
+echo "  Danya Orchestrator (Auto-Research)"
+echo "  Task: $TASK_FILE"
+echo "  Max iterations: $MAX_ITERATIONS"
+echo "  Circuit break: $CIRCUIT_BREAK consecutive failures"
+echo "========================================="
+
+TASK_CONTENT=$(cat "$TASK_FILE")
+consecutive_failures=0
+
+for ((iter=1; iter<=MAX_ITERATIONS; iter++)); do
+    echo ""; echo "=== Iteration $iter/$MAX_ITERATIONS ==="
+    baseline=$(cat "$BASELINE_FILE")
+
+    # Code
+    $DANYA_CMD -p "You are a code-writer. Read .danya/agents/code-writer.md for your role.
+Task: $TASK_CONTENT
+Iteration $iter. Current baseline: $baseline/100. Improve the score." \\
+        --model "$MODEL" --max-turns 20 \\
+        --allowedTools "Edit,Write,Read,Bash,Grep,Glob" \\
+        > "$LOG_DIR/iter-$iter.log" 2>&1 || true
+
+    # Verify (score 0-100)
+    score=0
+    if [ -f "$PROJECT_ROOT/.danya/scripts/verify-server.sh" ]; then
+        score=$(bash "$PROJECT_ROOT/.danya/scripts/verify-server.sh" 2>/dev/null || echo "0")
+    elif [ -f Makefile ]; then
+        (cd "$PROJECT_ROOT" && make build > /dev/null 2>&1) && score=40
+        (cd "$PROJECT_ROOT" && make lint > /dev/null 2>&1) && score=$((score + 20))
+        (cd "$PROJECT_ROOT" && make test > /dev/null 2>&1) && score=$((score + 40))
+    fi
+
+    echo "  Score: $score (baseline: $baseline)"
+
+    if [[ "$score" -ge "$baseline" ]]; then
+        echo "  [COMMIT] Score >= baseline"
+        (cd "$PROJECT_ROOT" && git add -A && git commit -m "<feat>(orchestrator) iter $iter score $score" 2>/dev/null) || true
+        echo "$score" > "$BASELINE_FILE"
+        consecutive_failures=0
+        echo -e "$iter\\t$score\\t$score\\tpass\\t$(date +%H:%M:%S)" >> "$RESULTS_FILE"
+    else
+        echo "  [REVERT] Score < baseline"
+        (cd "$PROJECT_ROOT" && git checkout . 2>/dev/null) || true
+        consecutive_failures=$((consecutive_failures + 1))
+        echo -e "$iter\\t$score\\t$baseline\\tfail\\t$(date +%H:%M:%S)" >> "$RESULTS_FILE"
+    fi
+
+    if [[ $consecutive_failures -ge $CIRCUIT_BREAK ]]; then
+        echo "  [CIRCUIT BREAK] $CIRCUIT_BREAK consecutive failures. Stopping."
+        break
+    fi
+done
+
+echo ""; echo "========================================="
+echo "  Orchestrator Complete"
+echo "  Final baseline: $(cat "$BASELINE_FILE")/100"
+echo "  Results: $RESULTS_FILE"
+echo "========================================="
+cat "$RESULTS_FILE"
+`;
+var SCRIPT_VERIFY_SERVER = `#!/bin/bash
+# verify-server.sh \u2014 Quantitative server verification (0-100 points).
+# build=40, lint=20, test=40
+set -uo pipefail
+PROJECT_ROOT="\${1:-$(pwd)}"
+score=0
+(cd "$PROJECT_ROOT" && make build > /dev/null 2>&1) && score=40 || { echo "$score"; exit 0; }
+(cd "$PROJECT_ROOT" && make lint > /dev/null 2>&1) && score=$((score + 20))
+if (cd "$PROJECT_ROOT" && make test > /dev/null 2>&1); then score=$((score + 40))
+else score=$((score + 10)); fi  # partial credit
+echo "$score"
+`;
+var SCRIPT_VERIFY_CLIENT = `#!/bin/bash
+# verify-client.sh \u2014 Quantitative client verification using CSharp syntax check.
+set -uo pipefail
+PROJECT_ROOT="\${1:-$(pwd)}"
+CHECKER="$PROJECT_ROOT/.danya/tools/CSharpSyntaxChecker"
+MODIFIED_CS=$(cd "$PROJECT_ROOT" && git diff --name-only HEAD 2>/dev/null | grep '\\.cs$' || echo "")
+[[ -z "$MODIFIED_CS" ]] && { echo "100"; exit 0; }
+total=$(echo "$MODIFIED_CS" | wc -l)
+errors=0
+if [[ -x "$CHECKER" ]]; then
+    for f in $MODIFIED_CS; do
+        "$CHECKER" "$PROJECT_ROOT/$f" > /dev/null 2>&1 || errors=$((errors + 1))
+    done
+else
+    echo "80"; exit 0  # fallback if checker not available
+fi
+pass_rate=$(( (total - errors) * 100 / total ))
+echo "$pass_rate"
+`;
+var SCRIPT_CHECK_ENV = `#!/bin/bash
+# check-env.sh \u2014 Validate environment dependencies for Danya tools.
+set -uo pipefail
+ok=true
+check() { command -v "$1" > /dev/null 2>&1 && echo "  [OK] $1" || { echo "  [MISSING] $1 \u2014 $2"; ok=false; }; }
+echo "=== Danya Environment Check ==="
+check danya "Install: npm install -g @danya-ai/cli"
+check git "Install: https://git-scm.com"
+check make "Install: build-essential (Linux) or MinGW (Windows)"
+check python3 "Install: https://python.org"
+command -v go > /dev/null 2>&1 && echo "  [OK] go" || echo "  [SKIP] go (only needed for Go server projects)"
+command -v dotnet > /dev/null 2>&1 && echo "  [OK] dotnet" || echo "  [SKIP] dotnet (only needed for C# syntax checking)"
+echo ""
+$ok && echo "All required dependencies found." || echo "Some dependencies missing. Install them before using shell-enforced scripts."
+`;
+
+// src/templates/bundles/agents.ts
+var AGENT_CODE_WRITER = `# Code Writer Agent
+
+You are a focused coding agent. Your job is to modify files within the allowed scope.
+
+## Tools
+Edit, Write, Read, Bash, Grep, Glob
+
+## Rules
+1. **Scope**: Only modify files listed in the task. Never touch files outside scope.
+2. **Read first**: Always read a file before modifying it.
+3. **Compile-driven**: After each file modification, run compile/build to verify.
+4. **Minimal changes**: Make the smallest change that achieves the goal.
+5. **No refactoring**: Don't clean up surrounding code. Only change what's needed.
+6. **Forbidden files**: Never modify files in .danya/guard-rules.json forbidden zones.
+
+## Workflow
+1. Read the task requirements
+2. Read all files in scope
+3. Plan changes (mentally, don't output a plan document)
+4. Modify files one at a time
+5. Compile after each file
+6. If compile fails, fix immediately before moving to next file
+`;
+var AGENT_CODE_REVIEWER = `# Code Reviewer Agent
+
+You are a read-only code review agent. You find issues but NEVER modify code.
+
+## Tools
+Read, Grep, Glob, Bash (read-only commands only)
+
+## Scoring
+Start at 100 points. Deduct for issues found:
+- CRITICAL: -30 (build failure, forbidden file change, data corruption risk, security hole)
+- HIGH: -10 (unhandled error, race condition, missing validation, wrong API usage)
+- MEDIUM: -3 (naming violation, missing log, style issue, dead code)
+
+Pass threshold: >= 80 AND zero CRITICAL
+
+## What to Check
+1. **Architecture**: forbidden file edits, cross-layer imports, dependency direction
+2. **Coding standards**: engine-specific rules from .danya/rules/
+3. **Logic**: error propagation, null safety, concurrency, edge cases
+4. **Harness completeness**: were errors fixed? are rules updated?
+
+## Output Format
+\`\`\`
+ISSUE-1 [CRITICAL]: description \u2014 file:line
+ISSUE-2 [HIGH]: description \u2014 file:line
+...
+REVIEW_SCORE: <number>
+\`\`\`
+`;
+var AGENT_RED_TEAM = `# Red Team Agent
+
+You are an adversarial tester. Assume the code is WRONG until proven right.
+
+## Tools
+Read, Grep, Glob, Bash (read-only)
+
+## Focus Areas
+- **Edge cases**: nil, null, empty, zero, negative, max values, overflow
+- **Error paths**: what if the DB call fails? what if the RPC times out?
+- **Implicit assumptions**: does the code assume input is always valid?
+- **Concurrency**: race conditions, deadlocks, goroutine leaks
+- **Security**: injection, authentication bypass, privilege escalation
+
+## Rules
+1. Never modify code. Only read and analyze.
+2. For each bug found, describe: trigger condition + expected consequence.
+3. Rate severity: CRITICAL / HIGH / MEDIUM.
+4. Don't report style issues \u2014 only real bugs.
+
+## Output Format
+\`\`\`
+BUG-1 [CRITICAL]: description
+  Location: file:line
+  Trigger: condition that causes the bug
+  Consequence: what happens when triggered
+
+BUG-2 [HIGH]: description
+  ...
+\`\`\`
+
+If no bugs found, output: "NO BUGS FOUND \u2014 code review passed."
+`;
+var AGENT_BLUE_TEAM = `# Blue Team Agent
+
+You are a defensive programmer. Fix bugs found by the Red Team.
+
+## Tools
+Edit, Write, Read, Bash, Grep, Glob
+
+## Rules
+1. Fix bugs in priority order: CRITICAL > HIGH > MEDIUM.
+2. **Minimal fixes**: add a nil check, not a refactor. Add a mutex, not a redesign.
+3. **Defensive coding**: add checks, don't assume valid input.
+4. **Verify each fix**: compile after each change.
+5. **Skip false positives**: if a bug report is wrong, explain why and skip.
+6. **Don't introduce new features**: only fix the bugs in the report.
+
+## Workflow
+1. Read the Red Team report
+2. For each bug (priority order):
+   a. Read the file and understand the context
+   b. Apply minimal fix
+   c. Compile to verify
+3. After all fixes: run full build + test
+`;
+var AGENT_SKILL_EXTRACTOR = `# Skill Extractor Agent
+
+You are a knowledge analyst. Extract reusable patterns from development logs.
+
+## Tools
+Read, Write, Grep, Glob
+
+## What to Extract
+Analyze iteration logs and look for:
+
+1. **Repeated failure modes** \u2192 add to .danya/rules/known-pitfalls.md
+   - Same error appearing 2+ times across iterations
+   - Format: error description + correct approach
+
+2. **Repeated fix patterns** \u2192 add to .danya/rules/golden-principles.md
+   - Same fix applied 2+ times
+   - Format: principle + example
+
+3. **Domain knowledge** \u2192 write to .danya/memory/
+   - Module architecture, API patterns, data flow
+   - Only if discovered through iterations, not already documented
+
+## Rules
+1. **Evidence-based**: only extract patterns with 2+ occurrences
+2. **Concise**: one error = one rule, keep it short
+3. **Actionable**: each rule must have a correct-usage example
+4. **No duplicates**: check existing rules before adding
+5. **Line limit**: keep each rule file under 550 lines
+`;
+var TEMPLATE_PROGRAM = `# Task Definition Template
+
+Use this template to define a task for the orchestrator.
+
+---
+
+## Goal
+[Quantified objective. Example: "Increase test coverage from 15% to 60%"]
+
+## Modifiable Scope
+[Files/directories the AI can modify]
+- servers/logic_server/internal/slot/
+- common/slot/
+
+## Forbidden Files
+[Files the AI must never touch]
+- orm/
+- common/config/cfg_*.go
+- base/
+
+## Quantitative Metrics
+[How to score each iteration, total 100 points]
+- make build passes: 40 points
+- make lint passes: 20 points
+- make test passes: 40 points (10 partial if some tests fail)
+
+## Context
+[Background knowledge to help the AI]
+- This module handles slot machine game logic
+- RPC handlers are in internal/slot/handler.go
+- Config is auto-generated from Excel, read-only
+`;
+
+// src/templates/bundles/monitor.ts
+var MONITOR_LOG_TOOL_USE = `#!/usr/bin/env python3
+"""PostToolUse Hook \u2014 record every tool call to JSONL."""
+import json, sys, time
+from pathlib import Path
+DATA_DIR = Path(".danya/monitor/data"); DATA_DIR.mkdir(parents=True, exist_ok=True)
+try:
+    data = json.load(sys.stdin)
+    entry = {"timestamp": time.time(), "session_id": data.get("session_id",""), "tool_name": data.get("tool_name",""), "tool_input_keys": list(data.get("tool_input",{}).keys()), "cwd": data.get("cwd","")}
+    with open(DATA_DIR / "tool-usage.jsonl", "a") as f: f.write(json.dumps(entry) + "\\n")
+except: pass
+`;
+var MONITOR_LOG_SESSION_END = `#!/usr/bin/env python3
+"""Stop Hook \u2014 record session end to JSONL."""
+import json, sys, time
+from pathlib import Path
+DATA_DIR = Path(".danya/monitor/data"); DATA_DIR.mkdir(parents=True, exist_ok=True)
+try:
+    data = json.load(sys.stdin)
+    entry = {"timestamp": time.time(), "session_id": data.get("session_id",""), "cwd": data.get("cwd",""), "stop_reason": data.get("stop_hook_reason","unknown")}
+    with open(DATA_DIR / "sessions.jsonl", "a") as f: f.write(json.dumps(entry) + "\\n")
+except: pass
+`;
+var MONITOR_LOG_VERIFY = `#!/usr/bin/env python3
+"""Verify metrics \u2014 call with: python log-verify.py start|end <type> [result]"""
+import json, sys, time
+from pathlib import Path
+DATA_DIR = Path(".danya/monitor/data"); DATA_DIR.mkdir(parents=True, exist_ok=True)
+STATE = DATA_DIR / ".verify-state.json"
+def start(t): STATE.write_text(json.dumps({"type":t,"start_time":time.time()}))
+def end(t,r):
+    if not STATE.exists(): return
+    s = json.loads(STATE.read_text()); d = time.time() - s.get("start_time", time.time())
+    with open(DATA_DIR / "verify-metrics.jsonl", "a") as f:
+        f.write(json.dumps({"timestamp":time.time(),"type":t,"result":r,"duration_seconds":round(d,1)}) + "\\n")
+    STATE.unlink(missing_ok=True)
+if len(sys.argv) >= 3:
+    if sys.argv[1] == "start": start(sys.argv[2])
+    elif sys.argv[1] == "end": end(sys.argv[2], sys.argv[3] if len(sys.argv)>3 else "UNKNOWN")
+`;
+var MONITOR_LOG_BUGFIX = `#!/usr/bin/env python3
+"""Bugfix metrics \u2014 call with: python log-bugfix.py start|round|end <args>"""
+import json, sys, time
+from pathlib import Path
+DATA_DIR = Path(".danya/monitor/data"); DATA_DIR.mkdir(parents=True, exist_ok=True)
+STATE = DATA_DIR / ".bugfix-state.json"
+def start(desc): STATE.write_text(json.dumps({"description":desc,"start_time":time.time(),"rounds":[]}))
+def round_log(n,r):
+    if not STATE.exists(): return
+    s = json.loads(STATE.read_text()); s["rounds"].append({"round":int(n),"result":r,"timestamp":time.time()})
+    STATE.write_text(json.dumps(s))
+def end(n,r):
+    if not STATE.exists(): return
+    s = json.loads(STATE.read_text()); d = time.time() - s.get("start_time", time.time())
+    with open(DATA_DIR / "bugfix-metrics.jsonl", "a") as f:
+        f.write(json.dumps({"timestamp":time.time(),"description":s.get("description",""),"total_rounds":int(n),"final_result":r,"duration_seconds":round(d,1),"rounds":s.get("rounds",[])}) + "\\n")
+    STATE.unlink(missing_ok=True)
+if len(sys.argv) >= 3:
+    a = sys.argv[1]
+    if a == "start": start(sys.argv[2])
+    elif a == "round": round_log(sys.argv[2], sys.argv[3] if len(sys.argv)>3 else "UNKNOWN")
+    elif a == "end": end(sys.argv[2], sys.argv[3] if len(sys.argv)>3 else "UNKNOWN")
+`;
+var MONITOR_LOG_REVIEW = `#!/usr/bin/env python3
+"""Review metrics \u2014 call with: python log-review.py <score> <result> [critical] [high] [medium]"""
+import json, sys, time
+from pathlib import Path
+DATA_DIR = Path(".danya/monitor/data"); DATA_DIR.mkdir(parents=True, exist_ok=True)
+if len(sys.argv) >= 3:
+    entry = {"timestamp":time.time(),"score":int(sys.argv[1]),"result":sys.argv[2],"critical":int(sys.argv[3]) if len(sys.argv)>3 else 0,"high":int(sys.argv[4]) if len(sys.argv)>4 else 0,"medium":int(sys.argv[5]) if len(sys.argv)>5 else 0}
+    with open(DATA_DIR / "review-metrics.jsonl", "a") as f: f.write(json.dumps(entry) + "\\n")
+`;
+
 // src/templates/index.ts
-function getBundleForEngine(engine, serverLanguage) {
-  if (engine === "unity") return getUnityBundle();
-  if (engine === "unreal") return getUnrealBundle();
-  if (engine === "godot") return getGodotBundle();
-  if (serverLanguage === "go") return getGoServerBundle();
-  const common = (init_common(), __toCommonJS(common_exports));
+function getSharedToolsBundle() {
   return {
-    "rules/known-pitfalls.md": common.RULE_KNOWN_PITFALLS,
-    "rules/architecture-boundaries.md": common.RULE_ARCHITECTURE_BOUNDARIES,
-    "commands/auto-work.md": common.CMD_AUTO_WORK,
-    "commands/auto-bugfix.md": common.CMD_AUTO_BUGFIX,
-    "commands/review.md": common.CMD_REVIEW,
-    "commands/fix-harness.md": common.CMD_FIX_HARNESS,
-    "commands/plan.md": common.CMD_PLAN,
-    "commands/verify.md": common.CMD_VERIFY,
-    "commands/parallel-execute.md": common.CMD_PARALLEL_EXECUTE,
-    "memory/MEMORY.md": common.MEMORY_INDEX,
-    "hooks/constitution-guard.sh": common.HOOK_CONSTITUTION_GUARD,
-    "hooks/pre-commit.sh": common.HOOK_PRE_COMMIT,
-    "hooks/post-commit.sh": common.HOOK_POST_COMMIT,
-    "hooks/push-gate.sh": common.HOOK_PUSH_GATE,
-    "hooks/harness-evolution.sh": common.HOOK_HARNESS_EVOLUTION
+    // Shell-enforced scripts
+    "scripts/auto-work-loop.sh": SCRIPT_AUTO_WORK_LOOP,
+    "scripts/parallel-wave.sh": SCRIPT_PARALLEL_WAVE,
+    "scripts/red-blue-loop.sh": SCRIPT_RED_BLUE,
+    "scripts/orchestrator.sh": SCRIPT_ORCHESTRATOR,
+    "scripts/verify-server.sh": SCRIPT_VERIFY_SERVER,
+    "scripts/verify-client.sh": SCRIPT_VERIFY_CLIENT,
+    "scripts/check-env.sh": SCRIPT_CHECK_ENV,
+    // Agent role specs
+    "agents/code-writer.md": AGENT_CODE_WRITER,
+    "agents/code-reviewer.md": AGENT_CODE_REVIEWER,
+    "agents/red-team.md": AGENT_RED_TEAM,
+    "agents/blue-team.md": AGENT_BLUE_TEAM,
+    "agents/skill-extractor.md": AGENT_SKILL_EXTRACTOR,
+    // Task template
+    "templates/program-template.md": TEMPLATE_PROGRAM,
+    // Monitor data collection
+    "monitor/log-tool-use.py": MONITOR_LOG_TOOL_USE,
+    "monitor/log-session-end.py": MONITOR_LOG_SESSION_END,
+    "monitor/log-verify.py": MONITOR_LOG_VERIFY,
+    "monitor/log-bugfix.py": MONITOR_LOG_BUGFIX,
+    "monitor/log-review.py": MONITOR_LOG_REVIEW
   };
+}
+function getBundleForEngine(engine, serverLanguage) {
+  let engineBundle;
+  if (engine === "unity") engineBundle = getUnityBundle();
+  else if (engine === "unreal") engineBundle = getUnrealBundle();
+  else if (engine === "godot") engineBundle = getGodotBundle();
+  else if (serverLanguage === "go") engineBundle = getGoServerBundle();
+  else {
+    engineBundle = {
+      "rules/known-pitfalls.md": RULE_KNOWN_PITFALLS,
+      "rules/architecture-boundaries.md": RULE_ARCHITECTURE_BOUNDARIES,
+      "commands/auto-work.md": CMD_AUTO_WORK,
+      "commands/auto-bugfix.md": CMD_AUTO_BUGFIX,
+      "commands/review.md": CMD_REVIEW,
+      "commands/fix-harness.md": CMD_FIX_HARNESS,
+      "commands/plan.md": CMD_PLAN,
+      "commands/verify.md": CMD_VERIFY,
+      "commands/parallel-execute.md": CMD_PARALLEL_EXECUTE,
+      "memory/MEMORY.md": MEMORY_INDEX,
+      "hooks/constitution-guard.sh": HOOK_CONSTITUTION_GUARD,
+      "hooks/pre-commit.sh": HOOK_PRE_COMMIT,
+      "hooks/post-commit.sh": HOOK_POST_COMMIT,
+      "hooks/push-gate.sh": HOOK_PUSH_GATE,
+      "hooks/harness-evolution.sh": HOOK_HARNESS_EVOLUTION
+    };
+  }
+  return { ...engineBundle, ...getSharedToolsBundle() };
 }
 
 // src/services/harness/consolidate.ts
@@ -11704,7 +12354,11 @@ function generateSettings() {
       ],
       PostToolUse: [
         { matcher: "Bash", hooks: [{ type: "command", command: "bash .danya/hooks/harness-evolution.sh", timeout: 5e3 }] },
-        { matcher: "Bash", commandPattern: "git\\s+commit", hooks: [{ type: "command", command: "bash .danya/hooks/post-commit.sh", timeout: 5e3 }] }
+        { matcher: "Bash", commandPattern: "git\\s+commit", hooks: [{ type: "command", command: "bash .danya/hooks/post-commit.sh", timeout: 5e3 }] },
+        { matcher: "*", hooks: [{ type: "command", command: "python3 .danya/monitor/log-tool-use.py", timeout: 3e3 }] }
+      ],
+      Stop: [
+        { matcher: "*", hooks: [{ type: "command", command: "python3 .danya/monitor/log-session-end.py", timeout: 3e3 }] }
       ]
     }
   };
@@ -12442,7 +13096,7 @@ async function createAndStoreApiKey(accessToken) {
       }
       saveGlobalConfig(config2);
       try {
-        const { resetAnthropicClient } = await import("./llm-7GYSEKZV.js");
+        const { resetAnthropicClient } = await import("./llm-IBKHGII5.js");
         resetAnthropicClient();
       } catch {
       }
@@ -16793,7 +17447,7 @@ async function refreshPluginRuntimeFromInstalls() {
   const existingRoots = getSessionPlugins().map((p) => p.rootDir);
   const dirs = Array.from(/* @__PURE__ */ new Set([...existingRoots, ...installedRoots]));
   if (dirs.length === 0) return [];
-  const { configureSessionPlugins } = await import("./pluginRuntime-MOYWMOWS.js");
+  const { configureSessionPlugins } = await import("./pluginRuntime-24COPTWH.js");
   const { errors } = await configureSessionPlugins({ pluginDirs: dirs });
   return errors;
 }
@@ -18212,6 +18866,140 @@ Error description: ${errorDescription || "(Analyze recent errors in this session
 - Do NOT modify code files \u2014 only update .danya/rules/`;
 }
 var fix_harness_default = fixHarnessCommand;
+
+// src/commands/orchestrate.ts
+var orchestrateCommand = {
+  name: "orchestrate",
+  description: "Auto-research iteration loop (AI codes \u2192 verify \u2192 commit/revert)",
+  isEnabled: true,
+  isHidden: false,
+  type: "prompt",
+  progressMessage: "Starting auto-research iteration...",
+  argumentHint: "<task-file.md> [-n iterations]",
+  userFacingName() {
+    return "orchestrate";
+  },
+  async getPromptForCommand(args) {
+    return [{
+      role: "user",
+      content: [{ type: "text", text: `Run the orchestrator script for autonomous iteration:
+
+\`\`\`bash
+bash .danya/scripts/orchestrator.sh ${args || ".danya/templates/program-template.md"}
+\`\`\`
+
+This will:
+1. Read the task definition
+2. Loop N iterations: AI codes \u2192 quantitative verification \u2192 commit if score \u2265 baseline, revert if not
+3. Circuit break after 5 consecutive failures
+4. Report final baseline score
+
+If the task file doesn't exist, help the user create one using .danya/templates/program-template.md as reference.` }]
+    }];
+  }
+};
+var orchestrate_default = orchestrateCommand;
+
+// src/commands/red-blue.ts
+var redBlueCommand = {
+  name: "red-blue",
+  description: "Adversarial red-blue testing loop (find bugs \u2192 fix \u2192 repeat)",
+  isEnabled: true,
+  isHidden: false,
+  type: "prompt",
+  progressMessage: "Starting red-blue adversarial loop...",
+  argumentHint: "[scope-path]",
+  userFacingName() {
+    return "red-blue";
+  },
+  async getPromptForCommand(args) {
+    return [{
+      role: "user",
+      content: [{ type: "text", text: `Run the red-blue adversarial testing loop:
+
+\`\`\`bash
+bash .danya/scripts/red-blue-loop.sh ${args || "."}
+\`\`\`
+
+This will:
+1. **Red Team** (read-only): Analyze code, find all bugs (edge cases, error paths, concurrency, security)
+2. **Blue Team** (write): Fix CRITICAL \u2192 HIGH \u2192 MEDIUM bugs with minimal changes
+3. **Build check**: Verify fixes compile
+4. **Loop**: Repeat until red team finds 0 bugs (max 5 rounds)
+5. **Skill Extract**: Analyze all logs, extract patterns to .danya/rules/ and .danya/memory/
+
+Agent role specs are in .danya/agents/ (red-team.md, blue-team.md, skill-extractor.md).` }]
+    }];
+  }
+};
+var red_blue_default = redBlueCommand;
+
+// src/commands/monitor.ts
+init_state();
+import { existsSync as existsSync15, readdirSync as readdirSync6, readFileSync as readFileSync10 } from "fs";
+import { join as join13 } from "path";
+var monitorCommand = {
+  name: "monitor",
+  description: "View harness effectiveness metrics and data",
+  isEnabled: true,
+  isHidden: false,
+  type: "prompt",
+  progressMessage: "Analyzing harness metrics...",
+  argumentHint: "[summary|tools|reviews|bugfixes|sessions] [days]",
+  userFacingName() {
+    return "monitor";
+  },
+  async getPromptForCommand(args) {
+    const dataDir = join13(getCwd(), ".danya", "monitor", "data");
+    const parts = args.trim().split(/\s+/);
+    const metric = parts[0] || "summary";
+    const days = parts[1] || "7";
+    if (!existsSync15(dataDir)) {
+      return [{
+        role: "user",
+        content: [{ type: "text", text: `No monitor data found at .danya/monitor/data/.
+
+Monitor data is collected automatically via PostToolUse and Stop hooks registered in .danya/settings.json. Data will accumulate as you use Danya.
+
+Available metrics: summary, tools, reviews, bugfixes, sessions
+Usage: /monitor [metric] [days]` }]
+      }];
+    }
+    const files = readdirSync6(dataDir).filter((f) => f.endsWith(".jsonl"));
+    const dataSummary = [];
+    for (const file of files) {
+      try {
+        const lines = readFileSync10(join13(dataDir, file), "utf-8").trim().split("\n").filter(Boolean);
+        dataSummary.push(`${file}: ${lines.length} entries`);
+      } catch {
+      }
+    }
+    return [{
+      role: "user",
+      content: [{ type: "text", text: `Analyze harness metrics from .danya/monitor/data/ for the last ${days} days.
+
+Metric requested: ${metric}
+
+Available data files:
+${dataSummary.length > 0 ? dataSummary.map((s) => `  - ${s}`).join("\n") : "  (no data yet)"}
+
+## Analysis Instructions
+
+For **summary**: Show overview of all metrics (tool usage count, session count, avg verify time, avg review score, bug fix success rate).
+
+For **tools**: Show tool usage distribution (which tools are used most).
+
+For **reviews**: Show review score trends (avg, min, max, pass rate, CRITICAL count).
+
+For **bugfixes**: Show bug fix efficiency (avg rounds, success rate).
+
+For **sessions**: Show session count and duration.
+
+Read the JSONL files, parse entries within the date range, and present a formatted summary. Each line in the JSONL files is a JSON object with a "timestamp" field (Unix epoch).` }]
+    }];
+  }
+};
+var monitor_default = monitorCommand;
 
 // src/commands/rename.ts
 var rename = {
@@ -19936,7 +20724,7 @@ function PermissionRequestTitle({
 
 // src/ui/components/permissions/file-edit-permission-request/FileEditToolDiff.tsx
 import * as React73 from "react";
-import { existsSync as existsSync15, readFileSync as readFileSync10 } from "fs";
+import { existsSync as existsSync16, readFileSync as readFileSync11 } from "fs";
 import { useMemo as useMemo12 } from "react";
 import { Box as Box54, Text as Text59 } from "ink";
 init_state();
@@ -19950,7 +20738,7 @@ function FileEditToolDiff({
   width
 }) {
   const file = useMemo12(
-    () => existsSync15(file_path) ? readFileSync10(file_path, "utf8") : "",
+    () => existsSync16(file_path) ? readFileSync11(file_path, "utf8") : "",
     [file_path]
   );
   const patch = useMemo12(
@@ -20552,12 +21340,12 @@ import { Box as Box59, Text as Text64, useInput as useInput20 } from "ink";
 import React78, { useCallback as useCallback9, useMemo as useMemo17 } from "react";
 import { basename as basename6, dirname as dirname8, extname as extname10 } from "path";
 init_env();
-import { existsSync as existsSync17 } from "fs";
+import { existsSync as existsSync18 } from "fs";
 import chalk10 from "chalk";
 
 // src/ui/components/permissions/file-write-permission-request/FileWriteToolDiff.tsx
 import * as React77 from "react";
-import { existsSync as existsSync16, readFileSync as readFileSync11 } from "fs";
+import { existsSync as existsSync17, readFileSync as readFileSync12 } from "fs";
 import { useMemo as useMemo16 } from "react";
 import { Box as Box58, Text as Text63 } from "ink";
 init_state();
@@ -20568,13 +21356,13 @@ function FileWriteToolDiff({
   verbose,
   width
 }) {
-  const fileExists = useMemo16(() => existsSync16(file_path), [file_path]);
+  const fileExists = useMemo16(() => existsSync17(file_path), [file_path]);
   const oldContent = useMemo16(() => {
     if (!fileExists) {
       return "";
     }
     const enc = detectFileEncoding(file_path);
-    return readFileSync11(file_path, enc);
+    return readFileSync12(file_path, enc);
   }, [file_path, fileExists]);
   const hunks = useMemo16(() => {
     if (!fileExists) {
@@ -20639,7 +21427,7 @@ function FileWritePermissionRequest({
     );
     return isInWorkingDir ? `Yes, allow all edits during this session ${shortcutHint}` : `Yes, allow all edits in ${chalk10.bold(`${dirName}/`)} during this session ${shortcutHint}`;
   }, [file_path, isInWorkingDir, modeCycleShortcut.displayText]);
-  const fileExists = useMemo17(() => existsSync17(file_path), [file_path]);
+  const fileExists = useMemo17(() => existsSync18(file_path), [file_path]);
   const unaryEvent = useMemo17(
     () => ({
       completion_type: "write_file_single",
@@ -21898,9 +22686,9 @@ init_planMode();
 
 // src/utils/system/externalEditor.ts
 import { spawn, spawnSync } from "child_process";
-import { mkdtempSync, readFileSync as readFileSync12, rmSync, writeFileSync as writeFileSync7 } from "fs";
+import { mkdtempSync, readFileSync as readFileSync13, rmSync, writeFileSync as writeFileSync7 } from "fs";
 import { tmpdir } from "os";
-import { join as join13 } from "path";
+import { join as join14 } from "path";
 var isWindows = process.platform === "win32";
 function isCommandAvailable(command4) {
   const checker = isWindows ? "where" : "which";
@@ -21976,8 +22764,8 @@ async function launchExternalEditor(initialText) {
       )
     };
   }
-  const dir = mkdtempSync(join13(tmpdir(), "kode-edit-"));
-  const filePath = join13(dir, "message.txt");
+  const dir = mkdtempSync(join14(tmpdir(), "kode-edit-"));
+  const filePath = join14(dir, "message.txt");
   writeFileSync7(filePath, initialText, "utf-8");
   const wasRaw = Boolean(process.stdin.isTTY && process.stdin.isRaw);
   if (process.stdin.isTTY) {
@@ -22020,7 +22808,7 @@ async function launchExternalEditor(initialText) {
   }
   restoreStdinState(wasRaw);
   try {
-    const edited = normalizeNewlines(readFileSync12(filePath, "utf-8"));
+    const edited = normalizeNewlines(readFileSync13(filePath, "utf-8"));
     rmSync(dir, { recursive: true, force: true });
     return { text: edited, editorLabel: editorCommand.displayName };
   } catch (error) {
@@ -23041,8 +23829,8 @@ function getCompletionContext(args) {
 }
 
 // src/utils/completion/fileSuggestions.ts
-import { existsSync as existsSync18, readdirSync as readdirSync6, statSync as statSync14 } from "fs";
-import { basename as basename8, dirname as dirname10, join as join14, resolve as resolve9 } from "path";
+import { existsSync as existsSync19, readdirSync as readdirSync7, statSync as statSync14 } from "fs";
+import { basename as basename8, dirname as dirname10, join as join15, resolve as resolve9 } from "path";
 function generateFileSuggestions(args) {
   const { prefix, cwd: cwd2 } = args;
   try {
@@ -23058,7 +23846,7 @@ function generateFileSuggestions(args) {
       searchPath = resolve9(cwd2, userPath);
     }
     const endsWithSlash = userPath.endsWith("/");
-    const searchStat = existsSync18(searchPath) ? statSync14(searchPath) : null;
+    const searchStat = existsSync19(searchPath) ? statSync14(searchPath) : null;
     let searchDir;
     let nameFilter;
     if (endsWithSlash || searchStat?.isDirectory()) {
@@ -23068,16 +23856,16 @@ function generateFileSuggestions(args) {
       searchDir = dirname10(searchPath);
       nameFilter = basename8(searchPath);
     }
-    if (!existsSync18(searchDir)) return [];
+    if (!existsSync19(searchDir)) return [];
     const showHidden = nameFilter.startsWith(".") || userPath.includes("/.");
-    const entries = readdirSync6(searchDir).filter((entry) => {
+    const entries = readdirSync7(searchDir).filter((entry) => {
       if (!showHidden && entry.startsWith(".")) return false;
       if (nameFilter && !entry.toLowerCase().startsWith(nameFilter.toLowerCase()))
         return false;
       return true;
     }).sort((a, b) => {
-      const aPath = join14(searchDir, a);
-      const bPath = join14(searchDir, b);
+      const aPath = join15(searchDir, a);
+      const bPath = join15(searchDir, b);
       const aIsDir = statSync14(aPath).isDirectory();
       const bIsDir = statSync14(bPath).isDirectory();
       if (aIsDir && !bIsDir) return -1;
@@ -23085,7 +23873,7 @@ function generateFileSuggestions(args) {
       return a.toLowerCase().localeCompare(b.toLowerCase());
     }).slice(0, 25);
     return entries.map((entry) => {
-      const entryPath = join14(searchDir, entry);
+      const entryPath = join15(searchDir, entry);
       const isDir = statSync14(entryPath).isDirectory();
       const icon = isDir ? "\u{1F4C1}" : "\u{1F4C4}";
       let value;
@@ -24419,15 +25207,15 @@ function useUnifiedCompletion({
     if (systemCommands.length > 0 || isLoadingCommands) return;
     setIsLoadingCommands(true);
     try {
-      const { readdirSync: readdirSync7, statSync: statSync16 } = await import("fs");
+      const { readdirSync: readdirSync8, statSync: statSync16 } = await import("fs");
       const pathDirs = (process.env.PATH || "").split(":").filter(Boolean);
       const commandSet = /* @__PURE__ */ new Set();
       const essentialCommands = getEssentialCommands();
       essentialCommands.forEach((cmd) => commandSet.add(cmd));
       for (const dir of pathDirs) {
         try {
-          if (readdirSync7 && statSync16) {
-            const entries = readdirSync7(dir);
+          if (readdirSync8 && statSync16) {
+            const entries = readdirSync8(dir);
             for (const entry of entries) {
               try {
                 const fullPath = `${dir}/${entry}`;
@@ -24965,17 +25753,17 @@ function TokenWarning({ tokenUsage }) {
 
 // src/utils/commands/hashCommand.ts
 init_log();
-import { join as join15 } from "path";
-import { readFileSync as readFileSync13, writeFileSync as writeFileSync9 } from "fs";
+import { join as join16 } from "path";
+import { readFileSync as readFileSync14, writeFileSync as writeFileSync9 } from "fs";
 function handleHashCommand(interpreted) {
   try {
     const cwd2 = process.cwd();
-    const agentsPath = join15(cwd2, "AGENTS.md");
-    const legacyPath = join15(cwd2, "CLAUDE.md");
+    const agentsPath = join16(cwd2, "AGENTS.md");
+    const legacyPath = join16(cwd2, "CLAUDE.md");
     const filesToUpdate = [];
     filesToUpdate.push({ path: agentsPath, name: "AGENTS.md" });
     try {
-      readFileSync13(legacyPath, "utf-8");
+      readFileSync14(legacyPath, "utf-8");
       filesToUpdate.push({ path: legacyPath, name: "CLAUDE.md" });
     } catch {
     }
@@ -24990,7 +25778,7 @@ _Added on ${now.toLocaleString()} ${timezone}_`;
       try {
         let existingContent = "";
         try {
-          existingContent = readFileSync13(file.path, "utf-8").trim();
+          existingContent = readFileSync14(file.path, "utf-8").trim();
         } catch {
         }
         const separator = existingContent ? "\n\n" : "";
@@ -25195,7 +25983,7 @@ function useStatusLine() {
 // src/ui/components/PromptInput.tsx
 async function interpretHashCommand(input) {
   try {
-    const { queryQuick: queryQuick2 } = await import("./llm-7GYSEKZV.js");
+    const { queryQuick: queryQuick2 } = await import("./llm-IBKHGII5.js");
     const systemPrompt = [
       "You're helping the user structure notes that will be added to their KODING.md file.",
       "Format the user's input into a well-structured note that will be useful for later reference.",
@@ -28401,7 +29189,7 @@ import React102, { useCallback as useCallback17, useEffect as useEffect26, useMe
 import { Box as Box76, Text as Text80, useInput as useInput30 } from "ink";
 import figures8 from "figures";
 import chalk15 from "chalk";
-import { join as join17 } from "path";
+import { join as join18 } from "path";
 import { spawn as spawn2 } from "child_process";
 
 // src/commands/agents/tooling.ts
@@ -28443,13 +29231,13 @@ async function getAvailableTools() {
 // src/commands/agents/storage.ts
 init_state();
 import {
-  existsSync as existsSync19,
+  existsSync as existsSync20,
   mkdirSync as mkdirSync8,
   renameSync as renameSync2,
   unlinkSync as unlinkSync2,
   writeFileSync as writeFileSync10
 } from "fs";
-import { join as join16 } from "path";
+import { join as join17 } from "path";
 import { homedir as homedir7 } from "os";
 init_log();
 
@@ -28457,7 +29245,7 @@ init_log();
 import { randomUUID as randomUUID5 } from "crypto";
 init_log();
 async function generateAgentWithClaude(prompt) {
-  const { queryModel } = await import("./llm-7GYSEKZV.js");
+  const { queryModel } = await import("./llm-IBKHGII5.js");
   const systemPrompt = `You are an expert at creating AI agent configurations. Based on the user's description, generate a specialized agent configuration.
 
 Return your response as a JSON object with exactly these fields:
@@ -28641,25 +29429,25 @@ var LEGACY_FOLDER = ".kode";
 var AGENTS_DIR = "agents";
 function getAgentDirectory(location) {
   if (location === "user") {
-    return join16(homedir7(), PRIMARY_FOLDER, AGENTS_DIR);
+    return join17(homedir7(), PRIMARY_FOLDER, AGENTS_DIR);
   }
-  return join16(getCwd(), PRIMARY_FOLDER, AGENTS_DIR);
+  return join17(getCwd(), PRIMARY_FOLDER, AGENTS_DIR);
 }
 function getLegacyAgentDirectory(location) {
   if (location === "user") {
-    return join16(homedir7(), LEGACY_FOLDER, AGENTS_DIR);
+    return join17(homedir7(), LEGACY_FOLDER, AGENTS_DIR);
   }
-  return join16(getCwd(), LEGACY_FOLDER, AGENTS_DIR);
+  return join17(getCwd(), LEGACY_FOLDER, AGENTS_DIR);
 }
 function getPrimaryAgentFilePath(location, agentType) {
-  return join16(getAgentDirectory(location), `${agentType}.md`);
+  return join17(getAgentDirectory(location), `${agentType}.md`);
 }
 function getLegacyAgentFilePath(location, agentType) {
-  return join16(getLegacyAgentDirectory(location), `${agentType}.md`);
+  return join17(getLegacyAgentDirectory(location), `${agentType}.md`);
 }
 function ensureDirectoryExists(location) {
   const dir = getAgentDirectory(location);
-  if (!existsSync19(dir)) {
+  if (!existsSync20(dir)) {
     mkdirSync8(dir, { recursive: true });
   }
   return dir;
@@ -28668,7 +29456,7 @@ async function saveAgent(location, agentType, description2, tools, systemPrompt,
   ensureDirectoryExists(location);
   const filePath = getPrimaryAgentFilePath(location, agentType);
   const legacyPath = getLegacyAgentFilePath(location, agentType);
-  if (throwIfExists && (existsSync19(filePath) || existsSync19(legacyPath))) {
+  if (throwIfExists && (existsSync20(filePath) || existsSync20(legacyPath))) {
     throw new Error(`Agent file already exists: ${filePath}`);
   }
   const tempFile = `${filePath}.tmp.${Date.now()}.${Math.random().toString(36).substr(2, 9)}`;
@@ -28683,7 +29471,7 @@ async function saveAgent(location, agentType, description2, tools, systemPrompt,
   );
   try {
     writeFileSync10(tempFile, content, { encoding: "utf-8", flag: "wx" });
-    if (throwIfExists && (existsSync19(filePath) || existsSync19(legacyPath))) {
+    if (throwIfExists && (existsSync20(filePath) || existsSync20(legacyPath))) {
       try {
         unlinkSync2(tempFile);
       } catch {
@@ -28693,7 +29481,7 @@ async function saveAgent(location, agentType, description2, tools, systemPrompt,
     renameSync2(tempFile, filePath);
   } catch (error) {
     try {
-      if (existsSync19(tempFile)) {
+      if (existsSync20(tempFile)) {
         unlinkSync2(tempFile);
       }
     } catch (cleanupError) {
@@ -28721,7 +29509,7 @@ async function updateAgent(agent, description2, tools, systemPrompt, color, mode
   const location = agent.location;
   const primaryPath = getPrimaryAgentFilePath(location, agent.agentType);
   const legacyPath = getLegacyAgentFilePath(location, agent.agentType);
-  const filePath = existsSync19(primaryPath) ? primaryPath : existsSync19(legacyPath) ? legacyPath : primaryPath;
+  const filePath = existsSync20(primaryPath) ? primaryPath : existsSync20(legacyPath) ? legacyPath : primaryPath;
   ensureDirectoryExists(location);
   writeFileSync10(filePath, content, { encoding: "utf-8", flag: "w" });
 }
@@ -28732,10 +29520,10 @@ async function deleteAgent(agent) {
   const location = agent.location;
   const primaryPath = getPrimaryAgentFilePath(location, agent.agentType);
   const legacyPath = getLegacyAgentFilePath(location, agent.agentType);
-  if (existsSync19(primaryPath)) {
+  if (existsSync20(primaryPath)) {
     unlinkSync2(primaryPath);
   }
-  if (existsSync19(legacyPath)) {
+  if (existsSync20(legacyPath)) {
     unlinkSync2(legacyPath);
   }
 }
@@ -29751,8 +30539,8 @@ function ViewAgent(props) {
     if (props.agent.source === "plugin") return `Plugin: ${props.agent.baseDir ?? "Unknown"}`;
     const baseDir = props.agent.baseDir;
     const file = `${props.agent.filename ?? props.agent.agentType}.md`;
-    if (props.agent.source === "projectSettings") return join17(".claude", "agents", file);
-    if (baseDir) return join17(baseDir, file);
+    if (props.agent.source === "projectSettings") return join18(".claude", "agents", file);
+    if (baseDir) return join18(baseDir, file);
     return props.agent.source;
   })();
   const toolsSummary = () => {
@@ -30101,6 +30889,9 @@ var COMMANDS = memoize3(() => [
   auto_bugfix_default,
   parallel_execute_default,
   fix_harness_default,
+  orchestrate_default,
+  red_blue_default,
+  monitor_default,
   todos_default,
   ...isAnthropicAuthEnabled() ? [logout_default, login_default()] : [],
   ...INTERNAL_ONLY_COMMANDS

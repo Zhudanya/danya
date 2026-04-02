@@ -7,7 +7,7 @@ import {
 } from "./chunk-PDSAJX7G.js";
 import {
   getAllTools
-} from "./chunk-OE4ALETD.js";
+} from "./chunk-VXCR7NUJ.js";
 import {
   DanyaAgentStructuredStdio
 } from "./chunk-P5VWDMRD.js";
@@ -32,7 +32,7 @@ import {
   review_default,
   useExitOnCtrlCD,
   useTerminalSize
-} from "./chunk-YHMHHIFQ.js";
+} from "./chunk-ZD3WOKTA.js";
 import "./chunk-ZVXACFY4.js";
 import {
   addMcpServer,
@@ -55,13 +55,13 @@ import "./chunk-HGMX7LUU.js";
 import "./chunk-F4DQYOST.js";
 import "./chunk-Y5LQPJWK.js";
 import "./chunk-JVGG2YQR.js";
-import "./chunk-MZCZVIZO.js";
+import "./chunk-TNCJ6TRC.js";
 import "./chunk-U7Z4MXY4.js";
 import {
   clearOutputStyleCache
 } from "./chunk-CSAIELUO.js";
 import "./chunk-W5HDZPFZ.js";
-import "./chunk-C6ND43BL.js";
+import "./chunk-YOSGOIID.js";
 import "./chunk-66P52YYI.js";
 import "./chunk-EPA5LFNP.js";
 import "./chunk-S7FJMZJQ.js";
@@ -77,7 +77,7 @@ import {
   setEnabledSettingSourcesFromCli
 } from "./chunk-WAY3DKFO.js";
 import "./chunk-2VQWLLDU.js";
-import "./chunk-N3JEQKJM.js";
+import "./chunk-SRXZ3EYU.js";
 import {
   getModelManager,
   isDefaultSlowAndCapableModel
@@ -303,7 +303,7 @@ function createPrintModeControlRequestHandler(args) {
 
 // src/entrypoints/cli/stdio/streamJsonSession.ts
 async function runPrintModeStreamJsonSession(args) {
-  const { runDanyaAgentStreamJsonSession } = await import("./kodeAgentStreamJsonSession-OGHCTQVL.js");
+  const { runDanyaAgentStreamJsonSession } = await import("./kodeAgentStreamJsonSession-PY2WTANX.js");
   await runDanyaAgentStreamJsonSession(args);
 }
 
@@ -457,11 +457,11 @@ async function runPrintMode({
 `);
     process.exit(0);
   }
-  const { createUserMessage } = await import("./messages-7EDN75PL.js");
-  const { getSystemPrompt } = await import("./prompts-LWIIETA4.js");
+  const { createUserMessage } = await import("./messages-FNWWI4ZK.js");
+  const { getSystemPrompt } = await import("./prompts-2YUOIDU2.js");
   const { getContext: getContext2 } = await import("./context-IU336CQN.js");
   const { getTotalCost } = await import("./costTracker-5WKZXN5S.js");
-  const { query } = await import("./query-6A7U4C7B.js");
+  const { query } = await import("./query-MPZ743GU.js");
   const { getDanyaAgentSessionId } = await import("./kodeAgentSessionId-WUT74FSH.js");
   const { danyaMessageToSdkMessage, makeSdkInitMessage, makeSdkResultMessage } = await import("./kodeAgentStreamJson-EDHHWNNX.js");
   const { DanyaAgentStructuredStdio: DanyaAgentStructuredStdio2 } = await import("./kodeAgentStructuredStdio-UA5P5UNU.js");
@@ -794,7 +794,7 @@ async function runPrintMode({
 // src/utils/session/cleanup.ts
 init_log();
 import { promises as fs } from "fs";
-import { join } from "path";
+import { join as join2 } from "path";
 var THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1e3;
 function convertFileNameToDate(filename) {
   const isoStr = filename.split(".")[0].replace(/T(\d{2})-(\d{2})-(\d{2})-(\d{3})Z/, "T$1:$2:$3.$4Z");
@@ -812,7 +812,7 @@ async function cleanupOldMessageFiles() {
         try {
           const timestamp = convertFileNameToDate(file);
           if (timestamp < thirtyDaysAgo) {
-            await fs.unlink(join(path, file));
+            await fs.unlink(join2(path, file));
             if (path === messagePath) {
               deletedCounts.messages++;
             } else {
@@ -2050,7 +2050,7 @@ async function parseArgs(stdinContent, renderContext) {
         const all = [...installed, ...requested].filter(Boolean);
         const deduped = Array.from(new Set(all));
         if (deduped.length > 0) {
-          const { configureSessionPlugins } = await import("./pluginRuntime-MOYWMOWS.js");
+          const { configureSessionPlugins } = await import("./pluginRuntime-24COPTWH.js");
           const { errors } = await configureSessionPlugins({
             pluginDirs: deduped
           });
@@ -2060,9 +2060,9 @@ async function parseArgs(stdinContent, renderContext) {
         }
       }
       const [{ ask }, { getTools }, { getCommands }] = await Promise.all([
-        import("./ask-DTDKYH7G.js"),
-        import("./tools-WFOXR3WE.js"),
-        import("./commands-5RITU2AX.js")
+        import("./ask-W3GH6ASO.js"),
+        import("./tools-BYFM57R5.js"),
+        import("./commands-JJD7WPRS.js")
       ]);
       const commands = await getCommands();
       const mcpClientsPromise = Array.isArray(mcpConfig) && mcpConfig.length > 0 || strictMcpConfig === true ? getClientsForCliMcpConfig({
@@ -2268,7 +2268,7 @@ async function parseArgs(stdinContent, renderContext) {
         const isDefaultModel = await isDefaultSlowAndCapableModel();
         {
           const { render: render3 } = await import("ink");
-          const { REPL } = await import("./REPL-4LILL2QO.js");
+          const { REPL } = await import("./REPL-VSTXQBY4.js");
           render3(
             /* @__PURE__ */ React10.createElement(
               REPL,
@@ -2447,7 +2447,7 @@ Model profiles (${active.length}/${profiles.length} active):
       try {
         const workingDir = typeof options?.cwd === "string" ? options.cwd : cwd();
         await setup(workingDir, false);
-        const { validateAgentTemplates } = await import("./agentsValidate-H5H7YQAW.js");
+        const { validateAgentTemplates } = await import("./agentsValidate-6NIUPVRE.js");
         const report = await validateAgentTemplates({
           cwd: workingDir,
           paths: Array.isArray(paths) ? paths : [],
@@ -3373,7 +3373,7 @@ ${skillList}`);
       const scope = ensureConfigScope(options.scope);
       const platform = process.platform;
       const { existsSync: existsSync2, readFileSync: readFileSync2 } = await import("fs");
-      const { join: join2 } = await import("path");
+      const { join: join3 } = await import("path");
       const { exec } = await import("child_process");
       const isWSL = platform === "linux" && existsSync2("/proc/version") && readFileSync2("/proc/version", "utf-8").toLowerCase().includes("microsoft");
       if (platform !== "darwin" && platform !== "win32" && !isWSL) {
@@ -3384,12 +3384,12 @@ ${skillList}`);
       }
       let configPath;
       if (platform === "darwin") {
-        configPath = join2(
+        configPath = join3(
           process.env.HOME || "~",
           "Library/Application Support/Claude/claude_desktop_config.json"
         );
       } else if (platform === "win32") {
-        configPath = join2(
+        configPath = join3(
           process.env.APPDATA || "",
           "Claude/claude_desktop_config.json"
         );
@@ -3658,8 +3658,8 @@ ${skillList}`);
       await setup(cwd2, safe);
       assertMinVersion();
       const [{ getTools }, { getCommands }] = await Promise.all([
-        import("./tools-WFOXR3WE.js"),
-        import("./commands-5RITU2AX.js")
+        import("./tools-BYFM57R5.js"),
+        import("./commands-JJD7WPRS.js")
       ]);
       const [allTools, commands, mcpClients] = await Promise.all([
         getTools(
@@ -3741,7 +3741,7 @@ ${skillList}`);
           const isDefaultModel = await isDefaultSlowAndCapableModel();
           {
             const { render: render3 } = await import("ink");
-            const { REPL } = await import("./REPL-4LILL2QO.js");
+            const { REPL } = await import("./REPL-VSTXQBY4.js");
             render3(
               /* @__PURE__ */ React10.createElement(
                 REPL,
@@ -3854,6 +3854,53 @@ ${skillList}`);
     console.log(`Removed context.${key}`);
     process.exit(0);
   });
+  program.command("auto-work <requirement>").description("Shell-enforced full-auto pipeline (each stage = independent danya -p)").option("--model <model>", "Model to use", "sonnet").option("--max-turns <n>", "Max turns per stage", "30").action(async (requirement, opts) => {
+    const { execSync } = await import("child_process");
+    const scriptPath = join(cwd(), ".danya", "scripts", "auto-work-loop.sh");
+    const env = { ...process.env, MODEL: opts.model, MAX_TURNS: opts.maxTurns };
+    try {
+      execSync(`bash "${scriptPath}" "${requirement}"`, { stdio: "inherit", env, cwd: cwd() });
+    } catch (e) {
+      process.exit(e.status || 1);
+    }
+  });
+  program.command("parallel <tasks-dir>").description("Wave-based parallel execution (each task in independent worktree)").action(async (tasksDir) => {
+    const { execSync } = await import("child_process");
+    const scriptPath = join(cwd(), ".danya", "scripts", "parallel-wave.sh");
+    try {
+      execSync(`bash "${scriptPath}" "${tasksDir}"`, { stdio: "inherit", cwd: cwd() });
+    } catch (e) {
+      process.exit(e.status || 1);
+    }
+  });
+  program.command("red-blue [scope]").description("Adversarial red-blue testing loop").option("-n, --rounds <n>", "Max rounds", "5").option("--model <model>", "Model to use", "sonnet").action(async (scope, opts) => {
+    const { execSync } = await import("child_process");
+    const scriptPath = join(cwd(), ".danya", "scripts", "red-blue-loop.sh");
+    const env = { ...process.env, MODEL: opts.model, MAX_ROUNDS: opts.rounds };
+    try {
+      execSync(`bash "${scriptPath}" "${scope || "."}"`, { stdio: "inherit", env, cwd: cwd() });
+    } catch (e) {
+      process.exit(e.status || 1);
+    }
+  });
+  program.command("orchestrate <task-file>").description("Auto-research iteration loop (AI codes \u2192 verify \u2192 commit/revert)").option("-n, --iterations <n>", "Max iterations", "20").option("--model <model>", "Model to use", "sonnet").action(async (taskFile, opts) => {
+    const { execSync } = await import("child_process");
+    const scriptPath = join(cwd(), ".danya", "scripts", "orchestrator.sh");
+    const env = { ...process.env, MODEL: opts.model, MAX_ITERATIONS: opts.iterations };
+    try {
+      execSync(`bash "${scriptPath}" "${taskFile}"`, { stdio: "inherit", env, cwd: cwd() });
+    } catch (e) {
+      process.exit(e.status || 1);
+    }
+  });
+  program.command("check-env").description("Validate environment dependencies for Danya tools").action(async () => {
+    const { execSync } = await import("child_process");
+    const scriptPath = join(cwd(), ".danya", "scripts", "check-env.sh");
+    try {
+      execSync(`bash "${scriptPath}"`, { stdio: "inherit", cwd: cwd() });
+    } catch {
+    }
+  });
   await program.parseAsync(process.argv);
   return program;
 }
@@ -3873,12 +3920,12 @@ async function gracefulExit(code = 0) {
   }
   isGracefulExitInProgress = true;
   try {
-    const { runSessionEndHooks } = await import("./kodeHooks-BW2C7KT5.js");
+    const { runSessionEndHooks } = await import("./kodeHooks-HHE23DPP.js");
     const { getDanyaAgentSessionId } = await import("./kodeAgentSessionId-WUT74FSH.js");
     const { tmpdir } = await import("os");
-    const { join: join2 } = await import("path");
+    const { join: join3 } = await import("path");
     const sessionId = getDanyaAgentSessionId();
-    const transcriptPath = join2(
+    const transcriptPath = join3(
       tmpdir(),
       "danya-hooks-transcripts",
       `${sessionId}.transcript.txt`
