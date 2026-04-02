@@ -765,10 +765,17 @@ function PromptInput({
         </Box>
       </Box>
       {isLoading && messageQueue && messageQueue.length > 0 && (
-        <Box paddingX={2}>
+        <Box paddingX={2} flexDirection="column">
           <Text dimColor>
             {messageQueue.length} queued message{messageQueue.length > 1 ? 's' : ''} — will send when current task completes
           </Text>
+          {messageQueue.map((msg, i) => (
+            <Box key={i} paddingLeft={2}>
+              <Text dimColor color="yellow">
+                {i + 1}. {msg.length > 60 ? msg.slice(0, 60) + '...' : msg}
+              </Text>
+            </Box>
+          ))}
         </Box>
       )}
       {!completionActive && suggestions.length === 0 && (
