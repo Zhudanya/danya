@@ -113,7 +113,7 @@ function initSingleProject(cwd: string, instructionsFile: string, force: boolean
 
 function initWorkspace(
   rootPath: string,
-  subProjects: { name: string; path: string; engine: EngineType; serverLanguage: ServerLanguage }[],
+  subProjects: { name: string; path: string; engine: EngineType; serverLanguage: ServerLanguage; role: string }[],
   instructionsFile: string,
   force: boolean,
 ): string {
