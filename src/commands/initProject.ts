@@ -20,8 +20,11 @@ export type GuardRule = {
 export async function initDanyaProject(cwd: string, force: boolean = false): Promise<string> {
   const danyaDir = join(cwd, '.danya')
 
-  if (existsSync(danyaDir) && !force) {
-    return '⚠️ .danya/ already exists. Skipping initialization. Use --force to overwrite.'
+  // Check for harness marker (gate-chain.json), not just .danya/ directory —
+  // Kode may create .danya/settings.local.json before harness init runs
+  const harnessMarker = join(danyaDir, 'gate-chain.json')
+  if (existsSync(harnessMarker) && !force) {
+    return '⚠️ Harness already initialized. Use --force to overwrite.'
   }
 
   const workspace = detectWorkspace(cwd)

@@ -14,8 +14,10 @@ export function autoInitHarness(cwd: string): void {
   if (hasRun) return
   hasRun = true
 
-  const danyaDir = join(cwd, '.danya')
-  if (existsSync(danyaDir)) return
+  // Check if harness is already initialized (not just .danya/ existing —
+  // Kode creates .danya/settings.local.json before our init runs)
+  const harnessMarker = join(cwd, '.danya', 'gate-chain.json')
+  if (existsSync(harnessMarker)) return
 
   try {
     // Run init silently — generates .danya/ with full harness + consolidates legacy
