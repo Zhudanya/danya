@@ -13,7 +13,7 @@ import {
   getReasoningEffort,
   models_default,
   refreshDanyaContext
-} from "./chunk-H77AJXLU.js";
+} from "./chunk-QMR44KOM.js";
 import "./chunk-X46SRZQF.js";
 import "./chunk-CXOM4XMN.js";
 import "./chunk-IZETEFF5.js";
@@ -24,14 +24,14 @@ import "./chunk-Y5LQPJWK.js";
 import {
   setRequestStatus
 } from "./chunk-JVGG2YQR.js";
-import "./chunk-EQQU36GF.js";
+import "./chunk-7OKTUFZC.js";
 import "./chunk-U7Z4MXY4.js";
 import "./chunk-X7ZDT7EX.js";
 import {
   getCompletionWithProfile,
   getGPT5CompletionWithProfile
 } from "./chunk-3ONZAVOS.js";
-import "./chunk-CQXCGKNJ.js";
+import "./chunk-QK4NKMF5.js";
 import "./chunk-E5BAXZSR.js";
 import "./chunk-HIH5HC5H.js";
 import "./chunk-Y5IRVMDD.js";
@@ -51,7 +51,7 @@ import {
   PROMPT_TOO_LONG_ERROR_MESSAGE,
   createAssistantAPIErrorMessage,
   normalizeContentFromAPI
-} from "./chunk-FI2UVGGO.js";
+} from "./chunk-IR3J5REA.js";
 import {
   USE_BEDROCK,
   USE_VERTEX,

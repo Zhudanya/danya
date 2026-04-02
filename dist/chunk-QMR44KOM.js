@@ -58,7 +58,7 @@ import {
   runStopHooks,
   runUserPromptSubmitHooks,
   updateHookTranscriptForMessages
-} from "./chunk-EQQU36GF.js";
+} from "./chunk-7OKTUFZC.js";
 import {
   getDanyaAgentSessionId,
   setDanyaAgentSessionId
@@ -80,7 +80,7 @@ import {
   queryLLM,
   queryQuick,
   verifyApiKey
-} from "./chunk-CQXCGKNJ.js";
+} from "./chunk-QK4NKMF5.js";
 import {
   listAllContentFiles,
   ripGrep
@@ -154,7 +154,7 @@ import {
   processUserInput,
   reorderMessages,
   stripSystemMessages
-} from "./chunk-FI2UVGGO.js";
+} from "./chunk-IR3J5REA.js";
 import {
   ModelManager,
   getModelManager,
@@ -568,7 +568,7 @@ var getCommandSubcommandPrefix = memoize(
 var getCommandPrefix = memoize(
   async (command4, abortSignal) => {
     const { systemPrompt, userPrompt } = buildBashCommandPrefixDetectionPrompt(command4);
-    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-RFQQCUVN.js");
+    const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryQuick: queryQuick2 } = await import("./llm-JAO2NNCT.js");
     const response = await queryQuick2({
       systemPrompt,
       userPrompt,
@@ -4637,7 +4637,7 @@ function formatParseError(error) {
   return error instanceof Error ? error.message : String(error);
 }
 async function defaultGateQuery(args) {
-  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-RFQQCUVN.js");
+  const { API_ERROR_MESSAGE_PREFIX: API_ERROR_MESSAGE_PREFIX2, queryLLM: queryLLM2 } = await import("./llm-JAO2NNCT.js");
   const messages = [
     {
       type: "user",
@@ -11608,12 +11608,16 @@ execute_task() {
     local build_ok=false; (cd "$wt_path" && make build >> "$log_file" 2>&1) && build_ok=true
     local duration=$(( $(date +%s) - start_time ))
     if $build_ok; then
+        # Serialize merges with lock to prevent concurrent git index corruption
+        local lockfile="$WORKTREE_BASE/.merge-lock"
+        while ! mkdir "$lockfile" 2>/dev/null; do sleep 0.5; done
         if git merge "$branch" --no-edit >> "$log_file" 2>&1; then
             echo "  [task-$task_id] PASS (\${duration}s)"; echo -e "$task_id\\t$wave_num\\tpassed\\t$duration\\tmerged" >> "$RESULTS_FILE"
         else
             git merge --abort 2>/dev/null || true
             echo "  [task-$task_id] FAIL (merge conflict)"; echo -e "$task_id\\t$wave_num\\tfailed\\t$duration\\tmerge conflict" >> "$RESULTS_FILE"
         fi
+        rmdir "$lockfile" 2>/dev/null || true
     else
         echo "  [task-$task_id] FAIL (build)"; echo -e "$task_id\\t$wave_num\\tfailed\\t$duration\\tbuild failed" >> "$RESULTS_FILE"
     fi
@@ -11702,7 +11706,7 @@ Priority: CRITICAL > HIGH > MEDIUM. Minimal fixes only." \\
     echo "  [CHECK] Building..."
     if (cd "$PROJECT_ROOT" && make build > "$LOG_DIR/build-$round.log" 2>&1); then
         echo "  [PASS] Build OK. Committing fixes."
-        (cd "$PROJECT_ROOT" && git add -A && git commit -m "<fix>(red-blue) round $round fixes" 2>/dev/null) || true
+        (cd "$PROJECT_ROOT" && git add -u && git commit -m "<fix>(red-blue) round $round fixes" 2>/dev/null) || true
     else
         echo "  [FAIL] Build failed. Reverting."
         (cd "$PROJECT_ROOT" && git checkout . 2>/dev/null) || true
@@ -11777,7 +11781,7 @@ Iteration $iter. Current baseline: $baseline/100. Improve the score." \\
 
     if [[ "$score" -ge "$baseline" ]]; then
         echo "  [COMMIT] Score >= baseline"
-        (cd "$PROJECT_ROOT" && git add -A && git commit -m "<feat>(orchestrator) iter $iter score $score" 2>/dev/null) || true
+        (cd "$PROJECT_ROOT" && git add -u && git commit -m "<feat>(orchestrator) iter $iter score $score" 2>/dev/null) || true
         echo "$score" > "$BASELINE_FILE"
         consecutive_failures=0
         echo -e "$iter\\t$score\\t$score\\tpass\\t$(date +%H:%M:%S)" >> "$RESULTS_FILE"
@@ -12029,7 +12033,7 @@ try:
     data = json.load(sys.stdin)
     entry = {"timestamp": time.time(), "session_id": data.get("session_id",""), "tool_name": data.get("tool_name",""), "tool_input_keys": list(data.get("tool_input",{}).keys()), "cwd": data.get("cwd","")}
     with open(DATA_DIR / "tool-usage.jsonl", "a") as f: f.write(json.dumps(entry) + "\\n")
-except: pass
+except (json.JSONDecodeError, IOError, KeyError): pass
 `;
 var MONITOR_LOG_SESSION_END = `#!/usr/bin/env python3
 """Stop Hook \u2014 record session end to JSONL."""
@@ -12040,7 +12044,7 @@ try:
     data = json.load(sys.stdin)
     entry = {"timestamp": time.time(), "session_id": data.get("session_id",""), "cwd": data.get("cwd",""), "stop_reason": data.get("stop_hook_reason","unknown")}
     with open(DATA_DIR / "sessions.jsonl", "a") as f: f.write(json.dumps(entry) + "\\n")
-except: pass
+except (json.JSONDecodeError, IOError, KeyError): pass
 `;
 var MONITOR_LOG_VERIFY = `#!/usr/bin/env python3
 """Verify metrics \u2014 call with: python log-verify.py start|end <type> [result]"""
@@ -12261,8 +12265,8 @@ if sys.platform == 'win32':
     os.system('chcp 65001 > nul 2>&1')
 
 DANYA_DIR = Path.home() / ".danya"
-PROJECTS_DIR = DANYA_DIR / "projects" if (Path.home() / ".danya" / "projects").exists() else Path.home() / ".claude" / "projects"
-TEMP_DIR = Path(os.environ.get('TEMP', '/tmp')) / "claude"
+PROJECTS_DIR = DANYA_DIR / "projects" if (Path.home() / ".danya" / "projects").exists() else Path.home() / ".danya" / "projects"
+TEMP_DIR = Path(os.environ.get('TEMP', '/tmp')) / "danya"
 
 def get_processes():
     procs = []
@@ -13393,7 +13397,7 @@ async function createAndStoreApiKey(accessToken) {
       }
       saveGlobalConfig(config2);
       try {
-        const { resetAnthropicClient } = await import("./llm-RFQQCUVN.js");
+        const { resetAnthropicClient } = await import("./llm-JAO2NNCT.js");
         resetAnthropicClient();
       } catch {
       }
@@ -17744,7 +17748,7 @@ async function refreshPluginRuntimeFromInstalls() {
   const existingRoots = getSessionPlugins().map((p) => p.rootDir);
   const dirs = Array.from(/* @__PURE__ */ new Set([...existingRoots, ...installedRoots]));
   if (dirs.length === 0) return [];
-  const { configureSessionPlugins } = await import("./pluginRuntime-QGUPFZF5.js");
+  const { configureSessionPlugins } = await import("./pluginRuntime-SN62Y6FC.js");
   const { errors } = await configureSessionPlugins({ pluginDirs: dirs });
   return errors;
 }
@@ -19233,7 +19237,8 @@ var red_blue_default = redBlueCommand;
 
 // src/commands/monitor.ts
 init_state();
-import { existsSync as existsSync15, readdirSync as readdirSync6, readFileSync as readFileSync10 } from "fs";
+import { existsSync as existsSync15 } from "fs";
+import { readdir, readFile as readFile2 } from "fs/promises";
 import { join as join13 } from "path";
 var monitorCommand = {
   name: "monitor",
@@ -19262,11 +19267,12 @@ Available metrics: summary, tools, reviews, bugfixes, sessions
 Usage: /monitor [metric] [days]` }]
       }];
     }
-    const files = readdirSync6(dataDir).filter((f) => f.endsWith(".jsonl"));
+    const files = (await readdir(dataDir)).filter((f) => f.endsWith(".jsonl"));
     const dataSummary = [];
     for (const file of files) {
       try {
-        const lines = readFileSync10(join13(dataDir, file), "utf-8").trim().split("\n").filter(Boolean);
+        const content = await readFile2(join13(dataDir, file), "utf-8");
+        const lines = content.trim().split("\n").filter(Boolean);
         dataSummary.push(`${file}: ${lines.length} entries`);
       } catch {
       }
@@ -21021,7 +21027,7 @@ function PermissionRequestTitle({
 
 // src/ui/components/permissions/file-edit-permission-request/FileEditToolDiff.tsx
 import * as React73 from "react";
-import { existsSync as existsSync16, readFileSync as readFileSync11 } from "fs";
+import { existsSync as existsSync16, readFileSync as readFileSync10 } from "fs";
 import { useMemo as useMemo12 } from "react";
 import { Box as Box54, Text as Text59 } from "ink";
 init_state();
@@ -21035,7 +21041,7 @@ function FileEditToolDiff({
   width
 }) {
   const file = useMemo12(
-    () => existsSync16(file_path) ? readFileSync11(file_path, "utf8") : "",
+    () => existsSync16(file_path) ? readFileSync10(file_path, "utf8") : "",
     [file_path]
   );
   const patch = useMemo12(
@@ -21642,7 +21648,7 @@ import chalk10 from "chalk";
 
 // src/ui/components/permissions/file-write-permission-request/FileWriteToolDiff.tsx
 import * as React77 from "react";
-import { existsSync as existsSync17, readFileSync as readFileSync12 } from "fs";
+import { existsSync as existsSync17, readFileSync as readFileSync11 } from "fs";
 import { useMemo as useMemo16 } from "react";
 import { Box as Box58, Text as Text63 } from "ink";
 init_state();
@@ -21659,7 +21665,7 @@ function FileWriteToolDiff({
       return "";
     }
     const enc = detectFileEncoding(file_path);
-    return readFileSync12(file_path, enc);
+    return readFileSync11(file_path, enc);
   }, [file_path, fileExists]);
   const hunks = useMemo16(() => {
     if (!fileExists) {
@@ -22983,7 +22989,7 @@ init_planMode();
 
 // src/utils/system/externalEditor.ts
 import { spawn, spawnSync } from "child_process";
-import { mkdtempSync, readFileSync as readFileSync13, rmSync, writeFileSync as writeFileSync7 } from "fs";
+import { mkdtempSync, readFileSync as readFileSync12, rmSync, writeFileSync as writeFileSync7 } from "fs";
 import { tmpdir } from "os";
 import { join as join14 } from "path";
 var isWindows = process.platform === "win32";
@@ -23105,7 +23111,7 @@ async function launchExternalEditor(initialText) {
   }
   restoreStdinState(wasRaw);
   try {
-    const edited = normalizeNewlines(readFileSync13(filePath, "utf-8"));
+    const edited = normalizeNewlines(readFileSync12(filePath, "utf-8"));
     rmSync(dir, { recursive: true, force: true });
     return { text: edited, editorLabel: editorCommand.displayName };
   } catch (error) {
@@ -24126,7 +24132,7 @@ function getCompletionContext(args) {
 }
 
 // src/utils/completion/fileSuggestions.ts
-import { existsSync as existsSync19, readdirSync as readdirSync7, statSync as statSync14 } from "fs";
+import { existsSync as existsSync19, readdirSync as readdirSync6, statSync as statSync14 } from "fs";
 import { basename as basename8, dirname as dirname10, join as join15, resolve as resolve9 } from "path";
 function generateFileSuggestions(args) {
   const { prefix, cwd: cwd2 } = args;
@@ -24155,7 +24161,7 @@ function generateFileSuggestions(args) {
     }
     if (!existsSync19(searchDir)) return [];
     const showHidden = nameFilter.startsWith(".") || userPath.includes("/.");
-    const entries = readdirSync7(searchDir).filter((entry) => {
+    const entries = readdirSync6(searchDir).filter((entry) => {
       if (!showHidden && entry.startsWith(".")) return false;
       if (nameFilter && !entry.toLowerCase().startsWith(nameFilter.toLowerCase()))
         return false;
@@ -25504,15 +25510,15 @@ function useUnifiedCompletion({
     if (systemCommands.length > 0 || isLoadingCommands) return;
     setIsLoadingCommands(true);
     try {
-      const { readdirSync: readdirSync8, statSync: statSync16 } = await import("fs");
+      const { readdirSync: readdirSync7, statSync: statSync16 } = await import("fs");
       const pathDirs = (process.env.PATH || "").split(":").filter(Boolean);
       const commandSet = /* @__PURE__ */ new Set();
       const essentialCommands = getEssentialCommands();
       essentialCommands.forEach((cmd) => commandSet.add(cmd));
       for (const dir of pathDirs) {
         try {
-          if (readdirSync8 && statSync16) {
-            const entries = readdirSync8(dir);
+          if (readdirSync7 && statSync16) {
+            const entries = readdirSync7(dir);
             for (const entry of entries) {
               try {
                 const fullPath = `${dir}/${entry}`;
@@ -26051,7 +26057,7 @@ function TokenWarning({ tokenUsage }) {
 // src/utils/commands/hashCommand.ts
 init_log();
 import { join as join16 } from "path";
-import { readFileSync as readFileSync14, writeFileSync as writeFileSync9 } from "fs";
+import { readFileSync as readFileSync13, writeFileSync as writeFileSync9 } from "fs";
 function handleHashCommand(interpreted) {
   try {
     const cwd2 = process.cwd();
@@ -26060,7 +26066,7 @@ function handleHashCommand(interpreted) {
     const filesToUpdate = [];
     filesToUpdate.push({ path: agentsPath, name: "AGENTS.md" });
     try {
-      readFileSync14(legacyPath, "utf-8");
+      readFileSync13(legacyPath, "utf-8");
       filesToUpdate.push({ path: legacyPath, name: "CLAUDE.md" });
     } catch {
     }
@@ -26075,7 +26081,7 @@ _Added on ${now.toLocaleString()} ${timezone}_`;
       try {
         let existingContent = "";
         try {
-          existingContent = readFileSync14(file.path, "utf-8").trim();
+          existingContent = readFileSync13(file.path, "utf-8").trim();
         } catch {
         }
         const separator = existingContent ? "\n\n" : "";
@@ -26280,7 +26286,7 @@ function useStatusLine() {
 // src/ui/components/PromptInput.tsx
 async function interpretHashCommand(input) {
   try {
-    const { queryQuick: queryQuick2 } = await import("./llm-RFQQCUVN.js");
+    const { queryQuick: queryQuick2 } = await import("./llm-JAO2NNCT.js");
     const systemPrompt = [
       "You're helping the user structure notes that will be added to their KODING.md file.",
       "Format the user's input into a well-structured note that will be useful for later reference.",
@@ -29542,7 +29548,7 @@ init_log();
 import { randomUUID as randomUUID5 } from "crypto";
 init_log();
 async function generateAgentWithClaude(prompt) {
-  const { queryModel } = await import("./llm-RFQQCUVN.js");
+  const { queryModel } = await import("./llm-JAO2NNCT.js");
   const systemPrompt = `You are an expert at creating AI agent configurations. Based on the user's description, generate a specialized agent configuration.
 
 Return your response as a JSON object with exactly these fields:

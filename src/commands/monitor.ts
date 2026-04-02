@@ -3,7 +3,8 @@
  */
 
 import type { Command } from '@commands'
-import { existsSync, readdirSync, readFileSync } from 'fs'
+import { existsSync } from 'fs'
+import { readdir, readFile } from 'fs/promises'
 import { join } from 'path'
 import { getCwd } from '@utils/state'
 
@@ -36,11 +37,12 @@ Usage: /monitor [metric] [days]` }],
     }
 
     // Read available data files
-    const files = readdirSync(dataDir).filter(f => f.endsWith('.jsonl'))
+    const files = (await readdir(dataDir)).filter(f => f.endsWith('.jsonl'))
     const dataSummary: string[] = []
     for (const file of files) {
       try {
-        const lines = readFileSync(join(dataDir, file), 'utf-8').trim().split('\n').filter(Boolean)
+        const content = await readFile(join(dataDir, file), 'utf-8')
+        const lines = content.trim().split('\n').filter(Boolean)
         dataSummary.push(`${file}: ${lines.length} entries`)
       } catch { /* skip */ }
     }

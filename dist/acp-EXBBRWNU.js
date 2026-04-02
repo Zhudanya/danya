@@ -6,14 +6,14 @@ import {
 } from "./chunk-PDSAJX7G.js";
 import {
   getTools
-} from "./chunk-6OHAEJH3.js";
+} from "./chunk-6KHOUEFL.js";
 import {
   getCommands,
   getSystemPrompt,
   grantReadPermissionForOriginalDir,
   hasPermissionsToUseTool,
   query
-} from "./chunk-H77AJXLU.js";
+} from "./chunk-QMR44KOM.js";
 import "./chunk-X46SRZQF.js";
 import {
   getClients
@@ -24,11 +24,11 @@ import "./chunk-UNIJZL2G.js";
 import "./chunk-Z4QNIOFF.js";
 import "./chunk-Y5LQPJWK.js";
 import "./chunk-JVGG2YQR.js";
-import "./chunk-EQQU36GF.js";
+import "./chunk-7OKTUFZC.js";
 import "./chunk-U7Z4MXY4.js";
 import "./chunk-X7ZDT7EX.js";
 import "./chunk-3ONZAVOS.js";
-import "./chunk-CQXCGKNJ.js";
+import "./chunk-QK4NKMF5.js";
 import "./chunk-E5BAXZSR.js";
 import "./chunk-HIH5HC5H.js";
 import {
@@ -47,7 +47,7 @@ import "./chunk-2VQWLLDU.js";
 import {
   createAssistantMessage,
   createUserMessage
-} from "./chunk-FI2UVGGO.js";
+} from "./chunk-IR3J5REA.js";
 import "./chunk-RRPXM25U.js";
 import {
   getContext

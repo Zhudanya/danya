@@ -173,12 +173,16 @@ execute_task() {
     local build_ok=false; (cd "\$wt_path" && make build >> "\$log_file" 2>&1) && build_ok=true
     local duration=\$(( \$(date +%s) - start_time ))
     if \$build_ok; then
+        # Serialize merges with lock to prevent concurrent git index corruption
+        local lockfile="\$WORKTREE_BASE/.merge-lock"
+        while ! mkdir "\$lockfile" 2>/dev/null; do sleep 0.5; done
         if git merge "\$branch" --no-edit >> "\$log_file" 2>&1; then
             echo "  [task-\$task_id] PASS (\${duration}s)"; echo -e "\$task_id\\t\$wave_num\\tpassed\\t\$duration\\tmerged" >> "\$RESULTS_FILE"
         else
             git merge --abort 2>/dev/null || true
             echo "  [task-\$task_id] FAIL (merge conflict)"; echo -e "\$task_id\\t\$wave_num\\tfailed\\t\$duration\\tmerge conflict" >> "\$RESULTS_FILE"
         fi
+        rmdir "\$lockfile" 2>/dev/null || true
     else
         echo "  [task-\$task_id] FAIL (build)"; echo -e "\$task_id\\t\$wave_num\\tfailed\\t\$duration\\tbuild failed" >> "\$RESULTS_FILE"
     fi
@@ -270,7 +274,7 @@ Priority: CRITICAL > HIGH > MEDIUM. Minimal fixes only." \\
     echo "  [CHECK] Building..."
     if (cd "\$PROJECT_ROOT" && make build > "\$LOG_DIR/build-\$round.log" 2>&1); then
         echo "  [PASS] Build OK. Committing fixes."
-        (cd "\$PROJECT_ROOT" && git add -A && git commit -m "<fix>(red-blue) round \$round fixes" 2>/dev/null) || true
+        (cd "\$PROJECT_ROOT" && git add -u && git commit -m "<fix>(red-blue) round \$round fixes" 2>/dev/null) || true
     else
         echo "  [FAIL] Build failed. Reverting."
         (cd "\$PROJECT_ROOT" && git checkout . 2>/dev/null) || true
@@ -348,7 +352,7 @@ Iteration \$iter. Current baseline: \$baseline/100. Improve the score." \\
 
     if [[ "\$score" -ge "\$baseline" ]]; then
         echo "  [COMMIT] Score >= baseline"
-        (cd "\$PROJECT_ROOT" && git add -A && git commit -m "<feat>(orchestrator) iter \$iter score \$score" 2>/dev/null) || true
+        (cd "\$PROJECT_ROOT" && git add -u && git commit -m "<feat>(orchestrator) iter \$iter score \$score" 2>/dev/null) || true
         echo "\$score" > "\$BASELINE_FILE"
         consecutive_failures=0
         echo -e "\$iter\\t\$score\\t\$score\\tpass\\t\$(date +%H:%M:%S)" >> "\$RESULTS_FILE"

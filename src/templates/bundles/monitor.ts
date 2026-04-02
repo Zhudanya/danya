@@ -12,7 +12,7 @@ try:
     data = json.load(sys.stdin)
     entry = {"timestamp": time.time(), "session_id": data.get("session_id",""), "tool_name": data.get("tool_name",""), "tool_input_keys": list(data.get("tool_input",{}).keys()), "cwd": data.get("cwd","")}
     with open(DATA_DIR / "tool-usage.jsonl", "a") as f: f.write(json.dumps(entry) + "\\n")
-except: pass
+except (json.JSONDecodeError, IOError, KeyError): pass
 `
 
 export const MONITOR_LOG_SESSION_END = `#!/usr/bin/env python3
@@ -24,7 +24,7 @@ try:
     data = json.load(sys.stdin)
     entry = {"timestamp": time.time(), "session_id": data.get("session_id",""), "cwd": data.get("cwd",""), "stop_reason": data.get("stop_hook_reason","unknown")}
     with open(DATA_DIR / "sessions.jsonl", "a") as f: f.write(json.dumps(entry) + "\\n")
-except: pass
+except (json.JSONDecodeError, IOError, KeyError): pass
 `
 
 export const MONITOR_LOG_VERIFY = `#!/usr/bin/env python3
@@ -250,8 +250,8 @@ if sys.platform == 'win32':
     os.system('chcp 65001 > nul 2>&1')
 
 DANYA_DIR = Path.home() / ".danya"
-PROJECTS_DIR = DANYA_DIR / "projects" if (Path.home() / ".danya" / "projects").exists() else Path.home() / ".claude" / "projects"
-TEMP_DIR = Path(os.environ.get('TEMP', '/tmp')) / "claude"
+PROJECTS_DIR = DANYA_DIR / "projects" if (Path.home() / ".danya" / "projects").exists() else Path.home() / ".danya" / "projects"
+TEMP_DIR = Path(os.environ.get('TEMP', '/tmp')) / "danya"
 
 def get_processes():
     procs = []

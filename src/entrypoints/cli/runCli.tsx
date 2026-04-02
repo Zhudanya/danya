@@ -2765,33 +2765,45 @@ async function parseArgs(
 
   // ── Danya Tools CLI Subcommands ──────────────────
 
+  function runScript(scriptPath: string, args: string[], env?: Record<string, string>) {
+    const { execFileSync } = require('child_process')
+    const { existsSync } = require('fs')
+    if (!existsSync(scriptPath)) {
+      console.error(`Script not found: ${scriptPath}\nRun "danya init" first to initialize the harness.`)
+      process.exit(1)
+    }
+    const mergedEnv = env ? { ...process.env, ...env } : process.env
+    execFileSync('bash', [scriptPath, ...args], { stdio: 'inherit', env: mergedEnv, cwd: cwd() })
+  }
+
+  function runPython(scriptPath: string, args: string[]) {
+    const { execFileSync } = require('child_process')
+    const { existsSync } = require('fs')
+    if (!existsSync(scriptPath)) {
+      console.error(`Script not found: ${scriptPath}\nRun "danya init" first to initialize the harness.`)
+      process.exit(1)
+    }
+    execFileSync('python3', [scriptPath, ...args], { stdio: 'inherit', cwd: cwd() })
+  }
+
   program
     .command('auto-work <requirement>')
     .description('Shell-enforced full-auto pipeline (each stage = independent danya -p)')
     .option('--model <model>', 'Model to use', 'sonnet')
     .option('--max-turns <n>', 'Max turns per stage', '30')
     .action(async (requirement, opts) => {
-      const { execSync } = await import('child_process')
-      const scriptPath = join(cwd(), '.danya', 'scripts', 'auto-work-loop.sh')
-      const env = { ...process.env, MODEL: opts.model, MAX_TURNS: opts.maxTurns }
       try {
-        execSync(`bash "${scriptPath}" "${requirement}"`, { stdio: 'inherit', env, cwd: cwd() })
-      } catch (e: any) {
-        process.exit(e.status || 1)
-      }
+        runScript(join(cwd(), '.danya', 'scripts', 'auto-work-loop.sh'), [requirement], { MODEL: opts.model, MAX_TURNS: opts.maxTurns })
+      } catch (e: any) { process.exit(e.status || 1) }
     })
 
   program
     .command('parallel <tasks-dir>')
     .description('Wave-based parallel execution (each task in independent worktree)')
     .action(async (tasksDir) => {
-      const { execSync } = await import('child_process')
-      const scriptPath = join(cwd(), '.danya', 'scripts', 'parallel-wave.sh')
       try {
-        execSync(`bash "${scriptPath}" "${tasksDir}"`, { stdio: 'inherit', cwd: cwd() })
-      } catch (e: any) {
-        process.exit(e.status || 1)
-      }
+        runScript(join(cwd(), '.danya', 'scripts', 'parallel-wave.sh'), [tasksDir])
+      } catch (e: any) { process.exit(e.status || 1) }
     })
 
   program
@@ -2800,14 +2812,9 @@ async function parseArgs(
     .option('-n, --rounds <n>', 'Max rounds', '5')
     .option('--model <model>', 'Model to use', 'sonnet')
     .action(async (scope, opts) => {
-      const { execSync } = await import('child_process')
-      const scriptPath = join(cwd(), '.danya', 'scripts', 'red-blue-loop.sh')
-      const env = { ...process.env, MODEL: opts.model, MAX_ROUNDS: opts.rounds }
       try {
-        execSync(`bash "${scriptPath}" "${scope || '.'}"`, { stdio: 'inherit', env, cwd: cwd() })
-      } catch (e: any) {
-        process.exit(e.status || 1)
-      }
+        runScript(join(cwd(), '.danya', 'scripts', 'red-blue-loop.sh'), [scope || '.'], { MODEL: opts.model, MAX_ROUNDS: opts.rounds })
+      } catch (e: any) { process.exit(e.status || 1) }
     })
 
   program
@@ -2816,25 +2823,16 @@ async function parseArgs(
     .option('-n, --iterations <n>', 'Max iterations', '20')
     .option('--model <model>', 'Model to use', 'sonnet')
     .action(async (taskFile, opts) => {
-      const { execSync } = await import('child_process')
-      const scriptPath = join(cwd(), '.danya', 'scripts', 'orchestrator.sh')
-      const env = { ...process.env, MODEL: opts.model, MAX_ITERATIONS: opts.iterations }
       try {
-        execSync(`bash "${scriptPath}" "${taskFile}"`, { stdio: 'inherit', env, cwd: cwd() })
-      } catch (e: any) {
-        process.exit(e.status || 1)
-      }
+        runScript(join(cwd(), '.danya', 'scripts', 'orchestrator.sh'), [taskFile], { MODEL: opts.model, MAX_ITERATIONS: opts.iterations })
+      } catch (e: any) { process.exit(e.status || 1) }
     })
 
   program
     .command('check-env')
     .description('Validate environment dependencies for Danya tools')
     .action(async () => {
-      const { execSync } = await import('child_process')
-      const scriptPath = join(cwd(), '.danya', 'scripts', 'check-env.sh')
-      try {
-        execSync(`bash "${scriptPath}"`, { stdio: 'inherit', cwd: cwd() })
-      } catch { /* check-env reports its own errors */ }
+      try { runScript(join(cwd(), '.danya', 'scripts', 'check-env.sh'), []) } catch { /* reports own errors */ }
     })
 
   program
@@ -2844,16 +2842,10 @@ async function parseArgs(
     .option('--days <n>', 'Last N days')
     .option('--top <n>', 'Top N (for top-tools)', '10')
     .action(async (opts) => {
-      const { execSync } = await import('child_process')
-      const scriptPath = join(cwd(), '.danya', 'monitor', 'analyze.py')
-      const args = [`--metric`, opts.metric]
+      const args = ['--metric', opts.metric]
       if (opts.days) args.push('--days', opts.days)
       if (opts.top) args.push('--top', opts.top)
-      try {
-        execSync(`python3 "${scriptPath}" ${args.join(' ')}`, { stdio: 'inherit', cwd: cwd() })
-      } catch (e: any) {
-        process.exit(e.status || 1)
-      }
+      try { runPython(join(cwd(), '.danya', 'monitor', 'analyze.py'), args) } catch (e: any) { process.exit(e.status || 1) }
     })
 
   program
@@ -2862,28 +2854,17 @@ async function parseArgs(
     .option('-w, --watch [interval]', 'Watch mode (refresh every N seconds)')
     .option('-v, --verbose', 'Show detailed info')
     .action(async (opts) => {
-      const { execSync } = await import('child_process')
-      const scriptPath = join(cwd(), '.danya', 'monitor', 'dashboard.py')
       const args: string[] = []
-      if (opts.watch !== undefined) {
-        args.push('-w')
-        if (typeof opts.watch === 'string') args.push(opts.watch)
-      }
+      if (opts.watch !== undefined) { args.push('-w'); if (typeof opts.watch === 'string') args.push(opts.watch) }
       if (opts.verbose) args.push('-v')
-      try {
-        execSync(`python3 "${scriptPath}" ${args.join(' ')}`, { stdio: 'inherit', cwd: cwd() })
-      } catch { /* dashboard handles its own exit */ }
+      try { runPython(join(cwd(), '.danya', 'monitor', 'dashboard.py'), args) } catch { /* handles own exit */ }
     })
 
   program
     .command('report')
     .description('Monthly orchestrator report')
     .action(async () => {
-      const { execSync } = await import('child_process')
-      const scriptPath = join(cwd(), '.danya', 'scripts', 'monthly-report.sh')
-      try {
-        execSync(`bash "${scriptPath}"`, { stdio: 'inherit', cwd: cwd() })
-      } catch { /* report handles its own output */ }
+      try { runScript(join(cwd(), '.danya', 'scripts', 'monthly-report.sh'), []) } catch { /* reports own output */ }
     })
 
   await program.parseAsync(process.argv)
