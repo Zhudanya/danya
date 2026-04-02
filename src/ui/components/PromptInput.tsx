@@ -415,9 +415,26 @@ function PromptInput({
       return
     }
     if (isLoading) {
-      // Queue the message instead of rejecting
-      if (input.trim() && setMessageQueue) {
-        setMessageQueue(q => [...q, input.trim()])
+      const trimmed = input.trim()
+      if (!trimmed) return
+
+      // /btw: inject side note immediately into conversation (don't queue)
+      if (trimmed.startsWith('/btw ')) {
+        const btwContent = trimmed.slice(5).trim()
+        if (btwContent) {
+          const { createUserMessage } = require('@utils/messages')
+          const sideNote = createUserMessage(
+            `[Side note from user]: ${btwContent}\n\nAcknowledge briefly and continue your current task.`,
+          )
+          onQuery([sideNote])
+          onInputChange('')
+        }
+        return
+      }
+
+      // Other messages: queue for later
+      if (setMessageQueue) {
+        setMessageQueue(q => [...q, trimmed])
         onInputChange('')
       }
       return

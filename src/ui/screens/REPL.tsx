@@ -425,18 +425,27 @@ export function REPL({
     setIsLoading(false)
   }
 
-  // Process queued messages when loading finishes
-  const processQueueRef = React.useRef(false)
+  // Process queued messages when loading finishes — auto-submit directly
+  const isProcessingQueue = React.useRef(false)
   useEffect(() => {
-    if (!isLoading && messageQueue.length > 0 && !processQueueRef.current) {
-      processQueueRef.current = true
+    if (!isLoading && messageQueue.length > 0 && !isProcessingQueue.current) {
+      isProcessingQueue.current = true
       const nextMessage = messageQueue[0]!
       setMessageQueue(q => q.slice(1))
-      // Simulate submitting the queued message
-      setTimeout(() => {
-        setInputValue(nextMessage)
-        processQueueRef.current = false
-      }, 100)
+
+      // Import createUserMessage and submit directly
+      ;(async () => {
+        try {
+          const { createUserMessage } = await import('@utils/messages')
+          const userMsg = createUserMessage(nextMessage)
+          setIsLoading(true)
+          await onQuery([userMsg])
+        } catch {
+          // If submission fails, don't block future queue processing
+        } finally {
+          isProcessingQueue.current = false
+        }
+      })()
     }
   }, [isLoading, messageQueue])
 
