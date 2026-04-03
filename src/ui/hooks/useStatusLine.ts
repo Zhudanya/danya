@@ -7,6 +7,18 @@ function normalizeStatusLineText(value: string): string {
   return singleLine.length > 300 ? `${singleLine.slice(0, 300)}…` : singleLine
 }
 
+/**
+ * Convert MSYS/Git Bash paths (/c/Users/...) to Windows native (C:\Users\...).
+ * Only applies on Windows. Leaves other platforms untouched.
+ */
+function normalizeCommandPaths(command: string): string {
+  if (process.platform !== 'win32') return command
+  // Match /c/... or /d/... style paths (single letter drive)
+  return command.replace(/(?<=\s|^)\/([a-zA-Z])\//g, (_match, drive: string) => {
+    return `${drive.toUpperCase()}:\\`
+  })
+}
+
 export function useStatusLine(): string | null {
   const [text, setText] = useState<string | null>(null)
   const lastCommandRef = useRef<string | null>(null)
@@ -36,7 +48,8 @@ export function useStatusLine(): string | null {
       const ac = new AbortController()
       abortRef.current = ac
 
-      const result = await shell.exec(command, ac.signal, 1000)
+      const normalizedCommand = normalizeCommandPaths(command)
+      const result = await shell.exec(normalizedCommand, ac.signal, 1000)
       if (!alive) return
       if (result.interrupted) return
 
