@@ -365,17 +365,25 @@ export default function TextInput({
         : chalk.inverse(' ')
   }
 
-  // Highlight slash commands in the input
+  // Highlight slash commands with gradient effect
   let displayValue = renderedValue
   if (knownCommands && originalValue.startsWith('/')) {
     const spaceIdx = originalValue.indexOf(' ')
     const cmdPart = spaceIdx === -1 ? originalValue.slice(1) : originalValue.slice(1, spaceIdx)
     if (knownCommands.has(cmdPart)) {
       const slashCmd = `/${cmdPart}`
-      // Replace the plain command text with colored version in the rendered output
-      // renderedValue contains ANSI codes for cursor, so we colorize the command portion
-      const cmdColor = chalk.hex(getTheme().suggestion || '#a78bfa')
-      displayValue = renderedValue.replace(slashCmd, cmdColor(slashCmd))
+      // Character-by-character gradient from start color to end color
+      const startR = 0xe0, startG = 0x60, startB = 0x80  // warm pink
+      const endR = 0x80, endG = 0x60, endB = 0xe0        // cool purple
+      const len = slashCmd.length
+      const gradientCmd = slashCmd.split('').map((ch, i) => {
+        const t = len > 1 ? i / (len - 1) : 0
+        const r = Math.round(startR + (endR - startR) * t)
+        const g = Math.round(startG + (endG - startG) * t)
+        const b = Math.round(startB + (endB - startB) * t)
+        return chalk.rgb(r, g, b)(ch)
+      }).join('')
+      displayValue = renderedValue.replace(slashCmd, gradientCmd)
     }
   }
 
