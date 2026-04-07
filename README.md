@@ -1,7 +1,10 @@
 # Danya — 游戏开发 AI 编程助手
 
 <p align="center">
-  <img src="https://komarev.com/ghpvc/?username=Zhudanya-danya&label=Repo%20views&color=0e75b6&style=flat" alt="Profile views" />
+  <img src="https://img.shields.io/github/license/Zhudanya/danya?style=flat" alt="License" />
+  <img src="https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/github/stars/Zhudanya/danya?style=flat&color=green" alt="Stars" />
+  <img src="https://komarev.com/ghpvc/?username=Zhudanya-danya&label=Repo%20views&color=0e75b6&style=flat" alt="Repo views" />
 </p>
 
 <p align="center">
