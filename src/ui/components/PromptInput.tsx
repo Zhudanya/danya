@@ -798,22 +798,9 @@ function PromptInput({
               ) : mode === 'prompt' && currentMode !== 'default' ? (
                 <CompactModeIndicator />
               ) : (
-                <>
-                  <Text
-                    color={mode === 'bash' ? theme.bashBorder : undefined}
-                    dimColor={mode !== 'bash'}
-                  >
-                    ! run some shell command
-                  </Text>
-                  <Text dimColor> · / for commands</Text>
-                  <Text
-                    color={mode === 'koding' ? theme.noting : undefined}
-                    dimColor={mode !== 'koding'}
-                  >
-                    {' '}
-                    · # tell agent something to remember forever
-                  </Text>
-                </>
+                <Text dimColor wrap="truncate-end">
+                  ! run some shell command · / for commands · # tell agent something to remember forever
+                </Text>
               )}
             </Box>
             <Box justifyContent="flex-end">
@@ -836,7 +823,7 @@ function PromptInput({
                     {showQuickModelSwitchShortcut
                       ? 'option+m: switch model · '
                       : ''}
-                    option+g: external editor · {modeCycleShortcut.displayText}:
+                    option+g: external editor · {modeCycleShortcut.displayText}:{' '}
                     switch mode
                   </Text>
                 </Box>
