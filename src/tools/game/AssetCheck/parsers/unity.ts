@@ -116,35 +116,52 @@ export function checkUnityAssets(projectPath: string, scope: 'changed' | 'full')
     } catch {}
   }
 
-  // Check prefab nesting depth
+  // Check prefab complexity (PrefabInstance count as proxy for nesting depth)
+  // Unity serializes prefab hierarchies as flat YAML documents with fileID references,
+  // so we count total PrefabInstance entries and Transform parent chain depth.
   const prefabFiles = assetFiles.filter(f => f.endsWith('.prefab'))
   for (const prefabFile of prefabFiles) {
     try {
       const content = readFileSync(prefabFile, 'utf-8')
       const relPath = relative(projectPath, prefabFile)
 
-      // Count nested PrefabInstance blocks by tracking indentation depth
+      // Count PrefabInstance entries as complexity indicator
+      const prefabInstances = (content.match(/PrefabInstance:/g) ?? []).length
+
+      // Count Transform hierarchy depth via m_Father references
+      // Each Transform document has m_Father: {fileID: X} — build parent chain
+      const transforms = new Map<string, string>() // fileID -> parent fileID
+      const docs = content.split(/^--- !u!/m)
+      for (const doc of docs) {
+        if (!/Transform:|RectTransform:/.test(doc)) continue
+        const idMatch = doc.match(/&(\d+)/)
+        const parentMatch = doc.match(/m_Father:\s*\{fileID:\s*(\d+)/)
+        if (idMatch && parentMatch) {
+          transforms.set(idMatch[1]!, parentMatch[1]!)
+        }
+      }
+
+      // Find max depth by walking parent chains
       let maxDepth = 0
-      let currentDepth = 0
-      const lines = content.split('\n')
-      for (const line of lines) {
-        if (/PrefabInstance:/.test(line)) {
-          currentDepth++
-          if (currentDepth > maxDepth) {
-            maxDepth = currentDepth
-          }
+      for (const id of transforms.keys()) {
+        let depth = 0
+        let current: string | undefined = id
+        const visited = new Set<string>()
+        while (current && transforms.has(current) && !visited.has(current)) {
+          visited.add(current)
+          const parent = transforms.get(current)!
+          if (parent === '0') break // root
+          current = parent
+          depth++
         }
-        // A new top-level YAML document marker resets depth context
-        if (/^--- !u!/.test(line)) {
-          currentDepth = 0
-        }
+        if (depth > maxDepth) maxDepth = depth
       }
 
       if (maxDepth > 10) {
         issues.push({
           asset_path: relPath,
           type: 'deep_nesting',
-          message: `Prefab has ${maxDepth} levels of nested PrefabInstance entries (threshold: 10). Consider flattening the hierarchy.`,
+          message: `Prefab hierarchy is ${maxDepth} levels deep (threshold: 10). Consider flattening.`,
         })
       }
     } catch {}

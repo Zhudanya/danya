@@ -215,8 +215,14 @@ function checkComplexity(content: string, filePath: string): ShaderIssue[] {
           inFunction = true
           funcStartLine = i + 1
           funcName = funcMatch[2]
-          braceDepth = 1
+          // Count all braces on this line (handles one-liners like: float foo() { return 1.0; })
+          braceDepth = 0
+          for (const ch of codePart) {
+            if (ch === '{') braceDepth++
+            if (ch === '}') braceDepth--
+          }
           opCount = 0
+          if (braceDepth <= 0) { inFunction = false; continue }
           continue
         }
       }

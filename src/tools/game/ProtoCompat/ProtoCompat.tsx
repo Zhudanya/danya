@@ -53,8 +53,9 @@ function getDiff(projectPath: string, filePath: string): string {
 }
 
 // Regex patterns for proto constructs
-const FIELD_NUM_RE = /^-\s*(\w+)\s+(\w+)\s*=\s*(\d+)/
-const FIELD_ADD_RE = /^\+\s*(\w+)\s+(\w+)\s*=\s*(\d+)/
+// Supports optional modifiers: repeated/optional/map<K,V> before type
+const FIELD_NUM_RE = /^-\s*(?:repeated\s+|optional\s+|map\s*<[^>]+>\s+)?(\w+)\s+(\w+)\s*=\s*(\d+)/
+const FIELD_ADD_RE = /^\+\s*(?:repeated\s+|optional\s+|map\s*<[^>]+>\s+)?(\w+)\s+(\w+)\s*=\s*(\d+)/
 const ENUM_RE = /^-\s*(\w+)\s*=\s*(\d+)/
 const ENUM_ADD_RE = /^\+\s*(\w+)\s*=\s*(\d+)/
 const RESERVED_RE = /^\+\s*reserved\s+/
@@ -103,7 +104,7 @@ function analyzeDiff(filePath: string, diff: string): BreakingIssue[] {
 
     // Removed enums
     const enumRemoved = line.match(ENUM_RE)
-    if (enumRemoved && !line.includes('=') === false) {
+    if (enumRemoved) {
       removedEnums.set(enumRemoved[1]!, { num: enumRemoved[2]!, line })
       continue
     }
