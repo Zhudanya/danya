@@ -8,6 +8,9 @@ export { installBundle, type InstalledFiles } from './bundleInstaller'
 import * as common from './bundles/common'
 import { getUnityBundle } from './bundles/unity'
 import { getGoServerBundle } from './bundles/goServer'
+import { getCppServerBundle } from './bundles/cppServer'
+import { getJavaServerBundle } from './bundles/javaServer'
+import { getNodeServerBundle } from './bundles/nodeServer'
 import { getUnrealBundle } from './bundles/unreal'
 import { getGodotBundle } from './bundles/godot'
 import { getWorkspaceBundle } from './bundles/workspace'
@@ -61,6 +64,9 @@ export function getBundleForEngine(engine: string | null, serverLanguage: string
   else if (engine === 'unreal') engineBundle = getUnrealBundle()
   else if (engine === 'godot') engineBundle = getGodotBundle()
   else if (serverLanguage === 'go') engineBundle = getGoServerBundle()
+  else if (serverLanguage === 'cpp') engineBundle = getCppServerBundle()
+  else if (serverLanguage === 'java') engineBundle = getJavaServerBundle()
+  else if (serverLanguage === 'nodejs') engineBundle = getNodeServerBundle()
   else {
     // Generic fallback
     engineBundle = {

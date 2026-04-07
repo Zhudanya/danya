@@ -3,7 +3,7 @@ import { join } from 'path'
 import { globSync } from 'glob'
 
 export type EngineType = 'unity' | 'unreal' | 'godot' | null
-export type ServerLanguage = 'go' | 'cpp' | null
+export type ServerLanguage = 'go' | 'cpp' | 'java' | 'nodejs' | null
 
 export interface ProjectDetection {
   engine: EngineType
@@ -68,9 +68,27 @@ export function detectServerLanguage(projectPath: string, depth: number = 0): Se
     }
   }
 
-  // C++: has CMakeLists.txt
+  // C++: has CMakeLists.txt (refine: look for game/network keywords to distinguish from generic C++)
   if (existsSync(join(projectPath, 'CMakeLists.txt'))) {
     return 'cpp'
+  }
+
+  // Java: has pom.xml or build.gradle
+  if (existsSync(join(projectPath, 'pom.xml')) || existsSync(join(projectPath, 'build.gradle')) || existsSync(join(projectPath, 'build.gradle.kts'))) {
+    return 'java'
+  }
+
+  // Node.js: has package.json with game-related dependencies
+  if (existsSync(join(projectPath, 'package.json'))) {
+    try {
+      const pkg = readFileSync(join(projectPath, 'package.json'), 'utf-8')
+      const gameFrameworks = ['colyseus', 'socket.io', 'photon', 'lance-gg', 'nengi', 'geckos.io']
+      if (gameFrameworks.some(f => pkg.includes(f))) {
+        return 'nodejs'
+      }
+    } catch {
+      // ignore read errors
+    }
   }
 
   // Check server/ subdirectory (max depth 1)
@@ -107,6 +125,12 @@ export function detectLanguages(engine: EngineType, serverLanguage: ServerLangua
       if (!languages.includes('C++')) {
         languages.push('C++')
       }
+      break
+    case 'java':
+      languages.push('Java')
+      break
+    case 'nodejs':
+      languages.push('TypeScript/JavaScript')
       break
   }
 

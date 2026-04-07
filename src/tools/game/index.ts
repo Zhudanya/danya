@@ -103,6 +103,30 @@ export function getGameTools(): Tool[] {
     } catch {}
   }
 
+  // C++ server
+  if (detection.serverLanguage === 'cpp') {
+    try {
+      const { CppServerBuildTool } = require('./CppServerBuild/CppServerBuild')
+      tools.push(CppServerBuildTool as unknown as Tool)
+    } catch {}
+  }
+
+  // Java server
+  if (detection.serverLanguage === 'java') {
+    try {
+      const { JavaServerBuildTool } = require('./JavaServerBuild/JavaServerBuild')
+      tools.push(JavaServerBuildTool as unknown as Tool)
+    } catch {}
+  }
+
+  // Node.js server
+  if (detection.serverLanguage === 'nodejs') {
+    try {
+      const { NodeServerBuildTool } = require('./NodeServerBuild/NodeServerBuild')
+      tools.push(NodeServerBuildTool as unknown as Tool)
+    } catch {}
+  }
+
   _cachedTools = tools
   return tools
 }
