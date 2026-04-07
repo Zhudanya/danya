@@ -1,5 +1,6 @@
 node_modules/
 dist/
+.npmrc
 .danya/push-approved
 *.log
 .env
