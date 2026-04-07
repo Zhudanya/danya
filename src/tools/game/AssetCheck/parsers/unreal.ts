@@ -4,7 +4,7 @@ import { glob } from 'glob'
 
 export type AssetIssue = {
   asset_path: string
-  type: 'missing_reference' | 'broken_prefab' | 'orphaned_asset' | 'naming_violation' | 'size_warning'
+  type: 'missing_reference' | 'broken_prefab' | 'orphaned_asset' | 'naming_violation' | 'size_warning' | 'deep_nesting' | 'inactive_large_object'
   message: string
   referenced_by?: string
 }

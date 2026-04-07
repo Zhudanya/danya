@@ -43,6 +43,11 @@ export function getGameTools(): Tool[] {
   } catch {}
 
   try {
+    const { ProtoCompatTool } = require('./ProtoCompat/ProtoCompat')
+    tools.push(ProtoCompatTool as unknown as Tool)
+  } catch {}
+
+  try {
     const { ConfigGenerateTool } = require('./ConfigGenerate/ConfigGenerate')
     tools.push(ConfigGenerateTool as unknown as Tool)
   } catch {}
@@ -100,6 +105,14 @@ export function getGameTools(): Tool[] {
     try {
       const { AssetCheckTool } = require('./AssetCheck/AssetCheck')
       tools.push(AssetCheckTool as unknown as Tool)
+    } catch {}
+  }
+
+  // Shader check (any game engine)
+  if (detection.engine) {
+    try {
+      const { ShaderCheckTool } = require('./ShaderCheck/ShaderCheck')
+      tools.push(ShaderCheckTool as unknown as Tool)
     } catch {}
   }
 

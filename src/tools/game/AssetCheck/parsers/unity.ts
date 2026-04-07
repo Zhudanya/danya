@@ -4,7 +4,7 @@ import { glob } from 'glob'
 
 export type AssetIssue = {
   asset_path: string
-  type: 'missing_reference' | 'broken_prefab' | 'orphaned_asset'
+  type: 'missing_reference' | 'broken_prefab' | 'orphaned_asset' | 'deep_nesting' | 'inactive_large_object'
   message: string
   referenced_by?: string
 }
@@ -110,6 +110,77 @@ export function checkUnityAssets(projectPath: string, scope: 'changed' | 'full')
             type: 'missing_reference',
             message: `References GUID ${guid} which has no corresponding .meta file`,
             referenced_by: relPath,
+          })
+        }
+      }
+    } catch {}
+  }
+
+  // Check prefab nesting depth
+  const prefabFiles = assetFiles.filter(f => f.endsWith('.prefab'))
+  for (const prefabFile of prefabFiles) {
+    try {
+      const content = readFileSync(prefabFile, 'utf-8')
+      const relPath = relative(projectPath, prefabFile)
+
+      // Count nested PrefabInstance blocks by tracking indentation depth
+      let maxDepth = 0
+      let currentDepth = 0
+      const lines = content.split('\n')
+      for (const line of lines) {
+        if (/PrefabInstance:/.test(line)) {
+          currentDepth++
+          if (currentDepth > maxDepth) {
+            maxDepth = currentDepth
+          }
+        }
+        // A new top-level YAML document marker resets depth context
+        if (/^--- !u!/.test(line)) {
+          currentDepth = 0
+        }
+      }
+
+      if (maxDepth > 10) {
+        issues.push({
+          asset_path: relPath,
+          type: 'deep_nesting',
+          message: `Prefab has ${maxDepth} levels of nested PrefabInstance entries (threshold: 10). Consider flattening the hierarchy.`,
+        })
+      }
+    } catch {}
+  }
+
+  // Check for inactive large objects in scene files
+  const sceneFiles = assetFiles.filter(f => f.endsWith('.unity'))
+  for (const sceneFile of sceneFiles) {
+    try {
+      const content = readFileSync(sceneFile, 'utf-8')
+      const relPath = relative(projectPath, sceneFile)
+
+      // Split into YAML documents (each GameObject is a separate document)
+      const documents = content.split(/^--- !u!/m)
+      for (const doc of documents) {
+        // Check if this is a GameObject document that is inactive
+        if (!/GameObject:/.test(doc)) continue
+        if (!/m_IsActive:\s*0/.test(doc)) continue
+
+        // Count m_Children entries
+        const childrenMatch = doc.match(/m_Children:/g)
+        if (!childrenMatch) continue
+
+        // Find the actual children list — count fileID references after m_Children
+        const childrenSection = doc.slice(doc.indexOf('m_Children:'))
+        const childRefs = childrenSection.match(/- \{fileID:/g)
+        const childCount = childRefs ? childRefs.length : 0
+
+        if (childCount > 20) {
+          // Try to extract the GameObject name
+          const nameMatch = doc.match(/m_Name:\s*(.+)/)
+          const objName = nameMatch ? nameMatch[1]!.trim() : 'Unknown'
+          issues.push({
+            asset_path: relPath,
+            type: 'inactive_large_object',
+            message: `Inactive GameObject "${objName}" has ${childCount} children. Inactive objects with many children still consume memory. Consider removing or using additive scene loading.`,
           })
         }
       }

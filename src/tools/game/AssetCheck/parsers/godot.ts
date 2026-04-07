@@ -4,7 +4,7 @@ import { glob } from 'glob'
 
 export type AssetIssue = {
   asset_path: string
-  type: 'missing_reference' | 'broken_prefab' | 'orphaned_asset'
+  type: 'missing_reference' | 'broken_prefab' | 'orphaned_asset' | 'deep_nesting'
   message: string
   referenced_by?: string
 }
@@ -72,6 +72,36 @@ export function checkGodotAssets(projectPath: string, scope: 'changed' | 'full')
             type: 'missing_reference',
             message: `Referenced resource "res://${referencedPath}" does not exist`,
             referenced_by: relPath,
+          })
+        }
+      }
+
+      // Check scene nesting depth in .tscn files
+      if (file.endsWith('.tscn')) {
+        const nodeRegex = /\[node\s+[^\]]*parent="([^"]*)"[^\]]*\]/g
+        let nodeMatch: RegExpExecArray | null
+        let maxDepth = 0
+
+        while ((nodeMatch = nodeRegex.exec(content)) !== null) {
+          const parentPath = nodeMatch[1]!
+          // "." means direct child of root (depth 1)
+          // "Path/To/Node" means depth = number of segments + 1
+          let depth: number
+          if (parentPath === '.') {
+            depth = 1
+          } else {
+            depth = parentPath.split('/').length + 1
+          }
+          if (depth > maxDepth) {
+            maxDepth = depth
+          }
+        }
+
+        if (maxDepth > 10) {
+          issues.push({
+            asset_path: relPath,
+            type: 'deep_nesting',
+            message: `Scene has node hierarchy ${maxDepth} levels deep (threshold: 10). Consider flattening the node tree.`,
           })
         }
       }
