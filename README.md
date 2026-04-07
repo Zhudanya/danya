@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  English | <a href="README_CN.md">中文</a> | <a href="https://zhudanya.github.io/posts/danya-complete-guide/">Full Guide</a>
+  English | <a href="README_CN.md">中文</a> | <a href="https://zhudanya.github.io/posts/danya-complete-guide-en/">Full Guide</a>
 </p>
 
 ---
