@@ -41,7 +41,7 @@ function runStage(stageName: string, projectPath: string): BuildStageResult {
 
   switch (stageName) {
     case 'lint':
-      cmd = `${run} eslint src/ --format compact 2>&1 || true`
+      cmd = `${run} eslint src/ --format unix 2>&1`
       break
     case 'build':
       // Try tsc for type checking
@@ -50,14 +50,14 @@ function runStage(stageName: string, projectPath: string): BuildStageResult {
     case 'test':
       cmd = pm === 'bun'
         ? 'bun test 2>&1'
-        : 'npx jest --ci 2>&1 || npx vitest run 2>&1'
+        : 'npx vitest run 2>&1'
       break
     default:
       return { name: stageName, success: false, errors: [{ file_path: '', line: 0, message: `Unknown stage: ${stageName}`, severity: 'error' }], duration_ms: 0 }
   }
 
   try {
-    const output = execSync(cmd, { cwd: projectPath, encoding: 'utf-8', timeout: 300000, shell: 'bash' })
+    const output = execSync(cmd, { cwd: projectPath, encoding: 'utf-8', timeout: 300000 })
     const errors = stageName === 'lint' ? parseEslintOutput(output) : []
     return { name: stageName, success: true, errors, duration_ms: Date.now() - start }
   } catch (err: any) {

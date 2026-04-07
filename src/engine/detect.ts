@@ -73,9 +73,24 @@ export function detectServerLanguage(projectPath: string, depth: number = 0): Se
     return 'cpp'
   }
 
-  // Java: has pom.xml or build.gradle
-  if (existsSync(join(projectPath, 'pom.xml')) || existsSync(join(projectPath, 'build.gradle')) || existsSync(join(projectPath, 'build.gradle.kts'))) {
-    return 'java'
+  // Java: has pom.xml or build.gradle with game-related dependencies
+  const javaBuildFile = existsSync(join(projectPath, 'pom.xml'))
+    ? join(projectPath, 'pom.xml')
+    : existsSync(join(projectPath, 'build.gradle'))
+      ? join(projectPath, 'build.gradle')
+      : existsSync(join(projectPath, 'build.gradle.kts'))
+        ? join(projectPath, 'build.gradle.kts')
+        : null
+  if (javaBuildFile) {
+    try {
+      const content = readFileSync(javaBuildFile, 'utf-8')
+      const javaGameSignals = ['netty', 'mina', 'kryonet', 'photon', 'game-server', 'gameserver', 'protobuf']
+      if (javaGameSignals.some(s => content.toLowerCase().includes(s))) {
+        return 'java'
+      }
+    } catch {
+      // ignore read errors
+    }
   }
 
   // Node.js: has package.json with game-related dependencies

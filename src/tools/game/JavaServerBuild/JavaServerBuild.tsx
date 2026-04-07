@@ -44,9 +44,9 @@ function runStage(stageName: string, projectPath: string): BuildStageResult {
       if (hasMakefile) {
         cmd = 'make lint 2>&1'
       } else if (tool === 'gradle') {
-        cmd = './gradlew checkstyleMain 2>&1 || true'
+        cmd = './gradlew checkstyleMain 2>&1'
       } else {
-        cmd = 'mvn checkstyle:check -q 2>&1 || true'
+        cmd = 'mvn checkstyle:check -q 2>&1'
       }
       break
     case 'build':
@@ -72,7 +72,7 @@ function runStage(stageName: string, projectPath: string): BuildStageResult {
   }
 
   try {
-    const output = execSync(cmd, { cwd: projectPath, encoding: 'utf-8', timeout: 600000, shell: 'bash' })
+    const output = execSync(cmd, { cwd: projectPath, encoding: 'utf-8', timeout: 600000 })
     return { name: stageName, success: true, errors: [], duration_ms: Date.now() - start }
   } catch (err: any) {
     const output = (err.stdout ?? '') + (err.stderr ?? '')

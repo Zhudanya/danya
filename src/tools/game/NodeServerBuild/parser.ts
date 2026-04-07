@@ -3,8 +3,8 @@ import type { BuildError } from '../types'
 // TypeScript: src/game.ts(10,5): error TS2304: Cannot find name 'x'.
 const TSC_ERROR_REGEX = /^(.+?\.tsx?)\((\d+),(\d+)\):\s+(error|warning)\s+(TS\d+):\s+(.+)$/
 
-// ESLint: /path/to/file.ts:10:5: error rule-name - message
-const ESLINT_REGEX = /^(.+?\.tsx?):(\d+):(\d+):\s+(error|warning)\s+(.+)$/
+// ESLint unix format: /path/to/file.ts:10:5: message [Error/rule-name]
+const ESLINT_REGEX = /^(.+?\.tsx?):(\d+):(\d+):\s+(.+?)\s+\[(Error|Warning)\/(.+?)\]$/
 
 // Jest/Vitest: FAIL src/game.test.ts
 const TEST_FAIL_REGEX = /^FAIL\s+(.+)$/
@@ -38,9 +38,9 @@ export function parseEslintOutput(output: string): BuildError[] {
         file_path: match[1]!,
         line: parseInt(match[2]!, 10),
         column: parseInt(match[3]!, 10),
-        message: match[5]!,
-        severity: match[4] === 'error' ? 'error' : 'warning',
-        rule: 'eslint',
+        message: match[4]!,
+        severity: match[5] === 'Error' ? 'error' : 'warning',
+        rule: match[6],
       })
     }
   }

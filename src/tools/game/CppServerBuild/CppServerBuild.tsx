@@ -38,7 +38,7 @@ function runStage(stageName: string, projectPath: string): BuildStageResult {
         cmd = 'make lint 2>&1'
       } else {
         // Try clang-tidy first, fall back to cppcheck
-        cmd = 'cppcheck --enable=all --quiet --template="{file}:{line}: ({severity}) {message}" src/ 2>&1'
+        cmd = 'cppcheck --enable=all --quiet --template="[{file}:{line}]: ({severity}) {message}" src/ 2>&1'
       }
       break
     case 'build':
@@ -63,7 +63,7 @@ function runStage(stageName: string, projectPath: string): BuildStageResult {
   }
 
   try {
-    const output = execSync(cmd, { cwd: projectPath, encoding: 'utf-8', timeout: 600000, shell: 'bash' })
+    const output = execSync(cmd, { cwd: projectPath, encoding: 'utf-8', timeout: 600000 })
     const errors = stageName === 'lint' ? parseCppCheckOutput(output) : []
     return { name: stageName, success: true, errors, duration_ms: Date.now() - start }
   } catch (err: any) {
