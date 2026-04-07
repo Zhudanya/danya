@@ -4,7 +4,7 @@ function hasFlag(...flags: string[]): boolean {
   return process.argv.some(arg => flags.includes(arg))
 }
 
-if (hasFlag('--version', '-v')) {
+if (hasFlag('--version', '-v') || process.argv[2] === 'version') {
   process.stdout.write(`${MACRO.VERSION || ''}\n`)
   process.exit(0)
 }
