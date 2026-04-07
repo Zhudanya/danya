@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .npmrc
+cli.js
+cli-acp.js
 .danya/push-approved
 *.log
 .env
