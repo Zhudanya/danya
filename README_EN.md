@@ -1,6 +1,11 @@
 # Danya — Game Dev AI Coding Assistant
 
 <p align="center">
+  <b>AI-powered terminal coding assistant built for game development</b><br>
+  Engine-Aware · Gate Chain Quality Control · Full-Auto Pipelines · Multi-Model Support
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/github/license/Zhudanya/danya?style=flat" alt="License" />
   <img src="https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/github/stars/Zhudanya/danya?style=flat&color=green" alt="Stars" />
@@ -8,11 +13,8 @@
 </p>
 
 <p align="center">
-  <b>AI-powered terminal coding assistant built for game development</b><br>
-  Engine-Aware · Gate Chain Quality Control · Full-Auto Pipelines · Multi-Model Support
+  <a href="README.md">中文</a> | English | <a href="https://zhudanya.github.io/posts/danya-complete-guide/">Full Guide</a>
 </p>
-
-[中文](README.md) | English | [Full Guide](https://zhudanya.github.io/posts/danya-complete-guide/)
 
 ---
 

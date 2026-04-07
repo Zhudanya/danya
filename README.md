@@ -1,6 +1,11 @@
 # Danya — 游戏开发 AI 编程助手
 
 <p align="center">
+  <b>专为游戏开发打造的 AI 终端编程助手</b><br>
+  理解游戏引擎 · 门禁链质量管控 · 全自动开发流水线 · 多模型支持
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/github/license/Zhudanya/danya?style=flat" alt="License" />
   <img src="https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/github/stars/Zhudanya/danya?style=flat&color=green" alt="Stars" />
@@ -8,11 +13,8 @@
 </p>
 
 <p align="center">
-  <b>专为游戏开发打造的 AI 终端编程助手</b><br>
-  理解游戏引擎 · 门禁链质量管控 · 全自动开发流水线 · 多模型支持
+  <a href="README_EN.md">English</a> | 中文 | <a href="https://zhudanya.github.io/posts/danya-complete-guide/">完全使用指南</a>
 </p>
-
-[English](README_EN.md) | 中文 | [完全使用指南](https://zhudanya.github.io/posts/danya-complete-guide/)
 
 ---
 
