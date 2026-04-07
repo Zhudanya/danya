@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../src/utils/protocol/kodeAgentSessionId.ts"],
-  "sourcesContent": ["import { randomUUID } from 'crypto'\r\n\r\nlet currentSessionId: string = randomUUID()\r\n\r\nexport function setDanyaAgentSessionId(nextSessionId: string): void {\r\n  currentSessionId = nextSessionId\r\n}\r\n\r\nexport function resetDanyaAgentSessionIdForTests(): void {\r\n  currentSessionId = randomUUID()\r\n}\r\n\r\nexport function getDanyaAgentSessionId(): string {\r\n  return currentSessionId\r\n}\r\n\r\nexport { setDanyaAgentSessionId as setKodeAgentSessionId, getDanyaAgentSessionId as getKodeAgentSessionId, resetDanyaAgentSessionIdForTests as resetKodeAgentSessionIdForTests }\r\n"],
-  "mappings": ";;;;;;;AAAA,SAAS,kBAAkB;AAIpB,SAAS,uBAAuB,eAA6B;AAClE,qBAAmB;AACrB;AAEO,SAAS,mCAAyC;AACvD,qBAAmB,WAAW;AAChC;AAEO,SAAS,yBAAiC;AAC/C,SAAO;AACT;AAdA,IAEI;AAFJ;AAAA;AAEA,IAAI,mBAA2B,WAAW;AAAA;AAAA;",
-  "names": []
-}

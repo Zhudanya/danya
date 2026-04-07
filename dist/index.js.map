@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../src/entrypoints/index.ts"],
-  "sourcesContent": ["import { MACRO } from '../constants/macros'\r\n\r\nfunction hasFlag(...flags: string[]): boolean {\r\n  return process.argv.some(arg => flags.includes(arg))\r\n}\r\n\r\nif (hasFlag('--version', '-v')) {\r\n  process.stdout.write(`${MACRO.VERSION || ''}\\n`)\r\n  process.exit(0)\r\n}\r\n\r\nif (hasFlag('--help-lite')) {\r\n  process.stdout.write(\r\n    `Usage: danya [options] [command] [prompt]\\n\\n` +\r\n      `Common options:\\n` +\r\n      `  -h, --help           Show full help\\n` +\r\n      `  -v, --version        Show version\\n` +\r\n      `  -p, --print          Print response and exit (non-interactive)\\n` +\r\n      `  -c, --cwd <cwd>      Set working directory\\n`,\r\n  )\r\n  process.exit(0)\r\n}\r\n\r\nif (hasFlag('--acp')) {\r\n  await import('./acp.js')\r\n} else {\r\n  await import('./cli.js')\r\n}\r\n"],
-  "mappings": ";;;;;;;;;AAAA;AAEA,SAAS,WAAW,OAA0B;AAC5C,SAAO,QAAQ,KAAK,KAAK,SAAO,MAAM,SAAS,GAAG,CAAC;AACrD;AAEA,IAAI,QAAQ,aAAa,IAAI,GAAG;AAC9B,UAAQ,OAAO,MAAM,GAAG,MAAM,WAAW,EAAE;AAAA,CAAI;AAC/C,UAAQ,KAAK,CAAC;AAChB;AAEA,IAAI,QAAQ,aAAa,GAAG;AAC1B,UAAQ,OAAO;AAAA,IACb;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,EAMF;AACA,UAAQ,KAAK,CAAC;AAChB;AAEA,IAAI,QAAQ,OAAO,GAAG;AACpB,QAAM,OAAO,mBAAU;AACzB,OAAO;AACL,QAAM,OAAO,mBAAU;AACzB;",
-  "names": []
-}

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../src/utils/text/uuid.ts"],
-  "sourcesContent": ["const UUID_RE =\r\n  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i\r\n\r\nexport function isUuid(value: string): boolean {\r\n  return UUID_RE.test(value.trim())\r\n}\r\n"],
-  "mappings": ";;;;;;;AAGO,SAAS,OAAO,OAAwB;AAC7C,SAAO,QAAQ,KAAK,MAAM,KAAK,CAAC;AAClC;AALA,IAAM;AAAN;AAAA;AAAA,IAAM,UACJ;AAAA;AAAA;",
-  "names": []
-}

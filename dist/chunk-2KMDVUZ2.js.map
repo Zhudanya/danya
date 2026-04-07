@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../src/utils/text/errors.ts"],
-  "sourcesContent": ["export class MalformedCommandError extends TypeError {}\r\n\r\nexport class DeprecatedCommandError extends Error {}\r\n\r\nexport class AbortError extends Error {}\r\n\r\nexport class ConfigParseError extends Error {\r\n  filePath: string\r\n  defaultConfig: unknown\r\n\r\n  constructor(message: string, filePath: string, defaultConfig: unknown) {\r\n    super(message)\r\n    this.name = 'ConfigParseError'\r\n    this.filePath = filePath\r\n    this.defaultConfig = defaultConfig\r\n  }\r\n}\r\n"],
-  "mappings": ";;;;;;;AAAA,IAAa,uBAIA,YAEA;AANb;AAAA;AAAO,IAAM,wBAAN,cAAoC,UAAU;AAAA,IAAC;AAI/C,IAAM,aAAN,cAAyB,MAAM;AAAA,IAAC;AAEhC,IAAM,mBAAN,cAA+B,MAAM;AAAA,MAC1C;AAAA,MACA;AAAA,MAEA,YAAY,SAAiB,UAAkB,eAAwB;AACrE,cAAM,OAAO;AACb,aAAK,OAAO;AACZ,aAAK,WAAW;AAChB,aAAK,gBAAgB;AAAA,MACvB;AAAA,IACF;AAAA;AAAA;",
-  "names": []
-}

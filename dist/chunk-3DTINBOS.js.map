@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../src/utils/session/requestStatus.ts"],
-  "sourcesContent": ["export type RequestStatusKind = 'idle' | 'thinking' | 'streaming' | 'tool'\r\n\r\nexport type RequestStatus = {\r\n  kind: RequestStatusKind\r\n  detail?: string\r\n  updatedAt: number\r\n}\r\n\r\nlet current: RequestStatus = { kind: 'idle', updatedAt: Date.now() }\r\nconst listeners = new Set<(status: RequestStatus) => void>()\r\n\r\nexport function getRequestStatus(): RequestStatus {\r\n  return current\r\n}\r\n\r\nexport function setRequestStatus(\r\n  status: Omit<RequestStatus, 'updatedAt'>,\r\n): void {\r\n  current = { ...status, updatedAt: Date.now() }\r\n  for (const listener of listeners) listener(current)\r\n}\r\n\r\nexport function subscribeRequestStatus(\r\n  listener: (status: RequestStatus) => void,\r\n): () => void {\r\n  listeners.add(listener)\r\n  return () => listeners.delete(listener)\r\n}\r\n"],
-  "mappings": ";;;;;;;AAWO,SAAS,mBAAkC;AAChD,SAAO;AACT;AAEO,SAAS,iBACd,QACM;AACN,YAAU,EAAE,GAAG,QAAQ,WAAW,KAAK,IAAI,EAAE;AAC7C,aAAW,YAAY,UAAW,UAAS,OAAO;AACpD;AAEO,SAAS,uBACd,UACY;AACZ,YAAU,IAAI,QAAQ;AACtB,SAAO,MAAM,UAAU,OAAO,QAAQ;AACxC;AA3BA,IAQI,SACE;AATN;AAAA;AAQA,IAAI,UAAyB,EAAE,MAAM,QAAQ,WAAW,KAAK,IAAI,EAAE;AACnE,IAAM,YAAY,oBAAI,IAAqC;AAAA;AAAA;",
-  "names": []
-}
