@@ -87,6 +87,14 @@ export function getGameTools(): Tool[] {
     } catch {}
   }
 
+  // Performance lint (any game engine)
+  if (detection.engine) {
+    try {
+      const { PerfLintTool } = require('./PerfLint/PerfLint')
+      tools.push(PerfLintTool as unknown as Tool)
+    } catch {}
+  }
+
   // Asset check (any game engine)
   if (detection.engine) {
     try {
