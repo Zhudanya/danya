@@ -1,6 +1,10 @@
 # Danya — Game Dev AI Coding Assistant
 
 <p align="center">
+  <img src="https://komarev.com/ghpvc/?username=Zhudanya&repo=danya&label=Profile%20views&color=0e75b6&style=flat" alt="Profile views" />
+</p>
+
+<p align="center">
   <b>AI-powered terminal coding assistant built for game development</b><br>
   Engine-Aware · Gate Chain Quality Control · Full-Auto Pipelines · Multi-Model Support
 </p>

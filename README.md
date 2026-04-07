@@ -1,6 +1,10 @@
 # Danya — 游戏开发 AI 编程助手
 
 <p align="center">
+  <img src="https://komarev.com/ghpvc/?username=Zhudanya&repo=danya&label=Profile%20views&color=0e75b6&style=flat" alt="Profile views" />
+</p>
+
+<p align="center">
   <b>专为游戏开发打造的 AI 终端编程助手</b><br>
   理解游戏引擎 · 门禁链质量管控 · 全自动开发流水线 · 多模型支持
 </p>
