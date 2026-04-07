@@ -290,6 +290,51 @@ done < <(grep '"pattern"' "$RULES" | sed 's/.*"pattern"\\s*:\\s*"//;s/".*//')
 exit 0
 `
 
+export const HOOK_ASSET_GUARD = `#!/bin/bash
+# Gate: Asset guard — block large binary files not tracked by Git LFS.
+# Runs as part of pre-commit. Exit 2 = block.
+INPUT=$(cat)
+CMD=$(echo "$INPUT" | sed -n 's/.*"command"[[:space:]]*:[[:space:]]*"\\([^"]*\\)".*/\\1/p' 2>/dev/null)
+echo "$CMD" | grep -qE 'git[[:space:]]+commit' || exit 0
+
+SIZE_THRESHOLD=\${ASSET_GUARD_THRESHOLD:-5242880}  # 5MB default
+
+# Check for .gitattributes
+if [ ! -f ".gitattributes" ]; then
+  echo '{"systemMessage":"⚠️ No .gitattributes found. Consider adding Git LFS tracking for binary assets (textures, meshes, audio)."}' >&2
+fi
+
+# Check staged files for large binaries not tracked by LFS
+LARGE_FILES=""
+for FILE in $(git diff --cached --name-only --diff-filter=ACM 2>/dev/null); do
+  # Skip text files
+  case "$FILE" in
+    *.cs|*.cpp|*.h|*.hpp|*.py|*.js|*.ts|*.gd|*.md|*.txt|*.json|*.yaml|*.yml|*.xml|*.toml|*.cfg|*.ini|*.sh|*.bat)
+      continue ;;
+  esac
+
+  # Check file size
+  if [ -f "$FILE" ]; then
+    SIZE=$(wc -c < "$FILE" 2>/dev/null | tr -d ' ')
+    if [ "\${SIZE:-0}" -gt "$SIZE_THRESHOLD" ]; then
+      # Check if tracked by LFS
+      if ! git lfs ls-files --name-only 2>/dev/null | grep -qF "$FILE"; then
+        SIZE_MB=$(( SIZE / 1048576 ))
+        LARGE_FILES="$LARGE_FILES\\n  $FILE (\${SIZE_MB}MB)"
+      fi
+    fi
+  fi
+done
+
+if [ -n "$LARGE_FILES" ]; then
+  echo "❌ Large binary files not tracked by Git LFS (threshold: $(( SIZE_THRESHOLD / 1048576 ))MB):$LARGE_FILES" >&2
+  echo "" >&2
+  echo "Fix: git lfs track '<pattern>' && git add .gitattributes" >&2
+  exit 2
+fi
+exit 0
+`
+
 export const HOOK_PRE_COMMIT = `#!/bin/bash
 # Gate 3: COMMIT — pre-commit lint + test. Exit 2 = block.
 INPUT=$(cat)

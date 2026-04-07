@@ -24,6 +24,8 @@ import * as monitor from './bundles/monitor'
  */
 function getSharedToolsBundle(): Record<string, string> {
   return {
+    // Asset guard hook (Git LFS / large file check)
+    'hooks/asset-guard.sh': common.HOOK_ASSET_GUARD,
     // Shell-enforced scripts
     'scripts/auto-work-loop.sh': scripts.SCRIPT_AUTO_WORK_LOOP,
     'scripts/parallel-wave.sh': scripts.SCRIPT_PARALLEL_WAVE,
