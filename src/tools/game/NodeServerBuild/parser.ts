@@ -4,7 +4,7 @@ import type { BuildError } from '../types'
 const TSC_ERROR_REGEX = /^(.+?\.tsx?)\((\d+),(\d+)\):\s+(error|warning)\s+(TS\d+):\s+(.+)$/
 
 // ESLint unix format: /path/to/file.ts:10:5: message [Error/rule-name]
-const ESLINT_REGEX = /^(.+?\.tsx?):(\d+):(\d+):\s+(.+?)\s+\[(Error|Warning)\/(.+?)\]$/
+const ESLINT_REGEX = /^(.+?):(\d+):(\d+):\s+(.+?)\s+\[(Error|Warning)\/(.+?)\]$/
 
 // Jest/Vitest: FAIL src/game.test.ts
 const TEST_FAIL_REGEX = /^FAIL\s+(.+)$/
