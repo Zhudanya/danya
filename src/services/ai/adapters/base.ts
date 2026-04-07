@@ -70,8 +70,7 @@ export abstract class ModelAPIAdapter {
     response: any,
     signal?: AbortSignal,
   ): AsyncGenerator<StreamingEvent> {
-    return
-    yield
+    // empty default — subclasses override to yield StreamingEvents
   }
 
   protected resetCumulativeUsage(): void {
