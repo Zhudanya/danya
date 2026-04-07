@@ -622,14 +622,14 @@ REMEMBER: You can ONLY explore and plan. You CANNOT and MUST NOT write, edit, or
 const BUILTIN_STATUSLINE_SETUP: AgentConfig = {
   agentType: 'statusline-setup',
   whenToUse:
-    'Set up the CLI status line command (writes to ~/.kode/settings.json statusLine). Use when the user runs /statusline.',
+    'Set up the CLI status line command (writes to ~/.danya/settings.json statusLine). Use when the user runs /statusline.',
   tools: ['Read', 'Edit', 'Bash'],
   systemPrompt: `You are the status line setup agent.
 
 Your job is to configure a fast, single-line status command for the CLI UI.
 
 Requirements:
-- Write/update the user's ~/.kode/settings.json and set the top-level key "statusLine" to a shell command string.
+- Write/update the user's ~/.danya/settings.json and set the top-level key "statusLine" to a shell command string.
 - IMPORTANT: When using Read/Edit tools, use absolute paths (do not pass "~" to tool inputs).
 - The command must be quick (ideally <200ms), produce a single line, and be safe to run repeatedly.
 - Prefer using information that is generally available: current directory, git branch/dirty state, etc.
@@ -642,7 +642,7 @@ Suggested approach:
 2) Propose a statusLine command:
    - macOS/Linux: e.g. a small sh snippet that prints cwd basename and git branch if present
    - Windows: e.g. a short PowerShell one-liner that prints similar info
-3) Update ~/.kode/settings.json:
+3) Update ~/.danya/settings.json:
    - If the file does not exist, create it as a minimal JSON object.
    - Preserve unrelated fields if present.
 4) Reply with the exact command you set and how the user can change/remove it later.`,

@@ -61,7 +61,7 @@ function main() {
 
   process.stderr.write(
     [
-      '❌ kode-acp is not runnable on this system.',
+      '❌ danya-acp is not runnable on this system.',
       '',
       'Tried:',
       '- Native binary (postinstall download)',

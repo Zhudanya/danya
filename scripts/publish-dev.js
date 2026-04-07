@@ -24,7 +24,7 @@ async function publishDev() {
     let devVersion;
     try {
       // 获取当前 dev tag 的最新版本
-      const npmResult = execSync(`npm view @shareai-lab/kode@dev version`, { encoding: 'utf8' }).trim();
+      const npmResult = execSync(`npm view @danya-ai/cli@dev version`, { encoding: 'utf8' }).trim();
       const currentDevVersion = npmResult;
       
       if (currentDevVersion.startsWith(baseVersion + '-dev.')) {
@@ -62,9 +62,9 @@ async function publishDev() {
 
     console.log('\n✅ Dev version published successfully!');
     console.log(`📦 Version: ${devVersion}`);
-    console.log(`🔗 Install with: npm install -g @shareai-lab/kode@dev`);
-    console.log(`🔗 Or: npm install -g @shareai-lab/kode@${devVersion}`);
-    console.log(`📊 View on npm: https://www.npmjs.com/package/@shareai-lab/kode/v/${devVersion}`);
+    console.log(`🔗 Install with: npm install -g @danya-ai/cli@dev`);
+    console.log(`🔗 Or: npm install -g @danya-ai/cli@${devVersion}`);
+    console.log(`📊 View on npm: https://www.npmjs.com/package/@danya-ai/cli/v/${devVersion}`);
 
   } catch (error) {
     console.error('❌ Dev publish failed:', error.message);

@@ -8,7 +8,7 @@ export default {
   isHidden: false,
   progressMessage: 'setting up statusLine',
   disableNonInteractive: true,
-  allowedTools: ['Task', 'Read(~/**)', 'Edit(~/.kode/settings.json)'],
+  allowedTools: ['Task', 'Read(~/**)', 'Edit(~/.danya/settings.json)'],
   userFacingName() {
     return 'statusline'
   },

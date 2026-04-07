@@ -282,7 +282,7 @@ const plugin = {
       if (!target) {
         return [
           'Usage: /plugin validate <path>',
-          '  kode plugin validate <path>',
+          '  danya plugin validate <path>',
         ].join('\n')
       }
       const result = validatePluginOrMarketplacePath(target)

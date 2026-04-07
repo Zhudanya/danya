@@ -57,6 +57,6 @@ console.log('\n📋 Package info:');
 console.log(`   Name: ${pkg.name}`);
 console.log(`   Version: ${pkg.version}`);
 console.log(`   Main: ${pkg.main}`);
-console.log(`   Bin: kode -> ${pkg.bin.kode}`);
+console.log(`   Bin: danya -> ${pkg.bin.danya}`);
 console.log('\n🚀 Ready to publish!');
 console.log('   Run: npm publish');

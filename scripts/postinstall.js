@@ -51,7 +51,7 @@ function downloadFile(url, destPath, redirectCount = 0) {
       url,
       {
         headers: {
-          'User-Agent': '@shareai-lab/kode postinstall',
+          'User-Agent': '@danya-ai/cli postinstall',
           Accept: 'application/octet-stream',
         },
       },
@@ -112,7 +112,7 @@ async function maybeInstallBinary() {
   }
 
   const url = getGithubReleaseBinaryUrl({ version })
-  safeLog(`📦 Kode: installing native binary for ${platformArch} (v${version})`)
+  safeLog(`📦 Danya: installing native binary for ${platformArch} (v${version})`)
 
   try {
     await downloadFile(url, dest)
@@ -121,21 +121,21 @@ async function maybeInstallBinary() {
         chmodSync(dest, 0o755)
       } catch {}
     }
-    safeLog(`✅ Kode: native binary ready at ${dest}`)
+    safeLog(`✅ Danya: native binary ready at ${dest}`)
   } catch (err) {
-    safeWarn(`⚠️  Kode: could not download native binary (${platformArch})`)
+    safeWarn(`⚠️  Danya: could not download native binary (${platformArch})`)
     safeWarn(`    URL: ${url}`)
     safeWarn(
       `    Reason: ${err instanceof Error ? err.message : String(err)}`,
     )
-    safeWarn(`    This is non-fatal. Kode will fall back to Bun if available.`)
+    safeWarn(`    This is non-fatal. Danya will fall back to Bun if available.`)
   }
 }
 
 async function postinstallNotice() {
-  safeLog('✅ @shareai-lab/kode installed. Commands available: kode, kwa, kd')
+  safeLog('✅ @danya-ai/cli installed. Command available: danya')
   safeLog('   If shell cannot find them, reload your terminal or reinstall globally:')
-  safeLog('   npm i -g @shareai-lab/kode  (or use: npx @shareai-lab/kode)')
+  safeLog('   npm i -g @danya-ai/cli  (or use: npx @danya-ai/cli)')
   await maybeInstallBinary()
 }
 

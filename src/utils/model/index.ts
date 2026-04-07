@@ -756,7 +756,7 @@ export class ModelManager {
         return {
           success: false,
           profile: null,
-          error: `Model '${modelParam}' not found. Use /model to add models, or run 'kode models list' to see configured profiles.`,
+          error: `Model '${modelParam}' not found. Use /model to add models, or run 'danya models list' to see configured profiles.`,
         }
       }
 

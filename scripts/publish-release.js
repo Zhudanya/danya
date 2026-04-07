@@ -63,7 +63,7 @@ async function publishRelease() {
 
     // 3. 检查版本是否已存在
     try {
-      execSync(`npm view @shareai-lab/kode@${newVersion} version`, { stdio: 'ignore' });
+      execSync(`npm view @danya-ai/cli@${newVersion} version`, { stdio: 'ignore' });
       console.log(`❌ Version ${newVersion} already exists on npm`);
       process.exit(1);
     } catch {
@@ -113,9 +113,9 @@ async function publishRelease() {
 
     console.log('\n🎉 Production release published successfully!');
     console.log(`📦 Version: ${newVersion}`);
-    console.log(`🔗 Install with: npm install -g @shareai-lab/kode`);
-    console.log(`🔗 Or: npm install -g @shareai-lab/kode@${newVersion}`);
-    console.log(`📊 View on npm: https://www.npmjs.com/package/@shareai-lab/kode`);
+    console.log(`🔗 Install with: npm install -g @danya-ai/cli`);
+    console.log(`🔗 Or: npm install -g @danya-ai/cli@${newVersion}`);
+    console.log(`📊 View on npm: https://www.npmjs.com/package/@danya-ai/cli`);
     
     console.log('\n💡 Next steps:');
     console.log('   - Commit the version change to git');

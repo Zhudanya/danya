@@ -6,14 +6,14 @@ function getPlatformArch(platform = process.platform, arch = process.arch) {
 }
 
 function getBinaryFilename(platform = process.platform) {
-  return platform === 'win32' ? 'kode.exe' : 'kode'
+  return platform === 'win32' ? 'danya.exe' : 'danya'
 }
 
 function getDefaultBinBaseDir() {
   return (
     process.env.KODE_BIN_DIR ||
     process.env.ANYKODE_BIN_DIR ||
-    path.join(os.homedir(), '.kode', 'bin')
+    path.join(os.homedir(), '.danya', 'bin')
   )
 }
 
@@ -29,15 +29,15 @@ function getCachedBinaryPath(options) {
 
 function getGithubReleaseBinaryAssetName(platform = process.platform, arch = process.arch) {
   const ext = platform === 'win32' ? '.exe' : ''
-  return `kode-${platform}-${arch}${ext}`
+  return `danya-${platform}-${arch}${ext}`
 }
 
 function getGithubReleaseBinaryUrl(options) {
   const version = options?.version
   const platform = options?.platform ?? process.platform
   const arch = options?.arch ?? process.arch
-  const owner = options?.owner ?? 'shareAI-lab'
-  const repo = options?.repo ?? 'kode'
+  const owner = options?.owner ?? 'Zhudanya'
+  const repo = options?.repo ?? 'danya'
   const tag = options?.tag ?? `v${version}`
   const baseUrl = options?.baseUrl ?? process.env.KODE_BINARY_BASE_URL
 

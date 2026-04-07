@@ -934,15 +934,15 @@ export function diagnoseError(error: any, context?: any): ErrorDiagnosis {
       description: 'API authentication failed - invalid or missing API key',
       suggestions: [
         '运行 /login 重新设置 API 密钥',
-        '检查 ~/.kode/ 配置文件中的 API 密钥',
+        '检查 ~/.danya/ 配置文件中的 API 密钥',
         '验证 API 密钥是否已过期或被撤销',
         '确认使用的 provider 设置正确 (anthropic/opendev/bigdream)',
       ],
       debugSteps: [
         '检查 CONFIG_LOAD 日志中的 provider 和 API 密钥状态',
-        '运行 kode doctor 检查系统健康状态',
+        '运行 danya doctor 检查系统健康状态',
         '查看 API_ERROR 日志了解详细错误信息',
-        '使用 kode config 命令查看当前配置',
+        '使用 danya config 命令查看当前配置',
       ],
     }
   }
@@ -1057,7 +1057,7 @@ export function diagnoseError(error: any, context?: any): ErrorDiagnosis {
       severity: 'MEDIUM',
       description: 'Configuration error - missing or invalid settings',
       suggestions: [
-        '运行 kode config 检查配置设置',
+        '运行 danya config 检查配置设置',
         '删除损坏的配置文件重新初始化',
         '检查 JSON 配置文件语法是否正确',
         '验证环境变量设置',
@@ -1065,7 +1065,7 @@ export function diagnoseError(error: any, context?: any): ErrorDiagnosis {
       debugSteps: [
         '查看 CONFIG_LOAD 和 CONFIG_SAVE 日志',
         '检查配置文件路径和权限',
-        '验证 JSON 格式: cat ~/.kode/config.json | jq',
+        '验证 JSON 格式: cat ~/.danya/config.json | jq',
         '查看配置缓存相关的调试信息',
       ],
     }
