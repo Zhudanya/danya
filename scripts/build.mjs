@@ -61,7 +61,7 @@ async function buildWithEsbuild(options) {
 }
 
 async function main() {
-  console.log('🚀 Building Kode CLI (Bun dev + Node runtime)...')
+  console.log('🚀 Building Danya CLI (Bun dev + Node runtime)...')
 
   rmSync(OUT_DIR, { recursive: true, force: true })
   mkdirSync(OUT_DIR, { recursive: true })
@@ -120,7 +120,7 @@ async function main() {
   // Create .npmrc file (kept intentionally tiny)
   writeFileSync(
     '.npmrc',
-    `# Kode npm configuration
+    `# Danya npm configuration
 package-lock=false
 save-exact=true
 `,
