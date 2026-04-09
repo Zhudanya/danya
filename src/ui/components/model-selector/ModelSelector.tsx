@@ -124,6 +124,8 @@ export function ModelSelector({
   const containerPaddingY = tightLayout ? 0 : compactLayout ? 0 : 1
   const containerGap = tightLayout ? 0 : 1
   const onDone = () => {
+    // Clear screen to remove dialog rendering artifacts on Windows
+    process.stdout.write('\x1b[2J\x1b[H')
     printModelConfig()
     onDoneProp()
   }

@@ -45,7 +45,7 @@ export async function testGPT5Connection(
     supportsResponsesAPI: modelFeatures.supportsResponsesAPI,
   })
 
-  if (isGPT5 && modelFeatures.supportsResponsesAPI && isOfficialOpenAI) {
+  if (isGPT5 && modelFeatures.supportsResponsesAPI) {
     debugLogger.api('GPT5_CONNECTION_TEST_TRY_RESPONSES', { model: config.model })
     const responsesResult = await testResponsesAPI(config, baseURL, startTime)
 
