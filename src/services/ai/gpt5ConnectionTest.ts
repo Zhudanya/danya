@@ -137,6 +137,15 @@ async function testResponsesAPI(
           apiUsed: 'responses',
           responseTime,
         }
+      } else if (data.id && data.status === 'completed') {
+        return {
+          success: true,
+          message: '✅ Responses API connected (model returned empty content)',
+          endpoint: '/responses',
+          details: `Response ID: ${data.id}, tokens used: ${data.usage?.total_tokens || 'unknown'}`,
+          apiUsed: 'responses',
+          responseTime,
+        }
       } else {
         return {
           success: false,
@@ -257,6 +266,15 @@ async function testChatCompletionsAPI(
           message: `✅ ${isGPT5 ? 'GPT-5' : 'Model'} Chat Completions connection successful`,
           endpoint: '/chat/completions',
           details: `Model responded correctly: "${responseContent.trim()}"`,
+          apiUsed: 'chat_completions',
+          responseTime,
+        }
+      } else if (data.id && data.choices) {
+        return {
+          success: true,
+          message: `✅ Chat Completions connected (model returned empty content)`,
+          endpoint: '/chat/completions',
+          details: `Response ID: ${data.id}, tokens used: ${data.usage?.total_tokens || 'unknown'}`,
           apiUsed: 'chat_completions',
           responseTime,
         }
